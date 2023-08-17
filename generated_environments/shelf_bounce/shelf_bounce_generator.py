@@ -3,7 +3,7 @@ import random
 from typing import Optional, Tuple, List, Dict
 
 from environments.render_constants import SCREEN_HEIGHT as HEIGHT
-from generated_environments.freefall.freefall import FreefallEnv
+from generated_environments.shelf_bounce.shelf_bounce import ShelfBounceEnv
 
 from utils.train_utils import set_seed
 
@@ -16,8 +16,10 @@ def main(env_dict: Dict, iters: int, save_path: Optional[str] = None, verbose: b
         iters (int): The number of environments to generate
         save_path (Optional[str], optional): The path to save the logs to. Defaults to None.
         verbose (bool, optional): Whether to print the number of unique logs generated. Defaults to False.
-        Returns:
-            """
+
+    Returns:
+        Tuple[List, List, List, List]: The numerical logs, text logs, minimal texts and descriptive texts
+        """
 
     numerical_logs = []
     text_logs = []
@@ -31,7 +33,7 @@ def main(env_dict: Dict, iters: int, save_path: Optional[str] = None, verbose: b
             if callable(value):
                 env_dict_copy[key] = value()
 
-        env = FreefallEnv(**env_dict_copy)
+        env = ShelfBounceEnv(**env_dict_copy)
         numerical_logs.append(env.numerical_log)
         text_logs.append(env.text_log)
         minimal_texts.append(env.make_minimal_text())
@@ -132,7 +134,7 @@ if __name__ == "__main__":
                                         drop_height=lambda: round(pick_between_two_ranges(height_limits_test[0], height_limits_test[1]) * HEIGHT, 2),
                                         time_limit=lambda: round(pick_between_two_ranges(time_limits_test[0], time_limits_test[1]), 1))
 
-    save_folder = '../../data/freefall/'
+    save_folder = '../../data/shelf_bounce/'
     num_iters = 5_000_000
     # Generate all files
     main(fixed_height_dict_train, num_iters, save_path=save_folder + "variable_time/", verbose=True)

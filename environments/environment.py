@@ -2,6 +2,11 @@ from typing import Optional
 
 import arcade
 import pymunk
+import pymunk.constraints
+
+# set pymunk to have an arbitrarily small thickness for objects unless otherwise specified
+
+
 
 
 class Environment:
@@ -18,7 +23,15 @@ class Environment:
         self.render_mode = render
 
     def make_minimal_text(self, split_text: str = "ans: ", ans_key: Optional[str] = None) -> str:
-        """Joins up the text in the numerical log to make a minimal text"""
+        """Joins up the text in the numerical log to make a minimal text
+
+        Args:
+            split_text (str, optional): The text to split the text log with. Defaults to "ans: ".
+            ans_key (Optional[str], optional): The key of the answer in the numerical log. Defaults to None.
+
+        Returns:
+            str: The minimal text
+        """
         # Join the column names and values
         if ans_key is None:
             # Take the last value in the numerical log as the answer
@@ -33,7 +46,15 @@ class Environment:
         return text
 
     def make_descriptive_text(self, split_text: str = "ans: ", ans_index: Optional[int] = None) -> str:
-        """Joins up the text in the text log to make a descriptive text"""
+        """Joins up the text in the text log to make a descriptive text
+
+        Args:
+            split_text (str, optional): The text to split the text log with. Defaults to "ans: ".
+            ans_index (Optional[int], optional): The index of the answer in the text log. Defaults to None.
+
+        Returns:
+            str: The descriptive text
+        """
         # Join the column names and values
         if ans_index is None:
             # Take the last value in the numerical log as the answer
