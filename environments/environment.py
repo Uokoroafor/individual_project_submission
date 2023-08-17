@@ -2,11 +2,6 @@ from typing import Optional
 
 import arcade
 import pymunk
-import pymunk.constraints
-
-# set pymunk to have an arbitrarily small thickness for objects unless otherwise specified
-
-
 
 
 class Environment:
@@ -21,6 +16,7 @@ class Environment:
         self.text_log = []
         self.numerical_log = dict()
         self.render_mode = render
+        self.print_message = None
 
     def make_minimal_text(self, split_text: str = "ans: ", ans_key: Optional[str] = None) -> str:
         """Joins up the text in the numerical log to make a minimal text
@@ -92,6 +88,8 @@ class EnvironmentView(arcade.View):
         arcade.start_render()
         for obj in self.env.objects:
             obj.draw()
+        if self.env.print_message is not None:
+            arcade.draw_text(self.env.print_message, 10, 10, arcade.color.WHITE, 14)
 
     def on_update(self, delta_time):
         """Updates the environment

@@ -9,13 +9,13 @@ from environments.render_constants import SCREEN_WIDTH as WIDTH, SCREEN_HEIGHT a
 
 
 class FreefallEnv(Environment):
-    def __init__(self, render: bool = True, height_range: float = 0.2, time_limit: int = 5, **kwargs):
+    def __init__(self, render: bool = True, height_range: float = 0.2, time_limit: float = 5.0, **kwargs):
         """ This is an environment where a ball is dropped from a random height and the model has to predict the
         height after a certain time.
         Args:
             render (bool, optional): Whether to render the environment or not. Defaults to True.
             height_range (float, optional): portion of the screen to drop the ball from. Defaults to 0.2.
-            time_limit (int, optional): The maximum time for the ball to fall. Defaults to 5.
+            time_limit (float, optional): The maximum time for the ball to fall. Defaults to 5.0.
         """
 
         super().__init__(render=render)

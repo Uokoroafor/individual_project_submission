@@ -1,5 +1,4 @@
 import random
-from typing import Optional
 
 import arcade
 
@@ -107,11 +106,8 @@ class ShelfBounceEnv(Environment):
 
         if self.render_mode:
             self.window = arcade.Window(WIDTH, HEIGHT, self.title)
-            # self.window.set_update_rate(1 / 6)
-            arcade.set_background_color(arcade.color.WHITE)
+            arcade.set_background_color(arcade.color.BLACK)
             self.window.show_view(EnvironmentView(self))
-            # arcade.run()
-
 
         else:
             while True:  # Infinite loop for logging mode
@@ -146,7 +142,7 @@ class ShelfBounceEnv(Environment):
         self.numerical_log["elasticity"] = elasticity
 
         self.text_log.append(f"Ball of radius {BALL_RADIUS} and elasticity {elasticity} is dropped from "
-                             f"x={round(x, 2)} and y={round(y, 2)}.")
+                             f"x={round(x, 2)} and y={round(y, 2)}")
 
     def add_shelf(self):
         """Makes a rectangular shelf and adds it to the environment"""
@@ -187,7 +183,8 @@ class ShelfBounceEnv(Environment):
         self.text_log.append(f'Shelf of width {float(width)} and angle {angle} degrees at x={float(x)} y={y}')
 
     def update(self, delta_time):
-        # if self.render_mode:
+        if self.render_mode:
+            delta_time *= 4
         self.space.step(delta_time)  # Advance the simulation by 1/60th of a second
         self.elapsed_time += delta_time
 
@@ -195,6 +192,8 @@ class ShelfBounceEnv(Environment):
         if self.elapsed_time >= self.time_limit and not self.time_up:
             self.log_state(self.elapsed_time)
             self.time_up = True
+            self.print_message = (f"At Time of {round(self.elapsed_time, 1)}: Ball was at "
+                                  f"x={round(self.ball.body.position.x, 2)} y={round(self.ball.body.position.y, 2)}")
 
         if self.ball.body.position.y <= BALL_RADIUS and self.time_up:
             self.end_episode = True
@@ -203,22 +202,28 @@ class ShelfBounceEnv(Environment):
             arcade.close_window()
 
     def log_state(self, t: float):
-        """Log the final state of the environment"""
+        """Log the final state of the environment
+
+        Args:
+            t (float): The time at which the state is logged
+            """
         # Get the final y coordinate of the ball
         x = self.ball.body.position.x
         y = self.ball.body.position.y
-        # print(f"Ball's final position is y={round(self.ball.body.position.y, 2)}.")
+
         self.numerical_log["t1"] = round(t, 1)
         self.numerical_log["ball_x1"] = round(x, 2)
         self.numerical_log["ball_y1"] = round(y, 2)
         self.text_log.append(f"At time {round(t, 1)}")
         self.text_log.append(f"Ball is at x={round(x, 2)}")
-        self.text_log.append(f"and y={round(y, 2)}")
-        # print(f"Ball's final position is y={round(self.ball.body.position.y, 2)}.")
+        self.text_log.append(f"y={round(y, 2)}")
 
 
 if __name__ == "__main__":
-    env = ShelfBounceEnv(render=True)  # Set render=True for visualization, set render=False for text logging
+    # env = ShelfBounceEnv(render=True)  # Set render=True for visualization, set render=False for text logging
+
+    # Render Fixed Angle with variable time limit
+    env = ShelfBounceEnv(render=True, fixed_angle=True, angle=30, time_limit=round(random.uniform(5, 15), 1))
     if env.render_mode:
         arcade.run()
     print(env.numerical_log)
