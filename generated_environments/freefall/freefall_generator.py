@@ -131,7 +131,7 @@ if __name__ == "__main__":
                                             pick_between_two_ranges(time_limits_test[0], time_limits_test[1]), 1))
 
     save_folder = '../../data/freefall/'
-    num_iters = 5  # _000_000
+    num_iters = 10  # _000_000
     # Generate all files
     generate_environment_data(fixed_height_dict_train, Env, num_iters, save_path=save_folder + "variable_time/",
                               verbose=True)

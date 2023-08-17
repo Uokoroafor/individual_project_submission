@@ -8,7 +8,6 @@ from utils.env_utils import RandomDict, pick_between_two_ranges, generate_enviro
 
 from utils.train_utils import set_seed
 
-
 # def main(env_dict: Dict, iters: int, save_path: Optional[str] = None, verbose: bool = False) -> Tuple[
 #     List, List, List, List]:
 #     """ Generates a number of freefall environments and saves the logs to a csv and txt file
@@ -129,11 +128,13 @@ if __name__ == "__main__":
     # Fixed Ball Height and Shelf Height - Variable Angle
     variable_angle_dict_train = RandomDict(render=False, fixed_shelf_y=True, shelf_y=shelf_fixed_height,
                                            fixed_ball_y=True, ball_y=ball_fixed_height, fixed_angle=True,
-                                           angle=lambda: round(random.uniform(*angle_limits_train), 1), time_limit=fixed_time)
+                                           angle=lambda: round(random.uniform(*angle_limits_train), 1),
+                                           time_limit=fixed_time)
 
     variable_angle_dict_test = RandomDict(render=False, fixed_shelf_y=True, shelf_y=shelf_fixed_height,
                                           fixed_ball_y=True, ball_y=ball_fixed_height, fixed_angle=True,
-                                          angle=lambda: round(random.uniform(*angle_limits_test), 1), time_limit=fixed_time)
+                                          angle=lambda: round(random.uniform(*angle_limits_test), 1),
+                                          time_limit=fixed_time)
 
     # Fixed Ball Height and Angle - Variable Shelf Height
     variable_shelfheight_dict_train = RandomDict(render=False, fixed_shelf_y=True,
@@ -150,46 +151,51 @@ if __name__ == "__main__":
     # Fixed Shelf Height and Angle - Variable Ball Height
     variable_ballheight_dict_train = RandomDict(render=False, fixed_shelf_y=True, shelf_y=shelf_fixed_height,
                                                 fixed_ball_y=True, ball_y=lambda: round(
-            random.uniform(*ball_height_limits_train) * HEIGHT, 2), fixed_angle=True, angle=fixed_angle, time_limit=fixed_time)
+            random.uniform(*ball_height_limits_train) * HEIGHT, 2), fixed_angle=True, angle=fixed_angle,
+                                                time_limit=fixed_time)
 
     variable_ballheight_dict_test = RandomDict(render=False, fixed_shelf_y=True, shelf_y=shelf_fixed_height,
-                                                  fixed_ball_y=True, ball_y=lambda: round(
+                                               fixed_ball_y=True, ball_y=lambda: round(
             pick_between_two_ranges(ball_height_limits_test[0], ball_height_limits_test[1]) * HEIGHT, 2),
-                                                    fixed_angle=True, angle=fixed_angle, time_limit=fixed_time)
-
+                                               fixed_angle=True, angle=fixed_angle, time_limit=fixed_time)
 
     # Fixed Shelf Height Environment - variable ball height and angle
     variable_ballheight_angle_dict_train = RandomDict(render=False, fixed_shelf_y=True, shelf_y=lambda: round(
         random.uniform(*shelf_height_limits_train) * HEIGHT, 2), fixed_ball_y=True, ball_y=ball_fixed_height,
                                                       fixed_angle=True,
-                                                      angle=lambda: round(random.uniform(*angle_limits_train), 1), time_limit=fixed_time)
+                                                      angle=lambda: round(random.uniform(*angle_limits_train), 1),
+                                                      time_limit=fixed_time)
 
     variable_ballheight_angle_dict_test = RandomDict(render=False, fixed_shelf_y=True, shelf_y=lambda: round(
         pick_between_two_ranges(shelf_height_limits_test[0], shelf_height_limits_test[1]) * HEIGHT, 2),
                                                      fixed_ball_y=True, ball_y=ball_fixed_height, fixed_angle=True,
-                                                     angle=lambda: round(random.uniform(*angle_limits_test), 1), time_limit=fixed_time)
+                                                     angle=lambda: round(random.uniform(*angle_limits_test), 1),
+                                                     time_limit=fixed_time)
 
     # Fixed Ball Height Environment - variable shelf height and angle
     variable_shelfheight_angle_dict_train = RandomDict(render=False, fixed_shelf_y=True, shelf_y=round(
         random.uniform(*shelf_height_limits_train) * HEIGHT, 2), fixed_ball_y=True, ball_y=ball_fixed_height,
-                                                         fixed_angle=True,
-                                                            angle=lambda: round(random.uniform(*angle_limits_train), 1), time_limit=fixed_time)
+                                                       fixed_angle=True,
+                                                       angle=lambda: round(random.uniform(*angle_limits_train), 1),
+                                                       time_limit=fixed_time)
 
     variable_shelfheight_angle_dict_test = RandomDict(render=False, fixed_shelf_y=True, shelf_y=lambda: round(
         pick_between_two_ranges(shelf_height_limits_test[0], shelf_height_limits_test[1]) * HEIGHT, 2),
-                                                         fixed_ball_y=True, ball_y=ball_fixed_height, fixed_angle=True,
-                                                            angle=lambda: round(random.uniform(*angle_limits_test), 1), time_limit=fixed_time)
+                                                      fixed_ball_y=True, ball_y=ball_fixed_height, fixed_angle=True,
+                                                      angle=lambda: round(random.uniform(*angle_limits_test), 1),
+                                                      time_limit=fixed_time)
 
     # Fixed Angle Environment - variable shelf height and ball height
     variable_shelfheight_ballheight_dict_train = RandomDict(render=False, fixed_shelf_y=True, shelf_y=lambda: round(
         random.uniform(*shelf_height_limits_train) * HEIGHT, 2), fixed_ball_y=True, ball_y=lambda: round(
-        random.uniform(*ball_height_limits_train) * HEIGHT, 2), fixed_angle=True, angle=fixed_angle, time_limit=fixed_time)
+        random.uniform(*ball_height_limits_train) * HEIGHT, 2), fixed_angle=True, angle=fixed_angle,
+                                                            time_limit=fixed_time)
 
     variable_shelfheight_ballheight_dict_test = RandomDict(render=False, fixed_shelf_y=True, shelf_y=lambda: round(
         pick_between_two_ranges(shelf_height_limits_test[0], shelf_height_limits_test[1]) * HEIGHT, 2),
-                                                              fixed_ball_y=True, ball_y=lambda: round(
+                                                           fixed_ball_y=True, ball_y=lambda: round(
             pick_between_two_ranges(ball_height_limits_test[0], ball_height_limits_test[1]) * HEIGHT, 2),
-                                                                fixed_angle=True, angle=fixed_angle, time_limit=fixed_time)
+                                                           fixed_angle=True, angle=fixed_angle, time_limit=fixed_time)
 
     # Variable Ball Height, Shelf Height and Angle
     all_variable_dict_train = RandomDict(render=False, fixed_shelf_y=True, shelf_y=lambda: round(
@@ -202,30 +208,42 @@ if __name__ == "__main__":
                                         fixed_ball_y=True, ball_y=lambda: round(
             pick_between_two_ranges(ball_height_limits_test[0], ball_height_limits_test[1]) * HEIGHT, 2),
                                         fixed_angle=True,
-                                        angle=lambda: round(random.uniform(*angle_limits_test), 1), time_limit=fixed_time)
+                                        angle=lambda: round(random.uniform(*angle_limits_test), 1),
+                                        time_limit=fixed_time)
 
-    num_iters = 5
+    num_iters = 10
     save_folder = '../../data/shelf_bounce/'
 
     # Generate all files
-    generate_environment_data(variable_angle_dict_train,Env, num_iters, save_path=save_folder + "variable_angle/", verbose=True)
-    generate_environment_data(variable_angle_dict_test,Env, num_iters, save_path=save_folder + "variable_angle/oos_", verbose=True)
-    generate_environment_data(variable_shelfheight_dict_train,Env, num_iters, save_path=save_folder + "variable_shelfheight/", verbose=True)
-    generate_environment_data(variable_shelfheight_dict_test,Env, num_iters, save_path=save_folder + "variable_shelfheight/oos_", verbose=True)
-    generate_environment_data(variable_ballheight_dict_train,Env, num_iters, save_path=save_folder + "variable_ballheight/", verbose=True)
-    generate_environment_data(variable_ballheight_dict_test,Env, num_iters, save_path=save_folder + "variable_ballheight/oos_", verbose=True)
-    generate_environment_data(variable_ballheight_angle_dict_train,Env, num_iters, save_path=save_folder + "variable_ballheight_angle/",
-            verbose=True)
-    generate_environment_data(variable_ballheight_angle_dict_test,Env, num_iters, save_path=save_folder + "variable_ballheight_angle/oos_",
-            verbose=True)
-    generate_environment_data(variable_shelfheight_angle_dict_train,Env, num_iters, save_path=save_folder + "variable_shelfheight_angle/",
-            verbose=True)
-    generate_environment_data(variable_shelfheight_angle_dict_test,Env, num_iters, save_path=save_folder + "variable_shelfheight_angle/oos_",
-            verbose=True)
-    generate_environment_data(variable_shelfheight_ballheight_dict_train,Env, num_iters,
-            save_path=save_folder + "variable_shelfheight_ballheight/", verbose=True)
-    generate_environment_data(variable_shelfheight_ballheight_dict_test,Env, num_iters,
-            save_path=save_folder + "variable_shelfheight_ballheight/oos_", verbose=True)
-    generate_environment_data(all_variable_dict_train,Env, num_iters, save_path=save_folder + "variable_shelfheight_ballheight_angle/",verbose=True)
-    generate_environment_data(all_variable_dict_test,Env, num_iters, save_path=save_folder + "variable_shelfheight_ballheight_angle/oos_",verbose=True)
-
+    generate_environment_data(variable_angle_dict_train, Env, num_iters, save_path=save_folder + "variable_angle/",
+                              verbose=True)
+    generate_environment_data(variable_angle_dict_test, Env, num_iters, save_path=save_folder + "variable_angle/oos_",
+                              verbose=True)
+    generate_environment_data(variable_shelfheight_dict_train, Env, num_iters,
+                              save_path=save_folder + "variable_shelfheight/", verbose=True)
+    generate_environment_data(variable_shelfheight_dict_test, Env, num_iters,
+                              save_path=save_folder + "variable_shelfheight/oos_", verbose=True)
+    generate_environment_data(variable_ballheight_dict_train, Env, num_iters,
+                              save_path=save_folder + "variable_ballheight/", verbose=True)
+    generate_environment_data(variable_ballheight_dict_test, Env, num_iters,
+                              save_path=save_folder + "variable_ballheight/oos_", verbose=True)
+    generate_environment_data(variable_ballheight_angle_dict_train, Env, num_iters,
+                              save_path=save_folder + "variable_ballheight_angle/",
+                              verbose=True)
+    generate_environment_data(variable_ballheight_angle_dict_test, Env, num_iters,
+                              save_path=save_folder + "variable_ballheight_angle/oos_",
+                              verbose=True)
+    generate_environment_data(variable_shelfheight_angle_dict_train, Env, num_iters,
+                              save_path=save_folder + "variable_shelfheight_angle/",
+                              verbose=True)
+    generate_environment_data(variable_shelfheight_angle_dict_test, Env, num_iters,
+                              save_path=save_folder + "variable_shelfheight_angle/oos_",
+                              verbose=True)
+    generate_environment_data(variable_shelfheight_ballheight_dict_train, Env, num_iters,
+                              save_path=save_folder + "variable_shelfheight_ballheight/", verbose=True)
+    generate_environment_data(variable_shelfheight_ballheight_dict_test, Env, num_iters,
+                              save_path=save_folder + "variable_shelfheight_ballheight/oos_", verbose=True)
+    generate_environment_data(all_variable_dict_train, Env, num_iters,
+                              save_path=save_folder + "variable_shelfheight_ballheight_angle/", verbose=True)
+    generate_environment_data(all_variable_dict_test, Env, num_iters,
+                              save_path=save_folder + "variable_shelfheight_ballheight_angle/oos_", verbose=True)
