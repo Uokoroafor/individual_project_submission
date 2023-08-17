@@ -4,6 +4,7 @@ from typing import Optional, Tuple, List, Dict
 
 from environments.render_constants import SCREEN_HEIGHT as HEIGHT
 from generated_environments.freefall.freefall import FreefallEnv
+from utils.env_utils import RandomDict, pick_between_two_ranges
 
 from utils.train_utils import set_seed
 
@@ -95,25 +96,14 @@ if __name__ == "__main__":
     height_limits_test = [0.01, 0.24999], [0.75001, 1]
     fixed_height = round(0.5 * HEIGHT, 2)
 
-
-    class RandomDict(dict):
-        def __getitem__(self, key):
-            return super().__getitem__(key)()
-
-    def pick_between_two_ranges(range1, range2):
-        if random.random() < 0.5:
-            return random.uniform(*range1)
-        else:
-            return random.uniform(*range2)
-
-
     # Fixed Height Environment
     # Want to create a new random value each time the object is called
     fixed_height_dict_train = RandomDict(render=False, fixed_height=True, drop_height=fixed_height,
                                          time_limit=lambda: round(random.uniform(*time_limits_train), 1))
 
     fixed_height_dict_test = RandomDict(render=False, fixed_height=True, drop_height=fixed_height,
-                                        time_limit=lambda: round(pick_between_two_ranges(time_limits_test[0], time_limits_test[1]), 1))
+                                        time_limit=lambda: round(
+                                            pick_between_two_ranges(time_limits_test[0], time_limits_test[1]), 1))
 
     # Variable Height Environment
     variable_height_dict_train = RandomDict(render=False, fixed_height=True,
@@ -121,16 +111,23 @@ if __name__ == "__main__":
                                             time_limit=fixed_time)
 
     variable_height_dict_test = RandomDict(render=False, fixed_height=True,
-                                           drop_height=lambda: round(pick_between_two_ranges(height_limits_test[0], height_limits_test[1]) * HEIGHT, 2),time_limit=fixed_time)
+                                           drop_height=lambda: round(pick_between_two_ranges(height_limits_test[0],
+                                                                                             height_limits_test[
+                                                                                                 1]) * HEIGHT, 2),
+                                           time_limit=fixed_time)
 
     # Generate Variable Height and Time Limit
     all_variable_dict_train = RandomDict(render=False, fixed_height=True,
                                          drop_height=lambda: round(random.uniform(*height_limits_train) * HEIGHT, 2),
-                                         time_limit=lambda: round(pick_between_two_ranges(time_limits_test[0], time_limits_test[1]), 1))
+                                         time_limit=lambda: round(
+                                             pick_between_two_ranges(time_limits_test[0], time_limits_test[1]), 1))
 
     all_variable_dict_test = RandomDict(render=False, fixed_height=True,
-                                        drop_height=lambda: round(pick_between_two_ranges(height_limits_test[0], height_limits_test[1]) * HEIGHT, 2),
-                                        time_limit=lambda: round(pick_between_two_ranges(time_limits_test[0], time_limits_test[1]), 1))
+                                        drop_height=lambda: round(pick_between_two_ranges(height_limits_test[0],
+                                                                                          height_limits_test[
+                                                                                              1]) * HEIGHT, 2),
+                                        time_limit=lambda: round(
+                                            pick_between_two_ranges(time_limits_test[0], time_limits_test[1]), 1))
 
     save_folder = '../../data/freefall/'
     num_iters = 5_000_000

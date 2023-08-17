@@ -4,6 +4,7 @@ from typing import Optional, Tuple, List, Dict
 
 from environments.render_constants import SCREEN_HEIGHT as HEIGHT
 from generated_environments.shelf_bounce.shelf_bounce import ShelfBounceEnv
+from utils.env_utils import RandomDict, pick_between_two_ranges
 
 from utils.train_utils import set_seed
 
@@ -97,16 +98,6 @@ if __name__ == "__main__":
     height_limits_test = [0.01, 0.24999], [0.75001, 1]
     fixed_height = round(0.5 * HEIGHT, 2)
 
-
-    class RandomDict(dict):
-        def __getitem__(self, key):
-            return super().__getitem__(key)()
-
-    def pick_between_two_ranges(range1, range2):
-        if random.random() < 0.5:
-            return random.uniform(*range1)
-        else:
-            return random.uniform(*range2)
 
 
     # Fixed Height Environment
