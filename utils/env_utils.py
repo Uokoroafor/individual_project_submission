@@ -67,14 +67,14 @@ def generate_environment_data(env_dict: Dict, env_: Callable, iters: int, save_p
         if log not in numerical_logs[:i]:
             unique_indices.append(i)
     # Get the unique logs
-    numerical_logs = [numerical_logs[i] for i in unique_indices]
-    text_logs = [text_logs[i] for i in unique_indices]
+    numerical_logs = [dict(numerical_logs[i]) for i in unique_indices]
+    text_logs = [' '.join(list(text_logs[i])) for i in unique_indices]
     minimal_texts = [minimal_texts[i] for i in unique_indices]
     descriptive_texts = [descriptive_texts[i] for i in unique_indices]
 
-    # Reconvert numerical logs to dicts
-    numerical_logs = [dict(log) for log in numerical_logs]
-    text_logs = [' '.join(list(log)) for log in text_logs]
+    # # Reconvert numerical logs to dicts
+    # numerical_logs = [dict(log) for log in numerical_logs]
+    # text_logs = [' '.join(list(log)) for log in text_logs]
 
     if save_path is not None:
         # save numerical log as csv and the rest as txt
@@ -82,18 +82,14 @@ def generate_environment_data(env_dict: Dict, env_: Callable, iters: int, save_p
         with open(save_path + "numerical_logs.csv", "w") as f:
             writer = csv.DictWriter(f, fieldnames=numerical_logs[0].keys())
             writer.writeheader()
-            for log in numerical_logs:
-                writer.writerow(log)
+            writer.writerows(numerical_logs)
 
         with open(save_path + "text_log.txt", "w") as f:
-            for log in text_logs:
-                f.write(str(log) + "\n")
+            f.write("\n".join(text_logs))
         with open(save_path + "minimal_text.txt", "w") as f:
-            for text in minimal_texts:
-                f.write(str(text) + "\n")
+            f.write("\n".join(minimal_texts))
         with open(save_path + "descriptive_text.txt", "w") as f:
-            for text in descriptive_texts:
-                f.write(str(text) + "\n")
+            f.write("\n".join(descriptive_texts))
     if len(numerical_logs) != len(text_logs) or len(numerical_logs) != len(minimal_texts) or len(
             numerical_logs) != len(descriptive_texts):
         print("Warning: The number of numerical logs, text logs, minimal texts and descriptive texts are not equal")
