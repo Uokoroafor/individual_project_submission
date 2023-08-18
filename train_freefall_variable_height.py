@@ -38,7 +38,7 @@ output_type = "num"  # 'num' or 'text'
 poolings = ["max", "mean", "cls"]
 for pooling in poolings:
     # print(f"Training for pooling: {pooling}")
-    data_portion = 0.1
+    data_portion = 1
 
     use_bpe = False  # Set to True to use BPE, False to use a character encoder/decoder
 
@@ -79,8 +79,8 @@ for pooling in poolings:
 
     # Take subset of training data
     train_data = train_data.iloc[:int(data_portion * len(train_data))]
-    val_data = val_data.iloc[:int(data_portion * len(val_data))]
-    test_data = test_data.iloc[:int(data_portion * len(test_data))]
+    #val_data = val_data.iloc[:int(data_portion * len(val_data))]
+    #test_data = test_data.iloc[:int(data_portion * len(test_data))]
 
     print(f"Size of train dataset: {len(train_data)}")
 
