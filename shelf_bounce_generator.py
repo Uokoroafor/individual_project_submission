@@ -125,39 +125,40 @@ if __name__ == "__main__":
                                         angle=lambda: round(random.uniform(*angle_limits_test), 1),
                                         time_limit=fixed_time)
 
-    num_iters = 5_000_000
+    num_iters_train = 500_000
+    num_iters_test = 100_000
     save_folder = 'data/shelf_bounce/'
 
     # Generate all files
-    generate_environment_data(variable_angle_dict_train, Env, num_iters, save_path=save_folder + "variable_angle/",
+    generate_environment_data(variable_angle_dict_train, Env, num_iters_train, save_path=save_folder + "variable_angle/",
                               verbose=True)
-    generate_environment_data(variable_angle_dict_test, Env, num_iters, save_path=save_folder + "variable_angle/oos_",
+    generate_environment_data(variable_angle_dict_test, Env, num_iters_test, save_path=save_folder + "variable_angle/oos_",
                               verbose=True)
-    generate_environment_data(variable_shelfheight_dict_train, Env, num_iters,
+    generate_environment_data(variable_shelfheight_dict_train, Env, num_iters_train,
                               save_path=save_folder + "variable_shelfheight/", verbose=True)
-    generate_environment_data(variable_shelfheight_dict_test, Env, num_iters,
+    generate_environment_data(variable_shelfheight_dict_test, Env, num_iters_test,
                               save_path=save_folder + "variable_shelfheight/oos_", verbose=True)
-    generate_environment_data(variable_ballheight_dict_train, Env, num_iters,
+    generate_environment_data(variable_ballheight_dict_train, Env, num_iters_train,
                               save_path=save_folder + "variable_ballheight/", verbose=True)
-    generate_environment_data(variable_ballheight_dict_test, Env, num_iters,
+    generate_environment_data(variable_ballheight_dict_test, Env, num_iters_test,
                               save_path=save_folder + "variable_ballheight/oos_", verbose=True)
-    generate_environment_data(variable_ballheight_angle_dict_train, Env, num_iters,
+    generate_environment_data(variable_ballheight_angle_dict_train, Env, num_iters_train,
                               save_path=save_folder + "variable_ballheight_angle/",
                               verbose=True)
-    generate_environment_data(variable_ballheight_angle_dict_test, Env, num_iters,
+    generate_environment_data(variable_ballheight_angle_dict_test, Env, num_iters_test,
                               save_path=save_folder + "variable_ballheight_angle/oos_",
                               verbose=True)
-    generate_environment_data(variable_shelfheight_angle_dict_train, Env, num_iters,
+    generate_environment_data(variable_shelfheight_angle_dict_train, Env, num_iters_train,
                               save_path=save_folder + "variable_shelfheight_angle/",
                               verbose=True)
-    generate_environment_data(variable_shelfheight_angle_dict_test, Env, num_iters,
+    generate_environment_data(variable_shelfheight_angle_dict_test, Env, num_iters_test,
                               save_path=save_folder + "variable_shelfheight_angle/oos_",
                               verbose=True)
-    generate_environment_data(variable_shelfheight_ballheight_dict_train, Env, num_iters,
+    generate_environment_data(variable_shelfheight_ballheight_dict_train, Env, num_iters_train,
                               save_path=save_folder + "variable_shelfheight_ballheight/", verbose=True)
-    generate_environment_data(variable_shelfheight_ballheight_dict_test, Env, num_iters,
+    generate_environment_data(variable_shelfheight_ballheight_dict_test, Env, num_iters_test,
                               save_path=save_folder + "variable_shelfheight_ballheight/oos_", verbose=True)
-    generate_environment_data(all_variable_dict_train, Env, num_iters,
+    generate_environment_data(all_variable_dict_train, Env, num_iters_train,
                               save_path=save_folder + "variable_shelfheight_ballheight_angle/", verbose=True)
-    generate_environment_data(all_variable_dict_test, Env, num_iters,
+    generate_environment_data(all_variable_dict_test, Env, num_iters_test,
                               save_path=save_folder + "variable_shelfheight_ballheight_angle/oos_", verbose=True)

@@ -5,9 +5,6 @@ from generated_environments.freefall.freefall import FreefallEnv
 from utils.env_utils import RandomDict, pick_between_two_ranges, generate_environment_data
 from utils.train_utils import set_seed
 
-
-
-
 if __name__ == "__main__":
     # Set the seed for reproducibility
     set_seed(6_345_789)
@@ -59,17 +56,18 @@ if __name__ == "__main__":
                                             pick_between_two_ranges(time_limits_test[0], time_limits_test[1]), 1))
 
     save_folder = 'data/freefall/'
-    num_iters = 5_000_000
+    num_iters_train = 500_000
+    num_iters_test = 100_000
     # Generate all files
-    generate_environment_data(fixed_height_dict_train, Env, num_iters, save_path=save_folder + "variable_time/",
+    generate_environment_data(fixed_height_dict_train, Env, num_iters_train, save_path=save_folder + "variable_time/",
                               verbose=True)
-    generate_environment_data(fixed_height_dict_test, Env, num_iters, save_path=save_folder + "variable_time/oos_",
+    generate_environment_data(fixed_height_dict_test, Env, num_iters_test, save_path=save_folder + "variable_time/oos_",
                               verbose=True)
-    generate_environment_data(variable_height_dict_train, Env, num_iters, save_path=save_folder + "variable_height/",
+    generate_environment_data(variable_height_dict_train, Env, num_iters_train, save_path=save_folder + "variable_height/",
                               verbose=True)
-    generate_environment_data(variable_height_dict_test, Env, num_iters, save_path=save_folder + "variable_height/oos_",
+    generate_environment_data(variable_height_dict_test, Env, num_iters_test, save_path=save_folder + "variable_height/oos_",
                               verbose=True)
-    generate_environment_data(all_variable_dict_train, Env, num_iters, save_path=save_folder + "variable_height_time/",
+    generate_environment_data(all_variable_dict_train, Env, num_iters_train, save_path=save_folder + "variable_height_time/",
                               verbose=True)
-    generate_environment_data(all_variable_dict_test, Env, num_iters,
+    generate_environment_data(all_variable_dict_test, Env, num_iters_test,
                               save_path=save_folder + "variable_height_time/oos_", verbose=True)
