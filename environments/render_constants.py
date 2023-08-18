@@ -1,7 +1,6 @@
 """
 This file contains the constants used in the render.py file.
 """
-
 SCREEN_HEIGHT = 1000 # Want a screen that is 1000 pixels high and 1000 pixels wide
 SCREEN_WIDTH = 1000
 DAMPING = 1.0 # Is a value between 0 and 1.0 that determines how much the velocity of a body is dampened each step. A value of 0.9 means that each step the velocity will be reduced 10% (multiplied by 0.9).

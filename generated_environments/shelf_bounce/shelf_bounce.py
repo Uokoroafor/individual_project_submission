@@ -223,7 +223,7 @@ if __name__ == "__main__":
     # env = ShelfBounceEnv(render=True)  # Set render=True for visualization, set render=False for text logging
 
     # Render Fixed Angle with variable time limit
-    env = ShelfBounceEnv(render=True, fixed_angle=True, angle=30, time_limit=round(random.uniform(5, 15), 1))
+    env = ShelfBounceEnv(render=False, fixed_angle=True, angle=30, time_limit=round(random.uniform(5, 15), 1))
     if env.render_mode:
         arcade.run()
     print(env.numerical_log)

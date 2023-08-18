@@ -4,7 +4,7 @@ from utils.train_utils import set_seed
 set_seed(6_345_789)
 # Wilson Pickett - 634-5789 https://www.youtube.com/watch?v=TSGuaVAufV0
 
-root_folder = "../../data/shelf_bounce/"
+root_folder = "data/shelf_bounce/"
 data_folders = ['variable_angle/', 'variable_ballheight/', 'variable_ballheight_angle/',
                 'variable_shelfheight/', 'variable_shelfheight_angle/', 'variable_shelfheight_ballheight/',
                 'variable_shelfheight_ballheight_angle/']

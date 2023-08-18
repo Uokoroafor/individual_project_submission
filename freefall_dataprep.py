@@ -4,7 +4,7 @@ from utils.train_utils import set_seed
 set_seed(6_345_789)
 # Wilson Pickett - 634-5789 https://www.youtube.com/watch?v=TSGuaVAufV0
 
-root_folder = "../../data/freefall/"
+root_folder = "data/freefall/"
 data_folders = ['variable_height/', 'variable_height_time/', 'variable_time/']
 train_test_split = [0.8, 0.1, 0.1]
 
