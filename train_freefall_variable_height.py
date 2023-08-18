@@ -37,7 +37,7 @@ output_type = "num"  # 'num' or 'text'
 
 poolings = ["max", "mean", "cls"]
 for pooling in poolings:
-    print(f"Training for pooling: {pooling}")
+    # print(f"Training for pooling: {pooling}")
     data_portion = 0.1
 
     use_bpe = False  # Set to True to use BPE, False to use a character encoder/decoder
@@ -151,3 +151,4 @@ for pooling in poolings:
     trainer.log_numerical_outputs(
         test_loader, decode, "test_log.txt", output_type=output_type
     )
+    print("Finished_________________________________")
