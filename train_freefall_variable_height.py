@@ -28,7 +28,7 @@ lr = training_hyperparams["learning_rate"]
 
 data_folder = "data/freefall/variable_height/"
 file_path = "minimal_text.txt" # Update this to the file containing the data
-function_name = "sin" # Update this to the name of the dataset being trained (or the name of the function)
+function_name = "Freefall Environment" # Update this to the name of the dataset being trained (or the name of the function)
 train_data_path = f"train_data.csv"
 val_data_path = f"val_data.csv"
 test_data_path = f"test_data.csv"
@@ -44,7 +44,7 @@ for pooling in poolings:
 
     encoding_str = "bpe" if use_bpe else "char"
 
-    logging_intro = (f"Training {function_name} function with {output_type} output and {pooling} pooling on "
+    logging_intro = (f"Training on {function_name} with {output_type} output and {pooling} pooling on "
                      f"{data_folder + file_path} data. Using {encoding_str} encoding.")
 
     # Read in the data
