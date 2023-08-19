@@ -87,7 +87,7 @@ for data_portion in data_portions:
 
         # Take subset of training data
         train_data = train_data.iloc[:int(data_portion * len(train_data))]
-        # val_data = val_data.iloc[:int(data_portion * len(val_data))]
+        val_data = val_data.iloc[:int(data_portion * len(val_data))]
         # test_data = test_data.iloc[:int(data_portion * len(test_data))]
 
         print(f"Size of train dataset: {len(train_data)}")
@@ -162,7 +162,7 @@ for data_portion in data_portions:
             val_dataloader=val_loader,
             save_model=True,
             plotting=True,
-            verbose=False,
+            verbose=True,
             early_stopping=True,
             early_stopping_patience=20,
             logging_intro=logging_intro,
