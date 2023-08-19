@@ -38,8 +38,6 @@ output_type = "num"  # 'num' or 'text'
 data_portions = [0.01, 0.1, 0.25, 0.5, 1]
 poolings = ["max", "mean", "cls"]
 
-
-
 for data_portion in data_portions:
     test_dict = dict(max=float('inf'), mean=float('inf'), cls=float('inf'))
 
@@ -92,7 +90,6 @@ for data_portion in data_portions:
 
         print(f"Size of train dataset: {len(train_data)}")
 
-
         train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
             tokeniser=gpt_tokeniser,
             train_data=train_data,
@@ -101,7 +98,7 @@ for data_portion in data_portions:
             batch_size=batch_size,
             output=output_type,
             shuffle=True,
-            # max_seq_len=block_size,
+            max_seq_len=block_size,
         )
 
         oos_test_loader, _ = make_data_loader(
@@ -112,8 +109,6 @@ for data_portion in data_portions:
             shuffle=True,
             max_seq_len=block_size,
         )
-
-
 
         # update block size to be the max sequence length
         block_size = max_seq_len
@@ -177,6 +172,5 @@ for data_portion in data_portions:
         trainer.log_numerical_outputs(
             oos_test_loader, decode, "oos_test_log.txt", output_type=output_type
         )
-
 
     print("Finished_________________________________")
