@@ -39,7 +39,6 @@ data_portions = [0.01, 0.1, 0.25, 0.5, 1]
 poolings = ["max", "mean", "cls"]
 
 for data_portion in data_portions:
-    test_dict = dict(max=float('inf'), mean=float('inf'), cls=float('inf'))
 
     for pooling in poolings:
         # # print(f"Training for pooling: {pooling}")
