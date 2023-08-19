@@ -409,6 +409,61 @@ def make_data_loaders(
     return train_loader, val_loader, test_loader, max_seq_len
 
 
+def make_data_loader(
+        tokeniser: Any,
+        data: pd.DataFrame,
+        batch_size: int = 32,
+        max_seq_len: Optional[int] = None,
+        max_ans_len: Optional[int] = None,
+        output: str = "text",
+        shuffle: bool = True,
+) -> Tuple[DataLoader, int]:
+    """Creates the data loader for provided data. This will primarily be used for out of sample testing.
+
+    Args:
+        tokeniser (Any): The tokeniser to use.
+        data (pd.DataFrame): The data.
+        batch_size (int): The batch size to use.
+        max_seq_len (int): The maximum sequence length to use.
+        max_ans_len (int): The maximum answer length to use. Not used if output is 'num'.
+        output (str): The output to use. Options are 'text' and 'num'.
+        shuffle (bool): Whether to shuffle the data.
+    """
+    if max_seq_len is None:
+        max_seq_len = 0
+
+    if max_ans_len is None:
+        max_ans_len = 0
+
+    # Find the longest question in the training data. This will be used to set the max sequence length
+    max_seq_len = max(
+        max(data["question"].apply(lambda x: len(x))),
+        max_seq_len,
+    )
+
+    if output == "text":
+        max_ans_len = 2 + max(
+            max(data["answer"].apply(lambda x: len(str(x)))),
+            max_ans_len,
+        )  # 2 for sos and eos tokens
+
+        max_seq_len = max(max_seq_len, max_ans_len)
+
+    # Encode each question and answer.
+    x, y = encode_and_pad(data, tokeniser, max_seq_len, output)
+
+    x, y = torch.tensor(x), torch.tensor(y)
+
+    # Create the data loaders
+    data = torch.utils.data.TensorDataset(x, y)
+
+    data_loader = torch.utils.data.DataLoader(
+        data, batch_size=batch_size, shuffle=shuffle
+    )
+
+    return data_loader, max_seq_len
+
+
 def encode_and_pad(
         data: pd.DataFrame, tokeniser: Any, max_seq_len: int, output: str
 ) -> Tuple[List, List]:
