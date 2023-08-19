@@ -10,7 +10,7 @@ from utils.file_utils import load_config
 from utils.train_utils import PhysicalTrainer, set_seed
 
 # Load the training hyperparameters from the txt file
-training_hyperparams = load_config("config_structure.txt")
+training_hyperparams = load_config("config_structure_text.txt")
 
 # Set the random seed for reproducibility
 set_seed(6_345_789)
