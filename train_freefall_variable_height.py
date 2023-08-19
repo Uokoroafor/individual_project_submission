@@ -92,6 +92,7 @@ for data_portion in data_portions:
 
         print(f"Size of train dataset: {len(train_data)}")
 
+
         train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
             tokeniser=gpt_tokeniser,
             train_data=train_data,
@@ -100,7 +101,7 @@ for data_portion in data_portions:
             batch_size=batch_size,
             output=output_type,
             shuffle=True,
-            max_seq_len=block_size,
+            # max_seq_len=block_size,
         )
 
         oos_test_loader, _ = make_data_loader(
@@ -116,6 +117,7 @@ for data_portion in data_portions:
 
         # update block size to be the max sequence length
         block_size = max_seq_len
+        print(f"Block size: {block_size}")
 
         # Create the model, loss function and optimiser
         loss_fn = (
