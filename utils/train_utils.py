@@ -1017,11 +1017,13 @@ class NNTrainer:
         test_loss = 0
         with torch.no_grad():
             if isinstance(testdata, torch.Tensor):
+                testdata = testdata.to(self.device)
                 test_pred = self.model(testdata).squeeze(-1)
                 loss = self.loss_fn(test_pred, testdata)
                 test_loss += loss.item()
             else:
                 for batch, (X_test, y_test) in enumerate(testdata):
+                    X_test, y_test = X_test.to(self.device), y_test.to(self.device)
                     test_pred = self.model(X_test).squeeze(-1)
                     loss = self.loss_fn(test_pred, y_test)
                     test_loss += loss.item()
