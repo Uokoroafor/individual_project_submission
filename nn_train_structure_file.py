@@ -39,7 +39,7 @@ hidden_layers = [64, 64, 64, 64]
 num_output_features = 1
 
 for data_portion in data_portions:
-    logging_intro = (f"Training on {function_name} on {data_folder} data.")
+    logging_intro = f"Training on {function_name} on {data_folder} data."
 
     # Read in the data
     data = pd.read_csv(data_folder + data_path)

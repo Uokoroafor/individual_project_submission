@@ -974,6 +974,9 @@ class NNTrainer:
         train_loss = 0
 
         for batch, (X_train, y_train) in enumerate(dataloader_train):
+            # Move X_train and y_train to the device
+            X_train, y_train = X_train.to(self.device), y_train.to(self.device)
+
             train_pred = self.model(X_train).squeeze(-1)
             loss = self.loss_fn(train_pred, y_train)
 
