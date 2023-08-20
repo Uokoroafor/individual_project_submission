@@ -95,9 +95,9 @@ for data_portion in data_portions:
     )
 
     test_error = trainer.evaluate(test_loader)
-    print(f"Test error: {test_error: ,.4f} for data portion {data_portion:.4f%}")
+    print(f"Test error: {test_error: ,.4f} for data portion {data_portion:.4%}")
 
     oos_test_error = trainer.evaluate(oos_test_loader)
-    print(f"OOS Test error: {oos_test_error: ,.4f} for data portion {data_portion:.4f%}")
+    print(f"OOS Test error: {oos_test_error: ,.4f} for data portion {data_portion:.4%}")
 
     print("Finished_________________________________")
