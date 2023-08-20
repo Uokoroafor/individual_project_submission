@@ -89,15 +89,15 @@ for data_portion in data_portions:
         plotting=True,
         verbose=True,
         early_stopping=True,
-        early_stopping_patience=20,
+        early_stopping_patience=10,
         logging_intro=logging_intro,
         epochs=max_iters,
     )
 
     test_error = trainer.evaluate(test_loader)
-    print(f"Test error: {test_error: ,.4f} for data portion {data_portion:2%}")
+    print(f"Test error: {test_error: ,.4f} for data portion {data_portion:.4f}")
 
     oos_test_error = trainer.evaluate(oos_test_loader)
-    print(f"OOS Test error: {oos_test_error: ,.4f} for data portion {data_portion:2%}")
+    print(f"OOS Test error: {oos_test_error: ,.4f} for data portion {data_portion:.4f}")
 
     print("Finished_________________________________")
