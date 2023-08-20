@@ -994,6 +994,7 @@ class NNTrainer:
             with torch.no_grad():
                 val_loss = 0
                 for batch, (X_val, y_val) in enumerate(dataloader_val):
+                    X_val, y_val = X_val.to(self.device), y_val.to(self.device)
                     val_pred = self.model(X_val).squeeze(-1)
                     loss = self.loss_fn(val_pred, y_val)
                     val_loss += loss.item()
