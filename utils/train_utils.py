@@ -779,7 +779,7 @@ class NNTrainer:
             optimiser: torch.optim.Optimizer,
             loss_fn: torch.nn.modules.loss._Loss,
             scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None):
-        """Constructor class for Trainer used to train a transformer model for language modelling and text generation
+        """Constructor class for Trainer used to train a standard neural network model
         Args:
             model (nn.Module): Model to train
             optimiser (torch.optim.Optimizer): Optimiser to use for training
@@ -819,6 +819,7 @@ class NNTrainer:
             verbose: bool = True,
             early_stopping: bool = False,
             early_stopping_patience: int = 10,
+            logging_intro: Optional[str] = None,
     ):
         """Train the model
         Args:
@@ -832,6 +833,7 @@ class NNTrainer:
             verbose (Optional[bool], optional): Whether to print the progress of training. Defaults to True.
             early_stopping (bool, optional): Whether to use early stopping. Defaults to False.
             early_stopping_patience (int, optional): Number of iterations to wait before stopping early. Defaults to 10.
+            logging_intro (Optional[str], optional): Introductory message to print in the training log. Defaults to None.
 
         """
 
@@ -843,6 +845,9 @@ class NNTrainer:
             name="training_log",
             verbose=verbose,
         )
+
+        if logging_intro is not None:
+            logger.log_info(logging_intro)
 
         logger.log_info(
             f"Training {type(self.model).__name__} for {epochs} iterations"
@@ -911,6 +916,8 @@ class NNTrainer:
 
         except KeyboardInterrupt:
             logger.log_info("Training interrupted by the user")
+            # Exit the program
+            sys.exit()
 
         return self.model, train_losses, val_losses
 
