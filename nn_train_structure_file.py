@@ -57,7 +57,7 @@ for data_portion in data_portions:
     val_data = PhysicalDataset(data.iloc[val_indices])
     test_data = PhysicalDataset(data.iloc[test_indices])
 
-    oos_test_data = PhysicalDataset(pd.read_csv(data_folder + oos_test_data_path, dtype=str))
+    oos_test_data = PhysicalDataset(pd.read_csv(data_folder + oos_test_data_path))
 
     print(f"Size of train dataset: {len(train_data)}")
 
@@ -95,9 +95,9 @@ for data_portion in data_portions:
     )
 
     test_error = trainer.evaluate(test_loader)
-    print(f"Test error: {test_error: ,.4f} for data portion {data_portion:.4%}")
+    print(f"Test error: {test_error: ,.4f} for data portion {data_portion:2%}")
 
     oos_test_error = trainer.evaluate(oos_test_loader)
-    print(f"OOS Test error: {oos_test_error: ,.4f} for data portion {data_portion:.4%}")
+    print(f"OOS Test error: {oos_test_error: ,.4f} for data portion {data_portion:2%}")
 
     print("Finished_________________________________")
