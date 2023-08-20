@@ -34,8 +34,8 @@ oos_test_data_path = "oos_numerical_logs.csv"
 # pooling = "cls"  # 'max', 'mean', 'cls', 'none' use none for text generation
 data_portions = [0.01, 0.1, 0.25, 0.5, 1]
 
-num_input_features = 2
-hidden_layers = [64, 64, 64, 64]
+num_input_features = 3
+hidden_layers = [32, 32]
 num_output_features = 1
 
 for data_portion in data_portions:
