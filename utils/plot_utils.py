@@ -67,3 +67,29 @@ def plot_predictions(
         plt.savefig(saved_path)
     plt.show()
     plt.close()  # Close the figure to save memory and prevent plots from overlapping
+
+
+def plot_errors(
+        errors: List[float],
+        shots: List[int] = None,
+        model_name: Optional[str] = None,
+        saved_path: Optional[str] = None,
+) -> None:
+    """Plot the errors over the number of shots
+    Args:
+        errors (List[float]): Errors
+        shots (List[int], optional): Number of shots. Defaults to None.
+        model_name (Optional[str], optional): Name of the model. Defaults to None.
+        saved_path: (Optional[str], optional): Path to save the plot. Defaults to None.
+    """
+    if shots is None:
+        shots = list(range(1, len(errors) + 1))
+    plt.xticks(shots)
+    plt.plot(shots, errors)
+    plt.title(f"Errors over the number of shots for the {model_name} model")
+    plt.xlabel("Number of shots")
+    plt.ylabel("Error")
+    if saved_path is not None:
+        plt.savefig(saved_path)
+    plt.show()
+    plt.close()  # Close the figure to save memory and prevent plots from overlapping

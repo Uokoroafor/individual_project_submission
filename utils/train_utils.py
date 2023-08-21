@@ -640,6 +640,7 @@ class PhysicalTrainer(Trainer):
             decode: Callable,
             log_name: Optional[str] = None,
             output_type: str = "num",
+            oos_data: bool = False,
     ):
         """Log the numerical outputs of the model to a file. It also plots the predictions vs the targets
         Args:
@@ -647,12 +648,17 @@ class PhysicalTrainer(Trainer):
             decode (Callable): Function to decode the numerical outputs
             log_name (Optional[str], optional): Name of the log file. Defaults to None.
             output_type (str): Type of output. Either 'num' or 'text'
+            oos_data (bool): Whether the data is out of sample or not - it will add str to the saved paths to avoid overwriting the in sample data
 
         """
         self.model.eval()
         if log_name is None:
             log_name = "float_predictions.txt"
         file_name = f"{self.path}/training_logs/{log_name}"
+        if oos_data:
+            oos_str = "_oos"
+        else:
+            oos_str = ""
         with torch.no_grad():
             test_loss = 0
             predictions = []
@@ -710,10 +716,10 @@ class PhysicalTrainer(Trainer):
                                 f.write(f"Prediction is {pred:,.4f}" + "\n\n")
 
             test_loss /= len(dataloader)
-            self.logger.log_info(f"Test loss was {test_loss :,.4f}")
+            self.logger.log_info(f"Test loss{oos_str} was {test_loss :,.4f}")
 
             plot_save_path = (
-                f"{self.path}/training_logs/{type(self.model).__name__}_predictions.png"
+                f"{self.path}/training_logs/{type(self.model).__name__}_predictions{oos_str}.png"
             )
 
             if output_type == "text":
