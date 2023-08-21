@@ -32,72 +32,79 @@ test_indices_path = "test_indices.csv"
 oos_test_data_path = "oos_numerical_logs.csv"
 
 # pooling = "cls"  # 'max', 'mean', 'cls', 'none' use none for text generation
-data_portions = [0.01, 0.1, 0.25, 0.5, 1]
+data_amounts = [500, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000]
 
 num_input_features = 3
-hidden_layers = [32, 32]
+hidden_layers = [32, 32, 32]
 num_output_features = 1
 
-for data_portion in data_portions:
-    logging_intro = f"Training on {function_name} on {data_folder} data."
+stop_training = False
 
-    # Read in the data
-    data = pd.read_csv(data_folder + data_path)
 
-    train_indices = pd.read_csv(data_folder + train_indices_path).values.flatten()
-    val_indices = pd.read_csv(data_folder + val_indices_path).values.flatten()
-    test_indices = pd.read_csv(data_folder + test_indices_path).values.flatten()
+for data_amount in data_amounts:
+    if not stop_training:
+        logging_intro = f"Training on {function_name} on {data_folder} data."
 
-    # Take subset of training data if required
-    train_indices = train_indices[:int(data_portion * len(train_indices))]
-    val_indices = val_indices[:int(data_portion * len(val_indices))]
+        # Read in the data
+        data = pd.read_csv(data_folder + data_path)
 
-    # Create the datasets
-    train_data = PhysicalDataset(data.iloc[train_indices])
-    val_data = PhysicalDataset(data.iloc[val_indices])
-    test_data = PhysicalDataset(data.iloc[test_indices])
+        train_indices = pd.read_csv(data_folder + train_indices_path).values.flatten()
+        val_indices = pd.read_csv(data_folder + val_indices_path).values.flatten()
+        test_indices = pd.read_csv(data_folder + test_indices_path).values.flatten()
 
-    oos_test_data = PhysicalDataset(pd.read_csv(data_folder + oos_test_data_path))
+        # Take subset of training data if required
+        train_indices = train_indices[:int(data_amount * len(train_indices))]
+        val_indices = val_indices[:int(data_amount * len(val_indices))]
 
-    print(f"Size of train dataset: {len(train_data)}")
+        # Create the datasets
+        train_data = PhysicalDataset(data.iloc[train_indices])
+        val_data = PhysicalDataset(data.iloc[val_indices])
+        test_data = PhysicalDataset(data.iloc[test_indices])
 
-    train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
-    val_loader = torch.utils.data.DataLoader(val_data, batch_size=batch_size, shuffle=True)
-    test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size, shuffle=True)
-    oos_test_loader = torch.utils.data.DataLoader(oos_test_data, batch_size=batch_size, shuffle=True)
+        oos_test_data = PhysicalDataset(pd.read_csv(data_folder + oos_test_data_path))
 
-    # Create the model, loss function and optimiser
-    loss_fn = nn.MSELoss()
+        print(f"Size of train dataset: {len(train_data)}")
+        if len(train_data) < data_amount and not stop_training:
+            print(f"WARNING: Only {len(train_data)} training examples using all data")
+            stop_training = True
 
-    model = Net(input_size=num_input_features, hidden_sizes=hidden_layers, output_size=num_output_features,
-                activation=nn.ReLU())
-    optimiser = torch.optim.Adam(model.parameters(), lr=lr)
-    scheduler = None
+        train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
+        val_loader = torch.utils.data.DataLoader(val_data, batch_size=batch_size, shuffle=True)
+        test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size, shuffle=True)
+        oos_test_loader = torch.utils.data.DataLoader(oos_test_data, batch_size=batch_size, shuffle=True)
 
-    device = torch.device(training_hyperparams["device"])
+        # Create the model, loss function and optimiser
+        loss_fn = nn.MSELoss()
 
-    # Move the model and loss function to the device
-    model = model.to(device)
-    loss_fn = loss_fn.to(device)
+        model = Net(input_size=num_input_features, hidden_sizes=hidden_layers, output_size=num_output_features,
+                    activation=nn.ReLU())
+        optimiser = torch.optim.Adam(model.parameters(), lr=lr)
+        scheduler = None
 
-    trainer = NNTrainer(model=model, loss_fn=loss_fn, optimiser=optimiser, scheduler=scheduler)
+        device = torch.device(training_hyperparams["device"])
 
-    model, _, _ = trainer.train(
-        train_dataloader=train_loader,
-        val_dataloader=val_loader,
-        save_model=True,
-        plotting=True,
-        verbose=True,
-        early_stopping=True,
-        early_stopping_patience=10,
-        logging_intro=logging_intro,
-        epochs=max_iters,
-    )
+        # Move the model and loss function to the device
+        model = model.to(device)
+        loss_fn = loss_fn.to(device)
 
-    test_error = trainer.evaluate(test_loader)
-    print(f"Test error: {test_error: ,.4f} for data portion {data_portion:.4f}")
+        trainer = NNTrainer(model=model, loss_fn=loss_fn, optimiser=optimiser, scheduler=scheduler)
 
-    oos_test_error = trainer.evaluate(oos_test_loader)
-    print(f"OOS Test error: {oos_test_error: ,.4f} for data portion {data_portion:.4f}")
+        model, _, _ = trainer.train(
+            train_dataloader=train_loader,
+            val_dataloader=val_loader,
+            save_model=True,
+            plotting=True,
+            verbose=True,
+            early_stopping=True,
+            early_stopping_patience=10,
+            logging_intro=logging_intro,
+            epochs=max_iters,
+        )
 
-    print("Finished_________________________________")
+        test_error = trainer.evaluate(test_loader)
+        print(f"Test error: {test_error: ,.4f} for {data_amount:,} training examples")
+
+        oos_test_error = trainer.evaluate(oos_test_loader)
+        print(f"OOS Test error: {oos_test_error: ,.4f} for {data_amount:,} training examples")
+
+        print("Finished_________________________________")
