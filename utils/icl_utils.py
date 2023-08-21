@@ -258,8 +258,9 @@ class LLMTrainer:
             )
             self.logger = logger
             self.logger.log_info(f'Logger created at {self.path}/training_logs/training_log.txt')
+            self.logger.log_info(f'Using {model_name} model.')
 
-        self.logger.log_info(f'Testing {model_name}: {num_shots}-shot for {len(prompts)} Test Examples.')
+
 
         # Get the predictions
         predictions = self.get_predictions(prompts=prompts, model_name=model_name, batch_size=batch_size)
@@ -273,7 +274,7 @@ class LLMTrainer:
         mse = sum([(pred - actual) ** 2 for pred, actual in zip(predictions, actuals)]) / len(predictions)
 
         # Log the MSE
-        self.logger.log_info(f'MSE: {mse:,.4f}')
+        self.logger.log_info(f'MSE for {num_shots}-shot for {len(prompts)} Test Examples: {mse:,.4f}')
 
         if plotting:
             plot_saved_path = (
