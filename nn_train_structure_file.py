@@ -54,8 +54,8 @@ for data_amount in data_amounts:
         # Take subset of training data if required
         train_indices = train_indices[:int(data_amount)]
 
-        # Scale the validation data by the same amount as the training data
-        val_indices = val_indices[:int(data_amount * len(val_indices) / len(train_indices))]
+        # # Scale the validation data by the same amount as the training data
+        # val_indices = val_indices[:int(data_amount * len(val_indices) / len(train_indices))]
 
         # Create the datasets
         train_data = PhysicalDataset(data.iloc[train_indices])
@@ -64,9 +64,9 @@ for data_amount in data_amounts:
 
         oos_test_data = PhysicalDataset(pd.read_csv(data_folder + oos_test_data_path))
 
-        print(f"Size of train dataset: {len(train_data)}")
+        print(f"Size of train dataset: {len(train_data):,}")
         if len(train_data) < data_amount and not stop_training:
-            print(f"WARNING: Only {len(train_data)} training examples using all data")
+            print(f"WARNING: Only {len(train_data):,} training examples using all data")
             stop_training = True
 
         train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
@@ -103,9 +103,9 @@ for data_amount in data_amounts:
         )
 
         test_error = trainer.evaluate(test_loader)
-        print(f"Test error: {test_error: ,.4f} for {data_amount:,} training examples")
+        print(f"Test error: {test_error: ,.4f} for {len(train_data):,} training examples")
 
         oos_test_error = trainer.evaluate(oos_test_loader)
-        print(f"OOS Test error: {oos_test_error: ,.4f} for {data_amount:,} training examples")
+        print(f"OOS Test error: {oos_test_error: ,.4f} for {len(train_data):,} training examples")
 
         print("Finished_________________________________")

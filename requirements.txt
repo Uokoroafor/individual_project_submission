@@ -16,3 +16,5 @@ typing_extensions==4.6.2
 openai~=0.27.8
 pandas~=2.0.3
 Transformers==4.31.0
+
+python-dotenv~=1.0.0
