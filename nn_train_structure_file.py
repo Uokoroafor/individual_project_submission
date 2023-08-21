@@ -31,7 +31,6 @@ test_indices_path = "test_indices.csv"
 
 oos_test_data_path = "oos_numerical_logs.csv"
 
-# pooling = "cls"  # 'max', 'mean', 'cls', 'none' use none for text generation
 data_amounts = [500, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000]
 
 num_input_features = 3
@@ -53,8 +52,10 @@ for data_amount in data_amounts:
         test_indices = pd.read_csv(data_folder + test_indices_path).values.flatten()
 
         # Take subset of training data if required
-        train_indices = train_indices[:int(data_amount * len(train_indices))]
-        val_indices = val_indices[:int(data_amount * len(val_indices))]
+        train_indices = train_indices[:int(data_amount)]
+
+        # Scale the validation data by the same amount as the training data
+        val_indices = val_indices[:int(data_amount * len(val_indices) / len(train_indices))]
 
         # Create the datasets
         train_data = PhysicalDataset(data.iloc[train_indices])
