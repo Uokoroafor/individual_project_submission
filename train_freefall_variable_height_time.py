@@ -8,6 +8,7 @@ from utils.bpe import BPE
 from utils.data_utils import read_in_data, make_data_loaders, make_data_loader
 from utils.file_utils import load_config
 from utils.train_utils import PhysicalTrainer, set_seed
+from utils.logging_utils import TrainingLogger
 
 # Load the training hyperparameters from the txt file
 training_hyperparams = load_config("config_structure.txt")
@@ -16,8 +17,9 @@ training_hyperparams = load_config("config_structure.txt")
 set_seed(6_345_789)
 # Wilson Pickett - 634-5789 https://www.youtube.com/watch?v=TSGuaVAufV0
 
+# Create the logger
+batch_logger = TrainingLogger("scratch_training_logs_num.txt", verbose=False)
 
-print("Using device: ", training_hyperparams["device"])
 device = training_hyperparams["device"]
 block_size = training_hyperparams["max_seq_len"]
 batch_size = training_hyperparams["batch_size"]
@@ -35,7 +37,7 @@ oos_test_data_path = f"oos_test_data.csv"
 output_type = "num"  # 'num' or 'text'
 
 # pooling = "cls"  # 'max', 'mean', 'cls', 'none' use none for text generation
-data_portions = [0.01, 0.1, 0.25, 0.5, 1]
+data_portions = [500, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000]
 poolings = ["max", "mean", "cls"]
 
 for data_portion in data_portions:
@@ -83,11 +85,7 @@ for data_portion in data_portions:
         oos_test_data = pd.read_csv(data_folder + oos_test_data_path, dtype=str)
 
         # Take subset of training data
-        train_data = train_data.iloc[:int(data_portion * len(train_data))]
-        val_data = val_data.iloc[:int(data_portion * len(val_data))]
-        # test_data = test_data.iloc[:int(data_portion * len(test_data))]
-
-        print(f"Size of train dataset: {len(train_data)}")
+        train_data = train_data.iloc[:data_portion]
 
         train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
             tokeniser=gpt_tokeniser,
@@ -111,7 +109,6 @@ for data_portion in data_portions:
 
         # update block size to be the max sequence length
         block_size = max_seq_len
-        print(f"Block size: {block_size}")
 
         # Create the model, loss function and optimiser
         loss_fn = (
@@ -164,12 +161,17 @@ for data_portion in data_portions:
             logging_intro=logging_intro,
         )
 
-        trainer.log_numerical_outputs(
+        test_loss = trainer.log_numerical_outputs(
             test_loader, decode, "test_log.txt", output_type=output_type
         )
-        print('Now testing on out of sample data')
-        trainer.log_numerical_outputs(
+
+        oos_test_loss = trainer.log_numerical_outputs(
             oos_test_loader, decode, "oos_test_log.txt", output_type=output_type
         )
 
-    print("Finished_________________________________")
+        batch_logger.log_info(f"Training log is saved at {trainer.path} for")
+        batch_logger.log_info(f"{function_name} on {data_folder} data with {output_type} "
+                              f"output, {pooling} pooling, {encoding_str} encoding and {data_portion} training examples.")
+        batch_logger.log_info(f"Test loss: {test_loss:.4f}")
+        batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
+
