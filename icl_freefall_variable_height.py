@@ -52,7 +52,7 @@ context_generator = ContextGenerator(data=data, line_delimiter=line_delimiter, a
 # Create the trainer
 trainer = LLMTrainer(cg=context_generator)
 # token capacity for question and answer is 4096. Will use a conservative 3000 to allow for other tokens
-token_capacity = 3000
+token_capacity = 3600
 batch_size = token_capacity // (trainer.calculate_prompt_size() + 5)
 # This will be divided by the number of shots in the evaluate function
 
