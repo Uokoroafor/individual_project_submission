@@ -189,7 +189,7 @@ class ShelfBounceEnv(Environment):
         self.elapsed_time += delta_time
 
         # End the episode if it is past the time limit and the ball has hit the ground
-        if self.elapsed_time >= self.time_limit and not self.time_up:
+        if round(self.elapsed_time,1) >= self.time_limit and not self.time_up:
             self.log_state(self.elapsed_time)
             self.time_up = True
             self.print_message = (f"At Time of {round(self.elapsed_time, 1)}: Ball was at "
@@ -221,10 +221,12 @@ class ShelfBounceEnv(Environment):
 
 if __name__ == "__main__":
     # env = ShelfBounceEnv(render=True)  # Set render=True for visualization, set render=False for text logging
-
     # Render Fixed Angle with variable time limit
-    env = ShelfBounceEnv(render=False, fixed_angle=True, angle=30, time_limit=round(random.uniform(5, 15), 1))
-    if env.render_mode:
-        arcade.run()
-    print(env.numerical_log)
-    print(env.text_log)
+
+    # env = ShelfBounceEnv(render=False, fixed_angle=True, angle=30, time_limit=round(random.uniform(5, 15), 1))
+    for _ in range(10):
+        env = ShelfBounceEnv(render=True, time_limit=20)
+        if env.render_mode:
+            arcade.run()
+        print(env.numerical_log)
+        print(env.text_log)

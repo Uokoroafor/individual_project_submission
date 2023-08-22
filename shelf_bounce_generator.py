@@ -12,9 +12,9 @@ if __name__ == "__main__":
 
     # Set the time limits for training and testing - We will have two test sets.
     # One in the training time limits and one in the test time limits
-    time_limits_train = [5, 15]
-    time_limits_test = [1, 4.999], [15.001, 20]
-    fixed_time = 10
+    time_limits_train = [15, 25]
+    time_limits_test = [10, 14.999], [25.001, 30]
+    fixed_time = 20
 
     # Set the height limits for training and testing - We will have two test sets.
     ball_height_limits_train = [0.70, 0.9]
@@ -125,8 +125,8 @@ if __name__ == "__main__":
                                         angle=lambda: round(random.uniform(*angle_limits_test), 1),
                                         time_limit=fixed_time)
 
-    num_iters_train = 500_000
-    num_iters_test = 100_000
+    num_iters_train = 50
+    num_iters_test = 10
     save_folder = 'data/shelf_bounce/'
 
     # Generate all files

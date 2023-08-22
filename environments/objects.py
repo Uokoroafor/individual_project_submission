@@ -128,7 +128,7 @@ class Ground:
         """
 
         self.body = pymunk.Body(body_type=pymunk.Body.STATIC)
-        self.shape = pymunk.Segment(self.body, (0, 0), (width, 0), radius)
+        self.shape = pymunk.Segment(self.body, (-10*width, 0), (10*width, 0), radius)
         self.shape.elasticity = elasticity
         self.shape.friction = 1.0
         space.add(self.body, self.shape)
