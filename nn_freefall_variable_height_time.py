@@ -6,6 +6,7 @@ from models.nn_models.nn_model import Net
 from utils.physical_dataset import PhysicalDataset
 from utils.file_utils import load_config
 from utils.train_utils import NNTrainer, set_seed
+from utils.logging_utils import TrainingLogger
 
 # Load the training hyperparameters from the txt file
 training_hyperparams = load_config("config_structure_nn.txt")
@@ -14,6 +15,8 @@ training_hyperparams = load_config("config_structure_nn.txt")
 set_seed(6_345_789)
 # Wilson Pickett - 634-5789 https://www.youtube.com/watch?v=TSGuaVAufV0
 
+# Create the logger
+batch_logger = TrainingLogger("nn_training_logs.txt", verbose=False)
 
 print("Using device: ", training_hyperparams["device"])
 device = training_hyperparams["device"]
@@ -22,7 +25,7 @@ eval_iters = training_hyperparams["eval_every"]
 max_iters = training_hyperparams["epochs"]
 lr = training_hyperparams["learning_rate"]
 
-data_folder = "data/freefall/variable_height/"
+data_folder = "data/freefall/variable_height_time/"
 function_name = "Freefall Environment"  # Update this to the name of the dataset being trained (or the name of the function)
 data_path = "numerical_logs.csv"
 train_indices_path = "train_indices.csv"
@@ -38,7 +41,6 @@ hidden_layers = [32, 32, 32]
 num_output_features = 1
 
 stop_training = False
-
 
 for data_amount in data_amounts:
     if not stop_training:
@@ -103,9 +105,13 @@ for data_amount in data_amounts:
         )
 
         test_error = trainer.evaluate(test_loader)
+        batch_logger.log_info(f"Training log is saved at {trainer.path}")
+        batch_logger.log_info(f"{function_name} on {data_folder} data with {len(train_data):,} training examples")
         print(f"Test error: {test_error: ,.4f} for {len(train_data):,} training examples")
 
         oos_test_error = trainer.evaluate(oos_test_loader)
         print(f"OOS Test error: {oos_test_error: ,.4f} for {len(train_data):,} training examples")
+
+        batch_logger.log_info(f"Test error: {test_error: ,.4f}, OOS Test error: {oos_test_error: ,.4f}.")
 
         print("Finished_________________________________")
