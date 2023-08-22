@@ -125,8 +125,8 @@ if __name__ == "__main__":
                                         angle=lambda: round(random.uniform(*angle_limits_test), 1),
                                         time_limit=fixed_time)
 
-    num_iters_train = 500_000
-    num_iters_test = 100_000
+    num_iters_train = 200_000
+    num_iters_test = 40_000
     save_folder = 'data/shelf_bounce/'
 
     # Generate all files

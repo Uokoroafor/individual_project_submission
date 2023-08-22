@@ -189,13 +189,15 @@ class ShelfBounceEnv(Environment):
         self.elapsed_time += delta_time
 
         # End the episode if it is past the time limit and the ball has hit the ground
-        if round(self.elapsed_time,1) >= self.time_limit and not self.time_up:
+        if round(self.elapsed_time, 1) >= self.time_limit and not self.time_up:
             self.log_state(self.elapsed_time)
             self.time_up = True
             self.print_message = (f"At Time of {round(self.elapsed_time, 1)}: Ball was at "
                                   f"x={round(self.ball.body.position.x, 2)} y={round(self.ball.body.position.y, 2)}")
 
-        if self.ball.body.position.y <= BALL_RADIUS and self.time_up:
+        if (self.ball.body.position.y <= BALL_RADIUS and self.time_up) or \
+                (self.time_up and not self.render_mode):
+            # End the episode if the ball hits the ground in render mode or hits time limit in logging mode
             self.end_episode = True
 
         if self.end_episode and self.render_mode:
