@@ -641,7 +641,7 @@ class PhysicalTrainer(Trainer):
             log_name: Optional[str] = None,
             output_type: str = "num",
             oos_data: bool = False,
-    ):
+    )-> float:
         """Log the numerical outputs of the model to a file. It also plots the predictions vs the targets
         Args:
             dataloader (DataLoader): DataLoader for the data
@@ -741,6 +741,8 @@ class PhysicalTrainer(Trainer):
                 model_name=type(self.model).__name__,
                 saved_path=plot_save_path,
             )
+
+            return test_loss
 
     @staticmethod
     def convert_string_to_float(

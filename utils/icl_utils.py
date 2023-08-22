@@ -257,7 +257,7 @@ class LLMTrainer:
             )
             self.logger = logger
             self.logger.log_info(f'Logger created at {self.path}/training_logs/training_log.txt')
-            self.logger.log_info(f'Using {model_name} model.')
+            self.logger.log_info(f'Using {model_name} model. with batch size {batch_size}')
 
         # Get the predictions
         predictions = self.get_predictions(prompts=prompts, model_name=model_name, batch_size=batch_size)
