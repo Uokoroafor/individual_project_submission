@@ -11,6 +11,7 @@ from utils.file_utils import create_training_folder
 from utils.logging_utils import TrainingLogger
 from utils.plot_utils import plot_predictions, plot_errors
 from utils.train_utils import set_seed
+from utils.time_utils import EpochTimer
 import openai
 
 
@@ -234,16 +235,14 @@ class LLMTrainer:
             test_data (Optional[str]): The test data to be used. If None, then the test data from the context generator is used.
             batch_size (int): The number of prompts to send in one batch.
         """
-
+        timer = EpochTimer()
+        timer.start()
         oos_str = '_oos' if test_data is not None else ''
 
         if test_data is not None:
-            test_data=self.cg.prep_test_data(data=test_data)
+            test_data = self.cg.prep_test_data(data=test_data)
         else:
             test_data = self.cg.test_data
-
-
-
 
         # Generate the prompts
         contexts = [test_data[i][0] for i in range(len(test_data))]
@@ -259,8 +258,6 @@ class LLMTrainer:
             self.logger = logger
             self.logger.log_info(f'Logger created at {self.path}/training_logs/training_log.txt')
             self.logger.log_info(f'Using {model_name} model.')
-
-
 
         # Get the predictions
         predictions = self.get_predictions(prompts=prompts, model_name=model_name, batch_size=batch_size)
@@ -286,6 +283,8 @@ class LLMTrainer:
         if save_preds:
             self.save_predictions(predictions, actuals, model_name=f'{model_name}_{num_shots}shot{oos_str}')
 
+        timer.lap()
+        self.logger.log_info(timer.print_total_time(label="Total time taken: "))
         return mse, predictions, actuals
 
     def save_predictions(self, predictions: List[float], actuals: List[float], model_name: str):
@@ -314,26 +313,6 @@ class LLMTrainer:
         predictions = self.get_responses(prompts=prompts, model_name=model_name, batch_size=batch_size)
 
         return predictions
-
-    # def get_responses(self, prompts: List[str], model_name: str = "Davinci", max_tokens: int = 5) -> List[str]:
-    #     """Gets the responses from the model.
-    #
-    #     Args:
-    #         prompts (List[str]): The prompts to be used.
-    #         model_name (str): The name of the model to use.
-    #         max_tokens (int): The maximum number of tokens to generate.
-    #     Returns:
-    #         List[str]: The responses.
-    #     """
-    #
-    #     # Get the responses
-    #     responses = [openai.Completion.create(
-    #         engine=model_name,
-    #         prompt=prompt,
-    #         max_tokens=max_tokens,
-    #     ) for prompt in prompts]
-    #
-    #     return responses
 
     def get_responses(self, prompts: List[str], model_name: str = "Davinci", max_tokens: int = 5,
                       batch_size: int = 5) -> List[str]:
@@ -402,6 +381,7 @@ class LLMTrainer:
         actuals_ = []
         predictions_ = []
         count = 0
+        message = ''
         for i in range(len(actuals)):
             try:
                 pred = float(predictions[i])
@@ -410,9 +390,44 @@ class LLMTrainer:
                 actuals_.append(actual)
             except ValueError:
                 count += 1
-                self.logger.log_info(f'Unable to convert {actuals[i]} or {predictions[i]} to a float.')
+                message += f'Unable to convert {actuals[i]} or {predictions[i]} to a float.\n'
                 continue
+
+        # Save the message to a text file if there are any errors
+        if count > 0:
+            with open(f'{self.path}/training_logs/conversion_errors.txt', 'w') as f:
+                f.write(message)
         return actuals_, predictions_, count
+
+    def calculate_prompt_size(self):
+        """Given there is a limit on the number of tokens that can be sent to the API, this method calculates the
+        number of tokens in a prompt to help determine the batch size.
+        """
+        # First generate a random prompt
+        context = self.cg.train_data[0][0]
+        question = self.cg.question
+        answer = self.cg.train_data[0][1]
+        prompt = self.cg.generate_prompt(context=context, question=question, answer=answer)
+        # Count the number of tokens in the prompt
+        num_tokens = count_tokens_in_batch([prompt])
+        return num_tokens
+
+
+def count_tokens_in_batch(batch: List[str]) -> int:
+    """Count the number of tokens in a batch of prompts.
+
+    Args:
+        batch (List[str]): The batch of prompts.
+    Returns:
+        int: The number of tokens in the batch.
+    """
+    # Use the rubric that 3 chars is 1 token
+    total_tokens = 0
+
+    for prompt in batch:
+        total_tokens += len(prompt) / 3
+
+    return int(total_tokens)
 
 
 if __name__ == "__main__":
