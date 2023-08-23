@@ -37,7 +37,7 @@ oos_test_data_path = "oos_numerical_logs.csv"
 data_amounts = [500, 1_000, 5_000, 10_000, 50_000, 100_000, 200_000]
 
 num_input_features = 10
-hidden_layers = [32, 32, 32]
+hidden_layers = [64, 64, 64]
 num_output_features = 1
 
 stop_training = False
