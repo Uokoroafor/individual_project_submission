@@ -21,10 +21,10 @@ batch_logger = TrainingLogger("finetune_logs_text.txt", verbose=False)
 # Preallocate variables defined in set_training_hyperparameters
 training_params = dict(device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
                        epochs=500,
-                       batch_size=32,
+                       batch_size=64,
                        eval_every=5,
                        eval_iters=1,
-                       max_seq_len=128,
+                       max_seq_len=64,
                        save_every=10000, )
 
 learning_params = dict(lr=3e-4, eps=1e-8)
@@ -40,6 +40,8 @@ train_data = pd.read_csv(folder_loc + function_name + '/train_data.csv')
 val_data = pd.read_csv(folder_loc + function_name + '/val_data.csv')
 test_data = pd.read_csv(folder_loc + function_name + '/test_data.csv')
 oos_test_data = pd.read_csv(folder_loc + function_name + '/oos_test_data.csv')
+# Take a subset of the training data
+train_data = train_data[:1000]
 
 model_name = 'bert-base-uncased'
 
