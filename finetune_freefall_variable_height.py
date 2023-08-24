@@ -16,7 +16,7 @@ set_seed(6_345_789)
 # Wilson Pickett - 634-5789 https://www.youtube.com/watch?v=TSGuaVAufV0
 
 # Create the logger
-batch_logger = TrainingLogger("finetune_logs_text.txt", verbose=False)
+batch_logger = TrainingLogger("finetune_logs_num.txt", verbose=False)
 
 # Preallocate variables defined in set_training_hyperparameters
 training_params = dict(device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
@@ -56,16 +56,16 @@ config = BertConfig.from_pretrained(model_name)
 config.num_labels = 1
 output_type = 'num'
 
-model = BertForSequenceClassification(config)
+total_layers = config.num_hidden_layers
 
-# Print the total number of layers in the model
-total_layers = model.config.num_hidden_layers
-batch_logger.log_info(f"Model has Total number of layers: {total_layers}")
-
-for flayers in range(total_layers, 3, -3):
+for flayers in range(total_layers, 0, -2):
     try:
-        model = freeze_bert_layers(model, flayers)
+        model = BertForSequenceClassification(config)
+
+        batch_logger.log_info(f"Model has Total number of layers: {total_layers}")
         batch_logger.log_info(f"Model has {count_frozen_bert_layers(model)} frozen layers")
+
+        model = freeze_bert_layers(model, flayers)
 
         # Unfreeze the classification layer
         for param in model.classifier.parameters():
@@ -105,7 +105,8 @@ for flayers in range(total_layers, 3, -3):
         test_loss = BertTrainer.log_numerical_outputs(test_dataloader, output_type=output_type)
         oos_test_loss = BertTrainer.log_numerical_outputs(oos_dataloader, output_type=output_type, oos_str='oos_')
 
-        batch_logger.log_info(f"{function_name} data with {output_type} output, {len(train_data)} training examples.")
+        batch_logger.log_info(f"{function_name} data with {output_type} output, {len(train_data)} training examples "
+                              f"and {flayers} frozen layers")
         batch_logger.log_info(f"Test loss: {test_loss:.4f}")
         batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
 
