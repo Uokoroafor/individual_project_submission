@@ -108,8 +108,8 @@ if __name__ == "__main__":
                                                                pick_between_two_ranges(time_limits_test[0],
                                                                                        time_limits_test[1]), 1))
 
-    num_iters_train = 20  # 200_000
-    num_iters_test = 5  # 40_000
+    num_iters_train = 200_000
+    num_iters_test = 40_000
     save_folder = 'data/multi_shelf_bounce/'
 
     # Generate all files
