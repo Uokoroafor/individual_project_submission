@@ -571,8 +571,7 @@ def make_finetune_dataloaders(train_data: pd.DataFrame, val_data: pd.DataFrame, 
         Tuple[DataLoader, DataLoader, DataLoader]: The training, validation and test dataloaders
     """
     # get the questions column and convert to list
-    train_dataloader = make_finetune_dataloader(train_data, tokenizer, max_length, batch_size,
-                                                output_type)  # ,sampler='random')
+    train_dataloader = make_finetune_dataloader(train_data, tokenizer, max_length, batch_size, output_type, sampler='random')
     val_dataloader = make_finetune_dataloader(val_data, tokenizer, max_length, batch_size, output_type)
     test_dataloader = make_finetune_dataloader(test_data, tokenizer, max_length, batch_size, output_type)
 
@@ -610,8 +609,6 @@ def make_finetune_dataloader(data: pd.DataFrame, tokenizer: PreTrainedTokenizer,
         dataloader = DataLoader(dataset, sampler=SequentialSampler(dataset), batch_size=batch_size)
     else:
         dataloader = DataLoader(dataset, sampler=RandomSampler(dataset), batch_size=batch_size)
-
-    dataloader = DataLoader(dataset, batch_size=batch_size)
 
     return dataloader
 
