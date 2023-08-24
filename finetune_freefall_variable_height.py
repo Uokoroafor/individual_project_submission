@@ -62,7 +62,7 @@ model = BertForSequenceClassification(config)
 total_layers = model.config.num_hidden_layers
 batch_logger.log_info(f"Model has Total number of layers: {total_layers}")
 
-for flayers in range(total_layers, 0, -3):
+for flayers in range(0, total_layers, 3):
     model = freeze_bert_layers(model, flayers)
     batch_logger.log_info(f"Model has {count_frozen_bert_layers(model)} frozen layers")
 
