@@ -100,6 +100,7 @@ class FineTuneTrainer:
         train_losses = []
         val_losses = []
         lowest_val_loss = float("inf")
+        val_loss=float("inf")
         stop_training = False
         logger = TrainingLogger(
             self.path + "/training_logs/training_log.txt",
@@ -119,13 +120,18 @@ class FineTuneTrainer:
             count = 0
 
             for i in range(self.epochs):
+                print(f'Iteration {i}')
                 train_loss = self.training_loop(train_dataloader, method="train")
-                train_losses.append(train_loss)
+                # train_losses.append(train_loss)
+                #
+                # val_loss = self.training_loop(val_dataloader, method="val")
+                # val_losses.append(val_loss)
 
-                val_loss = self.training_loop(val_dataloader, method="val")
-                val_losses.append(val_loss)
+                if i % self.eval_every == 0:
+                    train_losses.append(train_loss)
 
-                if (i + 1) % self.eval_every == 0:
+                    val_loss = self.training_loop(val_dataloader, method="val")
+                    val_losses.append(val_loss)
                     logger.log_info(
                         f"At Iteration: {i + 1}/{self.epochs}, Train loss: {train_loss: ,.4f}, "
                         f"Val loss: {val_loss: ,.4f}"
