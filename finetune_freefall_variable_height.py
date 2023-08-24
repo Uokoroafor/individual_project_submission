@@ -6,7 +6,8 @@ from transformers import BertTokenizer
 from transformers import get_linear_schedule_with_warmup
 
 from utils.finetune_utils import FineTuneTrainer
-from utils.finetune_utils import make_finetune_dataloaders, make_finetune_dataloader
+from utils.finetune_utils import make_finetune_dataloaders, make_finetune_dataloader, freeze_bert_layers, \
+    count_frozen_bert_layers
 from utils.train_utils import set_seed
 from utils.logging_utils import TrainingLogger
 
@@ -19,11 +20,11 @@ batch_logger = TrainingLogger("finetune_logs_text.txt", verbose=False)
 
 # Preallocate variables defined in set_training_hyperparameters
 training_params = dict(device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
-                       epochs=5,
+                       epochs=500,
                        batch_size=8,
-                       eval_every=1,
+                       eval_every=5,
                        eval_iters=1,
-                       max_seq_len=512,
+                       max_seq_len=128,
                        save_every=10000, )
 
 learning_params = dict(lr=3e-4, eps=1e-8)
@@ -52,53 +53,55 @@ oos_dataloader = make_finetune_dataloader(data=oos_test_data, tokenizer=tokenize
                                           batch_size=batch_size, output_type='num')
 
 config = BertConfig.from_pretrained(model_name)
-model = BertForSequenceClassification(config)
 config.num_labels = 1
 output_type = 'num'
 
-# Freeze all but the classification layer
-for param in model.parameters():
-    param.requires_grad = False
+model = BertForSequenceClassification(config)
 
-# Unfreeze the classification layer
-for param in model.classifier.parameters():
-    param.requires_grad = True
+# Print the total number of layers in the model
+total_layers = model.config.num_hidden_layers
+batch_logger.log_info(f"Model has Total number of layers: {total_layers}")
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+for flayers in range(total_layers, 0, -3):
+    model = freeze_bert_layers(model, flayers)
+    batch_logger.log_info(f"Model has {count_frozen_bert_layers(model)} frozen layers")
 
-model.to(device)
+    # Unfreeze the classification layer
+    for param in model.classifier.parameters():
+        param.requires_grad = True
 
-optimizer = torch.optim.Adam(model.parameters(), lr=learning_params['lr'], eps=learning_params['eps'])
-epochs = training_params['epochs']
-scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0,
-                                            num_training_steps=len(train_dataloader) * epochs)
-loss_fn = nn.MSELoss()
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-BertTrainer = FineTuneTrainer(model=model,
-                              optimiser=optimizer,
-                              scheduler=scheduler,
-                              loss_fn=loss_fn,
-                              training_hyperparameters=training_params,
-                              tokenizer=tokenizer,
-                              )
+    model.to(device)
 
-model, _, _ = BertTrainer.train(
-    train_dataloader=train_dataloader,
-    val_dataloader=val_dataloader,
-    save_model=True,
-    plotting=True,
-    verbose=True,
-    early_stopping=True,
-    early_stopping_patience=10,
-)
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_params['lr'], eps=learning_params['eps'])
+    epochs = training_params['epochs']
+    scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0,
+                                                num_training_steps=len(train_dataloader) * epochs)
+    loss_fn = nn.MSELoss()
 
-test_loss = BertTrainer.log_numerical_outputs(test_dataloader, output_type=output_type)
-print(f'Test error: {test_loss:,.4f}')
+    BertTrainer = FineTuneTrainer(model=model,
+                                  optimiser=optimizer,
+                                  scheduler=scheduler,
+                                  loss_fn=loss_fn,
+                                  training_hyperparameters=training_params,
+                                  tokenizer=tokenizer,
+                                  )
 
-oos_test_loss = BertTrainer.log_numerical_outputs(oos_dataloader, output_type=output_type)
-print(f'OOS Test error: {oos_test_loss:,.4f}')
+    model, _, _ = BertTrainer.train(
+        train_dataloader=train_dataloader,
+        val_dataloader=val_dataloader,
+        save_model=True,
+        plotting=True,
+        verbose=True,
+        early_stopping=True,
+        early_stopping_patience=10,
+    )
 
-batch_logger.log_info(f"Training log is saved at {BertTrainer.path} for")
-batch_logger.log_info(f"{function_name} data with {output_type} output, {len(train_data)} training examples.")
-batch_logger.log_info(f"Test loss: {test_loss:.4f}")
-batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
+    test_loss = BertTrainer.log_numerical_outputs(test_dataloader, output_type=output_type)
+    oos_test_loss = BertTrainer.log_numerical_outputs(oos_dataloader, output_type=output_type, oos_str='oos_')
+
+    batch_logger.log_info(f"Training log is saved at {BertTrainer.path} for")
+    batch_logger.log_info(f"{function_name} data with {output_type} output, {len(train_data)} training examples.")
+    batch_logger.log_info(f"Test loss: {test_loss:.4f}")
+    batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
