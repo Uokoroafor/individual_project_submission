@@ -7,6 +7,15 @@ from transformers import get_linear_schedule_with_warmup
 
 from utils.finetune_utils import FineTuneTrainer
 from utils.finetune_utils import make_finetune_dataloaders, make_finetune_dataloader
+from utils.train_utils import set_seed
+from utils.logging_utils import TrainingLogger
+
+# Set the random seed for reproducibility
+set_seed(6_345_789)
+# Wilson Pickett - 634-5789 https://www.youtube.com/watch?v=TSGuaVAufV0
+
+# Create the logger
+batch_logger = TrainingLogger("finetune_logs_text.txt", verbose=False)
 
 # Preallocate variables defined in set_training_hyperparameters
 training_params = dict(device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
@@ -23,13 +32,13 @@ tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 max_length = training_params['max_seq_len']
 batch_size = training_params['batch_size']
 
-folder_loc = 'data/shelfbounce/'
-file_loc = 'variable_height'
+folder_loc = 'data/freefall/'
+function_name = 'variable_height'
 
-train_data = pd.read_csv(folder_loc + file_loc + '/train_data.csv')
-val_data = pd.read_csv(folder_loc + file_loc + '/val_data.csv')
-test_data = pd.read_csv(folder_loc + file_loc + '/test_data.csv')
-oos_test_data = pd.read_csv(folder_loc + file_loc + '/oos_test_data.csv')
+train_data = pd.read_csv(folder_loc + function_name + '/train_data.csv')
+val_data = pd.read_csv(folder_loc + function_name + '/val_data.csv')
+test_data = pd.read_csv(folder_loc + function_name + '/test_data.csv')
+oos_test_data = pd.read_csv(folder_loc + function_name + '/oos_test_data.csv')
 
 model_name = 'bert-base-uncased'
 
@@ -45,6 +54,7 @@ oos_dataloader = make_finetune_dataloader(data=oos_test_data, tokenizer=tokenize
 config = BertConfig.from_pretrained(model_name)
 model = BertForSequenceClassification(config)
 config.num_labels = 1
+output_type = 'num'
 
 # Freeze all but the classification layer
 for param in model.parameters():
@@ -60,7 +70,8 @@ model.to(device)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_params['lr'], eps=learning_params['eps'])
 epochs = training_params['epochs']
-scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=len(train_dataloader) * epochs)
+scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0,
+                                            num_training_steps=len(train_dataloader) * epochs)
 loss_fn = nn.MSELoss()
 
 BertTrainer = FineTuneTrainer(model=model,
@@ -81,10 +92,13 @@ model, _, _ = BertTrainer.train(
     early_stopping_patience=10,
 )
 
-test_error = BertTrainer.log_numerical_outputs(test_dataloader, output_type='num')
-print(f'Test error: {test_error:,.4f}')
+test_loss = BertTrainer.log_numerical_outputs(test_dataloader, output_type=output_type)
+print(f'Test error: {test_loss:,.4f}')
 
-oos_test_error = BertTrainer.log_numerical_outputs(oos_dataloader, output_type='num')
-print(f'OOS Test error: {oos_test_error:,.4f}')
+oos_test_loss = BertTrainer.log_numerical_outputs(oos_dataloader, output_type=output_type)
+print(f'OOS Test error: {oos_test_loss:,.4f}')
 
-
+batch_logger.log_info(f"Training log is saved at {BertTrainer.path} for")
+batch_logger.log_info(f"{function_name} data with {output_type} output, {len(train_data)} training examples.")
+batch_logger.log_info(f"Test loss: {test_loss:.4f}")
+batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
