@@ -100,7 +100,7 @@ class FineTuneTrainer:
         train_losses = []
         val_losses = []
         lowest_val_loss = float("inf")
-        val_loss=float("inf")
+        val_loss = float("inf")
         stop_training = False
         logger = TrainingLogger(
             self.path + "/training_logs/training_log.txt",
@@ -120,7 +120,6 @@ class FineTuneTrainer:
             count = 0
 
             for i in range(self.epochs):
-                print(f'Iteration {i}')
                 train_loss = self.training_loop(train_dataloader, method="train")
                 # train_losses.append(train_loss)
                 #
@@ -222,7 +221,6 @@ class FineTuneTrainer:
         # Only want to loop through a subset of the data_loader as it is too large
 
         for batch_idx, batch in enumerate(dataloader):
-            print(f'Batch {batch_idx}')
             inputs = batch[0].to(self.device)
             attention_masks = batch[1].to(self.device)
             targets = batch[2].to(self.device)
@@ -234,9 +232,6 @@ class FineTuneTrainer:
 
             # want to reshape the outputs and targets to be 2D with the same number of columns
             if self.model.config.num_labels == 1:
-                # outputs = self.model(inputs).squeeze(-1)
-                # targets = targets.squeeze(-1)
-                # Make outputs and targets have the same shape
                 outputs = outputs.view(-1)
                 targets = targets.view(-1)
 
@@ -256,7 +251,6 @@ class FineTuneTrainer:
                     self.scheduler.step()
 
             total_loss += loss.item()
-            print(f'Loss: {loss.item()}')
 
         return total_loss / len(dataloader)
 
@@ -577,8 +571,7 @@ def make_finetune_dataloaders(train_data: pd.DataFrame, val_data: pd.DataFrame, 
         Tuple[DataLoader, DataLoader, DataLoader]: The training, validation and test dataloaders
     """
     # get the questions column and convert to list
-    train_dataloader = make_finetune_dataloader(train_data, tokenizer, max_length, batch_size, output_type,
-                                                sampler='random')
+    train_dataloader = make_finetune_dataloader(train_data, tokenizer, max_length, batch_size, output_type)#,sampler='random')
     val_dataloader = make_finetune_dataloader(val_data, tokenizer, max_length, batch_size, output_type)
     test_dataloader = make_finetune_dataloader(test_data, tokenizer, max_length, batch_size, output_type)
 

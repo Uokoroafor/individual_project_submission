@@ -27,7 +27,7 @@ training_params = dict(device=torch.device("cuda" if torch.cuda.is_available() e
                        max_seq_len=64,
                        save_every=10000, )
 
-learning_params = dict(lr=3e-4, eps=1e-8)
+learning_params = dict(lr=5e-4, eps=1e-8)
 
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 max_length = training_params['max_seq_len']
@@ -40,8 +40,6 @@ train_data = pd.read_csv(folder_loc + function_name + '/train_data.csv')
 val_data = pd.read_csv(folder_loc + function_name + '/val_data.csv')
 test_data = pd.read_csv(folder_loc + function_name + '/test_data.csv')
 oos_test_data = pd.read_csv(folder_loc + function_name + '/oos_test_data.csv')
-# Take a subset of the training data
-train_data = train_data[:1000]
 
 model_name = 'bert-base-uncased'
 
@@ -90,7 +88,7 @@ for flayers in range(total_layers, 0, -3):
                                   tokenizer=tokenizer,
                                   )
 
-    batch_logger.log_info(f"Training log is saved at {BertTrainer.path} for")
+    batch_logger.log_info(f"Training log is saved at {BertTrainer.path}")
 
     model, _, _ = BertTrainer.train(
         train_dataloader=train_dataloader,
@@ -104,7 +102,6 @@ for flayers in range(total_layers, 0, -3):
 
     test_loss = BertTrainer.log_numerical_outputs(test_dataloader, output_type=output_type)
     oos_test_loss = BertTrainer.log_numerical_outputs(oos_dataloader, output_type=output_type, oos_str='oos_')
-
 
     batch_logger.log_info(f"{function_name} data with {output_type} output, {len(train_data)} training examples.")
     batch_logger.log_info(f"Test loss: {test_loss:.4f}")
