@@ -21,7 +21,7 @@ batch_logger = TrainingLogger("finetune_logs_text.txt", verbose=False)
 # Preallocate variables defined in set_training_hyperparameters
 training_params = dict(device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
                        epochs=500,
-                       batch_size=128,
+                       batch_size=64,
                        eval_every=5,
                        eval_iters=1,
                        max_seq_len=64,
@@ -76,8 +76,10 @@ for flayers in range(total_layers, 0, -3):
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_params['lr'], eps=learning_params['eps'])
     epochs = training_params['epochs']
-    scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0,
-                                                num_training_steps=len(train_dataloader) * epochs)
+    # scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0,
+    #                                             num_training_steps=len(train_dataloader) * epochs)
+
+    scheduler = None
     loss_fn = nn.MSELoss()
 
     BertTrainer = FineTuneTrainer(model=model,
