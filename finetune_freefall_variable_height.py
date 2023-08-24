@@ -21,7 +21,7 @@ batch_logger = TrainingLogger("finetune_logs_text.txt", verbose=False)
 # Preallocate variables defined in set_training_hyperparameters
 training_params = dict(device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
                        epochs=500,
-                       batch_size=8,
+                       batch_size=32,
                        eval_every=5,
                        eval_iters=1,
                        max_seq_len=128,
