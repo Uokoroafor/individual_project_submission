@@ -62,49 +62,53 @@ model = BertForSequenceClassification(config)
 total_layers = model.config.num_hidden_layers
 batch_logger.log_info(f"Model has Total number of layers: {total_layers}")
 
-for flayers in range(0, total_layers, 3):
-    model = freeze_bert_layers(model, flayers)
-    batch_logger.log_info(f"Model has {count_frozen_bert_layers(model)} frozen layers")
+for flayers in range(total_layers, 3, -3):
+    try:
+        model = freeze_bert_layers(model, flayers)
+        batch_logger.log_info(f"Model has {count_frozen_bert_layers(model)} frozen layers")
 
-    # Unfreeze the classification layer
-    for param in model.classifier.parameters():
-        param.requires_grad = True
+        # Unfreeze the classification layer
+        for param in model.classifier.parameters():
+            param.requires_grad = True
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model.to(device)
+        model.to(device)
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_params['lr'], eps=learning_params['eps'])
-    epochs = training_params['epochs']
-    # scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0,
-    #                                             num_training_steps=len(train_dataloader) * epochs)
+        optimizer = torch.optim.Adam(model.parameters(), lr=learning_params['lr'], eps=learning_params['eps'])
+        epochs = training_params['epochs']
+        scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0,
+                                                    num_training_steps=len(train_dataloader) * epochs)
 
-    scheduler = None
-    loss_fn = nn.MSELoss()
+        loss_fn = nn.MSELoss()
 
-    BertTrainer = FineTuneTrainer(model=model,
-                                  optimiser=optimizer,
-                                  scheduler=scheduler,
-                                  loss_fn=loss_fn,
-                                  training_hyperparameters=training_params,
-                                  tokenizer=tokenizer,
-                                  )
+        BertTrainer = FineTuneTrainer(model=model,
+                                      optimiser=optimizer,
+                                      scheduler=scheduler,
+                                      loss_fn=loss_fn,
+                                      training_hyperparameters=training_params,
+                                      tokenizer=tokenizer,
+                                      )
 
-    batch_logger.log_info(f"Training log is saved at {BertTrainer.path}")
+        batch_logger.log_info(f"Training log is saved at {BertTrainer.path}")
 
-    model, _, _ = BertTrainer.train(
-        train_dataloader=train_dataloader,
-        val_dataloader=val_dataloader,
-        save_model=True,
-        plotting=True,
-        verbose=True,
-        early_stopping=True,
-        early_stopping_patience=10,
-    )
+        model, _, _ = BertTrainer.train(
+            train_dataloader=train_dataloader,
+            val_dataloader=val_dataloader,
+            save_model=True,
+            plotting=True,
+            verbose=True,
+            early_stopping=True,
+            early_stopping_patience=3,
+        )
 
-    test_loss = BertTrainer.log_numerical_outputs(test_dataloader, output_type=output_type)
-    oos_test_loss = BertTrainer.log_numerical_outputs(oos_dataloader, output_type=output_type, oos_str='oos_')
+        test_loss = BertTrainer.log_numerical_outputs(test_dataloader, output_type=output_type)
+        oos_test_loss = BertTrainer.log_numerical_outputs(oos_dataloader, output_type=output_type, oos_str='oos_')
 
-    batch_logger.log_info(f"{function_name} data with {output_type} output, {len(train_data)} training examples.")
-    batch_logger.log_info(f"Test loss: {test_loss:.4f}")
-    batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
+        batch_logger.log_info(f"{function_name} data with {output_type} output, {len(train_data)} training examples.")
+        batch_logger.log_info(f"Test loss: {test_loss:.4f}")
+        batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
+
+    except Exception as e:
+        batch_logger.log_warning(f"Error: {e}")
+        continue
