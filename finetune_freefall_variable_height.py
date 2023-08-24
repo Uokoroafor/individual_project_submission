@@ -88,6 +88,8 @@ for flayers in range(total_layers, 0, -3):
                                   tokenizer=tokenizer,
                                   )
 
+    batch_logger.log_info(f"Training log is saved at {BertTrainer.path} for")
+
     model, _, _ = BertTrainer.train(
         train_dataloader=train_dataloader,
         val_dataloader=val_dataloader,
@@ -101,7 +103,7 @@ for flayers in range(total_layers, 0, -3):
     test_loss = BertTrainer.log_numerical_outputs(test_dataloader, output_type=output_type)
     oos_test_loss = BertTrainer.log_numerical_outputs(oos_dataloader, output_type=output_type, oos_str='oos_')
 
-    batch_logger.log_info(f"Training log is saved at {BertTrainer.path} for")
+
     batch_logger.log_info(f"{function_name} data with {output_type} output, {len(train_data)} training examples.")
     batch_logger.log_info(f"Test loss: {test_loss:.4f}")
     batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
