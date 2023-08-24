@@ -222,6 +222,7 @@ class FineTuneTrainer:
         # Only want to loop through a subset of the data_loader as it is too large
 
         for batch_idx, batch in enumerate(dataloader):
+            print(f'Batch {batch_idx}')
             inputs = batch[0].to(self.device)
             attention_masks = batch[1].to(self.device)
             targets = batch[2].to(self.device)
@@ -255,6 +256,7 @@ class FineTuneTrainer:
                     self.scheduler.step()
 
             total_loss += loss.item()
+            print(f'Loss: {loss.item()}')
 
         return total_loss / len(dataloader)
 
