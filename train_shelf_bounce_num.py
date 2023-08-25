@@ -41,7 +41,7 @@ for folder in folders:
     output_type = "num"  # 'num' or 'text'
 
     # pooling = "cls"  # 'max', 'mean', 'cls', 'none' use none for text generation
-    data_portions = [500, 1_000, 5_000, 10_000, 50_000, 100_000, 200_000]
+    data_portions = [200_000]
     poolings = ["cls"] # Defaulting to cls now as it seems to be the best
 
     for data_portion in data_portions:
@@ -170,8 +170,8 @@ for folder in folders:
             )
 
             oos_test_loss = trainer.log_numerical_outputs(
-                oos_test_loader, decode, "oos_test_log.txt", output_type=output_type
-            )
+                oos_test_loader, decode, "oos_test_log.txt", output_type=output_type,
+            oos_data=True)
 
             batch_logger.log_info(f"Training log is saved at {trainer.path} for")
             batch_logger.log_info(f"{function_name} on {folder} data with {output_type} "
