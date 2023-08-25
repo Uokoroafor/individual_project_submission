@@ -58,7 +58,7 @@ output_type = 'num'
 
 total_layers = config.num_hidden_layers
 
-for flayers in range(total_layers, 0, -1):
+for flayers in range(0, -1, -1):
     try:
         model = BertForSequenceClassification(config)
 
