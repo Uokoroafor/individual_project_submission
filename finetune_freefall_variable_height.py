@@ -16,7 +16,7 @@ set_seed(6_345_789)
 # Wilson Pickett - 634-5789 https://www.youtube.com/watch?v=TSGuaVAufV0
 
 # Create the logger
-batch_logger = TrainingLogger("finetune_logs_num.txt", verbose=False)
+batch_logger = TrainingLogger("finetune_logs_num2.txt", verbose=False)
 
 # Preallocate variables defined in set_training_hyperparameters
 training_params = dict(device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
@@ -58,14 +58,14 @@ output_type = 'num'
 
 total_layers = config.num_hidden_layers
 
-for flayers in range(total_layers, 0, -2):
+for flayers in range(total_layers, 0, -1):
     try:
         model = BertForSequenceClassification(config)
 
         batch_logger.log_info(f"Model has Total number of layers: {total_layers}")
-        batch_logger.log_info(f"Model has {count_frozen_bert_layers(model)} frozen layers")
 
         model = freeze_bert_layers(model, flayers)
+        batch_logger.log_info(f"Model has {count_frozen_bert_layers(model)} frozen layers")
 
         # Unfreeze the classification layer
         for param in model.classifier.parameters():
@@ -99,7 +99,7 @@ for flayers in range(total_layers, 0, -2):
             plotting=True,
             verbose=True,
             early_stopping=True,
-            early_stopping_patience=3,
+            early_stopping_patience=4,
         )
 
         test_loss = BertTrainer.log_numerical_outputs(test_dataloader, output_type=output_type)
@@ -107,8 +107,8 @@ for flayers in range(total_layers, 0, -2):
 
         batch_logger.log_info(f"{function_name} data with {output_type} output, {len(train_data)} training examples "
                               f"and {flayers} frozen layers")
-        batch_logger.log_info(f"Test loss: {test_loss:.4f}")
-        batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
+        batch_logger.log_info(f"Test loss: {test_loss:,.4f}")
+        batch_logger.log_info(f"OOS test loss: {oos_test_loss:,.4f}")
 
     except Exception as e:
         batch_logger.log_warning(f"Error: {e}")
