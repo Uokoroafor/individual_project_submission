@@ -74,8 +74,9 @@ for file_path in file_paths:
     for num_shot in num_shots:
         # Evaluate the model on test data
         num_shot_ = num_shot if num_shot != 0 else 1
+        batch_size_ = min(batch_size // num_shot_, 20)
         mse, _, _ = trainer.evaluate(num_shots=num_shot, model_name="text-davinci-003", plotting=False, save_preds=True,
-                                     verbose=True, batch_size=max(batch_size // num_shot_, 5))
+                                     verbose=True, batch_size=max(batch_size_, 5))
 
         errors.append(mse)
 
