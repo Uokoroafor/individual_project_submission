@@ -65,7 +65,7 @@ for file_path in file_paths:
     batch_size = token_capacity // (trainer.calculate_prompt_size() + 5)
     # This will be divided by the number of shots in the evaluate function
 
-    num_shots = [0, 5, 6, 7, 8, 9, 10]
+    num_shots = [15, 20]
     errors = []
     oos_errors = []
     batch_logger.log_info(f"Training log is saved at {trainer.path} for")
