@@ -25,7 +25,7 @@ training_params = dict(device=torch.device("cuda" if torch.cuda.is_available() e
                        eval_every=5,
                        eval_iters=1,
                        max_seq_len=64,
-                       save_every=10000, )
+                       save_every=10000, )  # Crude way of disabling saving
 
 learning_params = dict(lr=5e-4, eps=1e-8)
 
@@ -34,7 +34,7 @@ max_length = training_params['max_seq_len']
 batch_size = training_params['batch_size']
 
 folder_loc = 'data/freefall/'
-function_name = 'variable_height'
+function_name = 'variable_height_time'
 
 train_data = pd.read_csv(folder_loc + function_name + '/train_data.csv')
 val_data = pd.read_csv(folder_loc + function_name + '/val_data.csv')
@@ -57,15 +57,15 @@ config.num_labels = 1
 output_type = 'num'
 
 total_layers = config.num_hidden_layers
-
-for flayers in range(total_layers, 0, -1):
+layers_frozen = [12, 11, 10]
+for flayers in layers_frozen:
     try:
         model = BertForSequenceClassification(config)
 
         batch_logger.log_info(f"Model has Total number of layers: {total_layers}")
 
         model = freeze_bert_layers(model, flayers)
-        batch_logger.log_info(f"Model has {count_frozen_bert_layers(model)} frozen layers")
+        batch_logger.log_info(f"Model has {count_frozen_bert_layers(model)} frozen layer(s)")
 
         # Unfreeze the classification layer
         for param in model.classifier.parameters():
@@ -106,7 +106,7 @@ for flayers in range(total_layers, 0, -1):
         oos_test_loss = BertTrainer.log_numerical_outputs(oos_dataloader, output_type=output_type, oos_str='oos_')
 
         batch_logger.log_info(f"{function_name} data with {output_type} output, {len(train_data)} training examples "
-                              f"and {flayers} frozen layers")
+                              f"of the {folder_loc} environment and {flayers} frozen layers")
         batch_logger.log_info(f"Test loss: {test_loss:,.4f}")
         batch_logger.log_info(f"OOS test loss: {oos_test_loss:,.4f}")
 
