@@ -38,7 +38,7 @@ oos_test_data_path = f"oos_test_data.csv"
 output_type = "text"  # 'num' or 'text'
 
 # pooling = "cls"  # 'max', 'mean', 'cls', 'none' use none for text generation
-data_portions = [500, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000]
+data_portions = [500, 1_000, 5_000, 10_000, 50_000]
 pooling = "none"
 stop_training = False
 
@@ -172,7 +172,7 @@ for data_portion in data_portions:
         )
         batch_logger.log_info(f"Training log is saved at {trainer.path} for")
         batch_logger.log_info(f"{function_name} on {data_folder} data with {output_type} "
-                              f"output, {pooling} pooling, {encoding_str} encoding and {len(train_data):,} training examples")
+                              f"output and {len(train_data):,} training examples")
         batch_logger.log_info(f"Test loss: {test_loss:.4f}")
         batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
 
