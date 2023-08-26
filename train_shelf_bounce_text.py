@@ -28,8 +28,8 @@ eval_iters = training_hyperparams["eval_every"]
 max_iters = training_hyperparams["epochs"]
 lr = training_hyperparams["learning_rate"]
 
-folders = ["variable_angle", "variable_time", "variable_shelfheight", "variable_time_angle",
-           "variable_angle_shelfheight", "variable_time_angle_shelfheight"]
+folders = ["variable_angle","variable_ballheight","variable_ballheight_angle","variable_shelfheight",
+           "variable_shelfheight_angle", "variable_shelfheight_ballheight", "variable_shelfheight_ballheight_angle"]
 
 for folder in folders:
     data_folder = f"data/shelf_bounce/{folder}/"
@@ -42,11 +42,11 @@ for folder in folders:
     output_type = "text"  # 'num' or 'text'
 
     # pooling = "cls"  # 'max', 'mean', 'cls', 'none' use none for text generation
-    data_portions = [200_000]
+    data_portion = 200_000
     pooling = "none"
     stop_training = False
 
-    for data_portion in data_portions:
+    try:
 
         use_bpe = False  # Set to True to use BPE, False to use a character encoder/decoder
 
@@ -178,3 +178,7 @@ for folder in folders:
                               f"output, {pooling} pooling, {encoding_str} encoding and {data_portion} training examples.")
         batch_logger.log_info(f"Test loss: {test_loss:.4f}")
         batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
+
+    except Exception as e:
+        batch_logger.log_info(f"Error: {e}")
+        continue
