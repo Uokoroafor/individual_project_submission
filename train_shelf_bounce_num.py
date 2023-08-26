@@ -18,7 +18,7 @@ set_seed(6_345_789)
 # Wilson Pickett - 634-5789 https://www.youtube.com/watch?v=TSGuaVAufV0
 
 # Create the logger
-batch_logger = TrainingLogger("scratch_training_logs_num.txt", verbose=False)
+batch_logger = TrainingLogger("sb_scratch_training_logs_num.txt", verbose=False)
 
 device = training_hyperparams["device"]
 block_size = training_hyperparams["max_seq_len"]
