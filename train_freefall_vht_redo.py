@@ -37,8 +37,8 @@ oos_test_data_path = f"oos_test_data.csv"
 output_type = "num"  # 'num' or 'text'
 
 # pooling = "cls"  # 'max', 'mean', 'cls', 'none' use none for text generation
-data_portions = [1000]
-poolings = ["cls"]
+data_portions = [1000,5000]
+poolings = ["mean"]
 
 for data_portion in data_portions:
 
