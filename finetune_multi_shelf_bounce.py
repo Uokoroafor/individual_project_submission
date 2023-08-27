@@ -22,7 +22,7 @@ batch_logger = TrainingLogger("msb_finetune_logs_num.txt", verbose=False)
 training_params = dict(device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
                        epochs=500,
                        batch_size=32,
-                       eval_every=5,
+                       eval_every=1,
                        eval_iters=1,
                        max_seq_len=128,
                        save_every=10000, )
