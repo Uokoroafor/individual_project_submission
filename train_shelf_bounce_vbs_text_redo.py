@@ -174,7 +174,7 @@ for folder in folders:
             oos_data=True)
         batch_logger.log_info(f"Training log is saved at {trainer.path} for")
         batch_logger.log_info(f"{function_name} on {folder} data with {output_type} "
-                              f"output, {pooling} pooling, {encoding_str} encoding and {data_portion} training examples.")
+                              f"output, {pooling} pooling, {encoding_str} encoding and {len(train_data)} training examples.")
         batch_logger.log_info(f"Test loss: {test_loss:.4f}")
         batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
 
