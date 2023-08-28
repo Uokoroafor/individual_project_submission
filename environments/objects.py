@@ -116,7 +116,7 @@ class Rectangle:
 
 class Ground:
 
-    def __init__(self, space: pymunk.Space, width: int, radius: float = 0.0001, elasticity: float = 1.0):
+    def __init__(self, space: pymunk.Space, width: int, radius: float = 0.0001, elasticity: float = 1.0, collision_type: int = 1):
         """ This is an object that can be used in any arcade environment. It is a pymunk static segment object that
         will be added to the space and used as the ground.
 
@@ -125,18 +125,20 @@ class Ground:
             width (int): The width of the ground
             radius (float, optional): The radius of the ground. Defaults to 0.0001 (arbitrary small number).
             elasticity (int, optional): The elasticity of the ground. Defaults to 1.
+            collision_type (int, optional): The collision type of the ground. Defaults to 1.
         """
 
         self.body = pymunk.Body(body_type=pymunk.Body.STATIC)
         self.shape = pymunk.Segment(self.body, (-10*width, 0), (10*width, 0), radius)
         self.shape.elasticity = elasticity
         self.shape.friction = 1.0
+        self.shape.collision_type = collision_type
         space.add(self.body, self.shape)
 
 
 class Boundary:
 
-    def __init__(self, space: pymunk.Space, length: int, boundary_type: str, radius: float = 0.0001, elasticity: float = 1.0):
+    def __init__(self, space: pymunk.Space, length: int, boundary_type: str, radius: float = 0.0001, elasticity: float = 1.0, collision_type: int = 1):
         """ This is an object that can be used in any arcade environment. It is a pymunk static segment object that
         will be added to the space and used as the boundary.
 
@@ -146,6 +148,7 @@ class Boundary:
             boundary_type (str): The type of boundary. "l", "r", "t" or "b"
             radius (int, optional): The radius of the boundary. Defaults to 0.0001 (arbitrary small number).
             elasticity (float, optional): The elasticity of the boundary. Defaults to 1.
+            collision_type (int, optional): The collision type of the boundary. Defaults to 1.
         """
 
         if boundary_type == "l":
@@ -167,4 +170,5 @@ class Boundary:
         self.shape = pymunk.Segment(self.body, a, b, radius)
         self.shape.elasticity = elasticity
         self.shape.friction = 1.0
+        self.shape.collision_type = collision_type
         space.add(self.body, self.shape)

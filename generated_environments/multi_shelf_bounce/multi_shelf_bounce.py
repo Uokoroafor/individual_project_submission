@@ -7,7 +7,7 @@ import pymunk
 from environments.environment import Environment, EnvironmentView
 from environments.objects import Ball, Ground, Rectangle
 from environments.render_constants import SCREEN_WIDTH as WIDTH, SCREEN_HEIGHT as HEIGHT, BALL_RADIUS, GRAVITY, DAMPING, \
-    SHELF_WIDTH, SHELF_COLLISION_TYPE, BALL_COLLISION_TYPE
+    SHELF_WIDTH, SHELF_COLLISION_TYPE, BALL_COLLISION_TYPE, GROUND_COLLISION_TYPE
 
 SHELF_WIDTH *= 1.5
 
@@ -96,8 +96,7 @@ class MultiShelfBounceEnv(Environment):
             self.fixed_shelf_y = False
 
         # Add ground
-        ground = Ground(self.space, width=WIDTH)
-        ground.elasticity = 0.9
+        ground = Ground(self.space, width=WIDTH, elasticity=0, collision_type=GROUND_COLLISION_TYPE)
 
         self.make_shelves()
         self.add_ball()
@@ -277,7 +276,7 @@ class MultiShelfBounceEnv(Environment):
             """
         # Get the final y coordinate of the ball
         x = self.ball.body.position.x
-        y = self.ball.body.position.y
+        y = float(max(self.ball.body.position.y, BALL_RADIUS))
 
         self.numerical_log["t1"] = round(t, 1)
         self.numerical_log["ball_x1"] = round(x, 2)

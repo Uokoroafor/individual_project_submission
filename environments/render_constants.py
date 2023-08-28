@@ -9,3 +9,4 @@ BALL_RADIUS = 10 # Is the radius of the ball in pixels.
 SHELF_WIDTH = SCREEN_WIDTH // 10 # Is the width of the shelf in pixels.
 BALL_COLLISION_TYPE = 1
 SHELF_COLLISION_TYPE = 2
+GROUND_COLLISION_TYPE = 3

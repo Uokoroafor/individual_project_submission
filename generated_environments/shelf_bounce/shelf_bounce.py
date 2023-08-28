@@ -5,7 +5,7 @@ import arcade
 from environments.environment import Environment, EnvironmentView
 from environments.objects import Ball, Ground, Rectangle
 from environments.render_constants import SCREEN_WIDTH as WIDTH, SCREEN_HEIGHT as HEIGHT, BALL_RADIUS, GRAVITY, DAMPING, \
-    SHELF_WIDTH, SHELF_COLLISION_TYPE, BALL_COLLISION_TYPE
+    SHELF_WIDTH, SHELF_COLLISION_TYPE, BALL_COLLISION_TYPE, GROUND_COLLISION_TYPE
 
 
 class ShelfBounceEnv(Environment):
@@ -64,7 +64,7 @@ class ShelfBounceEnv(Environment):
         else:
             self.fixed_shelf_width = False
 
-        if "fixed_shelf_position" in kwargs:
+        if "fixed_shelf_x" in kwargs:
             self.fixed_shelf_x = kwargs["fixed_shelf_position"]
             self.shelf_x = kwargs["shelf_position"]
         else:
@@ -94,9 +94,8 @@ class ShelfBounceEnv(Environment):
         else:
             self.fixed_ball_elasticity = False
 
-        # Add ground
-        ground = Ground(self.space, width=WIDTH)
-        ground.elasticity = 0.9
+        # Add ground to the space
+        ground = Ground(self.space, width=WIDTH, elasticity=0, collision_type=GROUND_COLLISION_TYPE)
 
         self.add_shelf()
         self.add_ball()
@@ -211,7 +210,7 @@ class ShelfBounceEnv(Environment):
             """
         # Get the final y coordinate of the ball
         x = self.ball.body.position.x
-        y = self.ball.body.position.y
+        y = float(max(self.ball.body.position.y, BALL_RADIUS))
 
         self.numerical_log["t1"] = round(t, 1)
         self.numerical_log["ball_x1"] = round(x, 2)
@@ -227,7 +226,7 @@ if __name__ == "__main__":
 
     # env = ShelfBounceEnv(render=False, fixed_angle=True, angle=30, time_limit=round(random.uniform(5, 15), 1))
     for _ in range(10):
-        env = ShelfBounceEnv(render=True, time_limit=20)
+        env = ShelfBounceEnv(render=True, time_limit=10)
         if env.render_mode:
             arcade.run()
         print(env.numerical_log)
