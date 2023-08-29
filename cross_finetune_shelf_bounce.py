@@ -16,7 +16,7 @@ set_seed(6_345_789)
 # Wilson Pickett - 634-5789 https://www.youtube.com/watch?v=TSGuaVAufV0
 
 # Create the logger
-batch_logger = TrainingLogger("cross_training_logs.txt", verbose=False)
+batch_logger = TrainingLogger("cross_training_logs_finetune.txt", verbose=False)
 
 # Preallocate variables defined in set_training_hyperparameters
 training_params = dict(device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
