@@ -65,7 +65,7 @@ class ShelfBounceEnv(Environment):
             self.fixed_shelf_width = False
 
         if "fixed_shelf_x" in kwargs:
-            self.fixed_shelf_x = kwargs["fixed_shelf_position"]
+            self.fixed_shelf_x = kwargs["fixed_shelf_x"]
             self.shelf_x = kwargs["shelf_position"]
         else:
             self.fixed_shelf_x = False

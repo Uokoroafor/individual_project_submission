@@ -87,7 +87,7 @@ if __name__ == "__main__":
                                                      time_limit=fixed_time)
 
     # Fixed Ball Height Environment - variable shelf height and angle
-    variable_shelfheight_angle_dict_train = RandomDict(render=False, fixed_shelf_y=True, shelf_y=round(
+    variable_shelfheight_angle_dict_train = RandomDict(render=False, fixed_shelf_y=True, shelf_y=lambda: round(
         random.uniform(*shelf_height_limits_train) * HEIGHT, 2), fixed_ball_y=True, ball_y=ball_fixed_height,
                                                        fixed_angle=True,
                                                        angle=lambda: round(random.uniform(*angle_limits_train), 1),
