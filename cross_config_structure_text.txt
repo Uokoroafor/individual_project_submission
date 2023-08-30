@@ -1,0 +1,13 @@
+batch_size: 32
+epochs: 500
+learning_rate: 1e-4
+max_seq_len: 128
+num_heads: 4
+num_layers: 8
+d_model: 160
+d_ff: 640
+dropout_prob: 0.2
+device: cuda
+eval_every: 10
+eval_iters: 5
+save_every: 100

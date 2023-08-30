@@ -11,7 +11,7 @@ from utils.train_utils import PhysicalTrainer, set_seed
 from utils.logging_utils import TrainingLogger
 
 # Load the training hyperparameters from the txt file
-training_hyperparams = load_config("sb_config_structure_num.txt")
+training_hyperparams = load_config("cross_config_structure_num.txt")
 
 # Set the random seed for reproducibility
 set_seed(6_345_789)

@@ -27,7 +27,7 @@ training_params = dict(device=torch.device("cuda" if torch.cuda.is_available() e
                        max_seq_len=128,
                        save_every=10000, )
 
-learning_params = dict(lr=5e-4, eps=1e-8)
+learning_params = dict(lr=1e-4, eps=1e-8)
 
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 max_length = training_params['max_seq_len']
