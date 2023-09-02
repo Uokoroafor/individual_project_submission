@@ -94,11 +94,8 @@ y_mid = (y_max + y_min) / 2
 
 # Take out the middle 20% of y values
 y_range = y_max - y_min
-y_min = y_mid - y_range * 0.05
-y_max -= y_range * 0.05
-
-print(f'y_min: {y_min}')
-print(f'y_max: {y_max}')
+y_min = y_mid - y_range * 0.025
+y_max -= y_range * 0.025
 
 # Get the indices of the middle 20% of y values
 test_indices = float_col[(float_col > y_min) & (float_col < y_max)].index
@@ -112,17 +109,6 @@ train_data = train_data.iloc[train_indices]
 train_data.index = [None] * len(train_data)
 val_data.index = [None] * len(val_data)
 test_data.index = [None] * len(test_data)
-
-
-print(f'Train data size: {len(train_data)}')
-print(f'Val data size: {len(val_data)}')
-print(f'Test data size: {len(test_data)}')
-
-# Take subset of training data
-# train_data = train_data.iloc[:data_portion]
-
-print(train_data.head())
-print(test_data.head())
 
 train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
     tokeniser=gpt_tokeniser,
@@ -196,6 +182,6 @@ test_loss = trainer.log_numerical_outputs(
 
 batch_logger.log_info(f"Training log is saved at {trainer.path} for")
 batch_logger.log_info(f"{function_name} on {data_folder} data with {output_type} "
-                      f"output, {pooling} pooling, {encoding_str} encoding and {data_portion} training examples.")
-batch_logger.log_info(f"Test loss: {test_loss:.4f}")
+                      f"output, {pooling} pooling, {encoding_str} encoding and {len(train_data)} training examples.")
+batch_logger.log_info(f"Test loss: {test_loss:.4f} for values between {y_min:.4f} and {y_max:.4f}")
 
