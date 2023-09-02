@@ -50,10 +50,13 @@ val_indices = pd.read_csv(data_folder + val_indices_path).values.flatten()
 # test_indices = pd.read_csv(data_folder + test_indices_path).values.flatten()
 
 # Take subset of training data if required
-train_indices = train_indices[:int(data_amount)]
+# train_indices = train_indices[:int(data_amount)]
 
 # # Scale the validation data by the same amount as the training data
 # val_indices = val_indices[:int(data_amount * len(val_indices) / len(train_indices))]
+print(len(train_indices))
+print(len(val_indices))
+
 train_data = data.iloc[train_indices]
 val_data = data.iloc[val_indices]
 
