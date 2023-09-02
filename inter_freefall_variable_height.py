@@ -73,12 +73,13 @@ encoding_utils = dict(
     enc_dict=encoder_dict, dec_dict=decoder_dict, encode_fn=encode, decode_fn=decode
 )
 
-# Read in the data as pandas dataframes
-train_data = pd.read_csv(data_folder + train_data_path, dtype=str)
-val_data = pd.read_csv(data_folder + val_data_path, dtype=str)
+# Read in the data as pandas dataframes but dont't include the index
+train_data = pd.read_csv(data_folder + train_data_path, dtype=str, index_col=None)
+val_data = pd.read_csv(data_folder + val_data_path, dtype=str, index_col=None)
 # test_data = pd.read_csv(data_folder + test_data_path, dtype=str)
-
-print(train_data.head())
+# train_data.index = [None] * len(train_data)
+# val_data.index = [None] * len(val_data)
+# print(train_data.head())
 
 # Remove the middle 20% of y values and make that the test data
 # Find range of last column of the training data
@@ -93,8 +94,8 @@ y_mid = (y_max + y_min) / 2
 
 # Take out the middle 20% of y values
 y_range = y_max - y_min
-y_min = y_mid - y_range * 0.1
-y_max -= y_range * 0.1
+y_min = y_mid - y_range * 0.05
+y_max -= y_range * 0.05
 
 print(f'y_min: {y_min}')
 print(f'y_max: {y_max}')
@@ -106,6 +107,11 @@ train_indices = float_col[(float_col <= y_min) | (float_col >= y_max)].index
 # Get the test data
 test_data = train_data.iloc[test_indices]
 train_data = train_data.iloc[train_indices]
+
+# Reset the indices
+train_data.index = [None] * len(train_data)
+val_data.index = [None] * len(val_data)
+test_data.index = [None] * len(test_data)
 
 
 print(f'Train data size: {len(train_data)}')
