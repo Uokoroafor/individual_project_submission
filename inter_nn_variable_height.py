@@ -63,6 +63,10 @@ val_data = data.iloc[val_indices]
 print(len(train_data))
 print(len(val_data))
 
+# reset indices to 0 to len(data)
+train_data.index = [None] * len(train_data)
+val_data.index = [None] * len(val_data)
+
 
 float_col = train_data.iloc[:, -1].astype(float)
 
