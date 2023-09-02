@@ -80,16 +80,26 @@ val_data = pd.read_csv(data_folder + val_data_path, dtype=str)
 
 # Remove the middle 20% of y values and make that the test data
 # Find range of last column of the training data
-y_min = train_data.iloc[:, -1].min()
-y_max = train_data.iloc[:, -1].max()
+# The values are strings so convert to float first
+
+float_col = train_data.iloc[:, -1].astype(float)
+
+
+y_min = float_col.min()
+y_max = float_col.max()
 
 # Take out the middle 20% of y values
 y_range = y_max - y_min
 y_min += y_range * 0.1
 y_max -= y_range * 0.1
 
-# Take out the middle 20% of y values
-test_data = train_data.loc[(train_data.iloc[:, -1] > y_min) & (train_data.iloc[:, -1] < y_max)]
+# Get the indices of the middle 20% of y values
+test_indices = float_col[(float_col > y_min) & (float_col < y_max)].index
+train_indices = float_col[(float_col <= y_min) | (float_col >= y_max)].index
+
+# Get the test data
+test_data = train_data.iloc[test_indices]
+train_data = train_data.iloc[train_indices]
 
 
 print(f'Train data size: {len(train_data)}')
