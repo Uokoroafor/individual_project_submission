@@ -89,11 +89,15 @@ float_col = train_data.iloc[:, -1].astype(float)
 
 y_min = float_col.min()
 y_max = float_col.max()
+y_mid = (y_max + y_min) / 2
 
 # Take out the middle 20% of y values
 y_range = y_max - y_min
-y_min += y_range * 0.1
+y_min = y_mid - y_range * 0.1
 y_max -= y_range * 0.1
+
+print(f'y_min: {y_min}')
+print(f'y_max: {y_max}')
 
 # Get the indices of the middle 20% of y values
 test_indices = float_col[(float_col > y_min) & (float_col < y_max)].index
