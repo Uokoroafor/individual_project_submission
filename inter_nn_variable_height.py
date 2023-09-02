@@ -16,7 +16,7 @@ set_seed(6_345_789)
 # Wilson Pickett - 634-5789 https://www.youtube.com/watch?v=TSGuaVAufV0
 
 # Create the logger
-batch_logger = TrainingLogger("nn_training_logs.txt", verbose=False)
+batch_logger = TrainingLogger("inter_logs_num.txt", verbose=False)
 
 print("Using device: ", training_hyperparams["device"])
 device = training_hyperparams["device"]
