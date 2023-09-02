@@ -79,9 +79,9 @@ val_data = pd.read_csv(data_folder + val_data_path, dtype=str)
 # test_data = pd.read_csv(data_folder + test_data_path, dtype=str)
 
 # Remove the middle 20% of y values and make that the test data
-# Find range of y values
-y_min = train_data["y"].min()
-y_max = train_data["y"].max()
+# Find range of last column of the training data
+y_min = train_data.iloc[:, -1].min()
+y_max = train_data.iloc[:, -1].max()
 
 # Take out the middle 20% of y values
 y_range = y_max - y_min
@@ -89,7 +89,7 @@ y_min += y_range * 0.1
 y_max -= y_range * 0.1
 
 # Take out the middle 20% of y values
-test_data = train_data.loc[(train_data["y"] > y_min) & (train_data["y"] < y_max)]
+test_data = train_data.loc[(train_data.iloc[:, -1] > y_min) & (train_data.iloc[:, -1] < y_max)]
 
 
 print(f'Train data size: {len(train_data)}')
