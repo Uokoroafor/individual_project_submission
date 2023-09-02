@@ -81,6 +81,10 @@ y_max = round(y_mid + y_range * 0.025, 2)
 
 print(f"y_min: {y_min}, y_max: {y_max}")
 
+# Set the indices to range(0, len(data))
+train_data.index = list(range(len(train_data)))
+val_data.index = list(range(len(val_data)))
+
 # Get the indices of the middle 20% of y values
 test_indices = float_col[(float_col > y_min) & (float_col < y_max)].index
 train_indices = float_col[(float_col <= y_min) | (float_col >= y_max)].index
@@ -88,14 +92,14 @@ train_indices = float_col[(float_col <= y_min) | (float_col >= y_max)].index
 print(f'len(test_indices): {len(test_indices)}')
 print(f'len(train_indices): {len(train_indices)}')
 
-# Set the indices to range(0, len(data))
-train_data.index = list(range(len(train_data)))
-val_data.index = list(range(len(val_data)))
+
 
 
 # Get the test data
 test_data = train_data.iloc[test_indices]
 train_data = train_data.iloc[train_indices]
+
+print(f'len(test_data): {len(test_data)}')
 
 # Reset the indices
 train_data.index = [None] * len(train_data)
