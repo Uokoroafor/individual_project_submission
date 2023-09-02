@@ -63,9 +63,9 @@ val_data = data.iloc[val_indices]
 print(len(train_data))
 print(len(val_data))
 
-# reset indices to 0 to len(data)
-train_data.index = [None] * len(train_data)
-val_data.index = [None] * len(val_data)
+# Set the indices to range(0, len(data))
+train_data.index = list(range(len(train_data)))
+val_data.index = list(range(len(val_data)))
 
 
 float_col = train_data.iloc[:, -1].astype(float)
@@ -81,9 +81,7 @@ y_max = round(y_mid + y_range * 0.025, 2)
 
 print(f"y_min: {y_min}, y_max: {y_max}")
 
-# Set the indices to range(0, len(data))
-train_data.index = list(range(len(train_data)))
-val_data.index = list(range(len(val_data)))
+
 
 # Get the indices of the middle 20% of y values
 test_indices = float_col[(float_col > y_min) & (float_col < y_max)].index
