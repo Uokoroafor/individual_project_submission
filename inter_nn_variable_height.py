@@ -89,7 +89,7 @@ val_data.index = list(range(len(val_data)))
 test_indices = float_col[(float_col > y_min) & (float_col < y_max)].index
 train_indices = float_col[(float_col <= y_min) | (float_col >= y_max)].index
 
-print(f'len(test_indices): {len(test_indices)}')
+print(f'len(test_indices): {test_indices[:10]}')
 print(f'len(train_indices): {len(train_indices)}')
 
 
