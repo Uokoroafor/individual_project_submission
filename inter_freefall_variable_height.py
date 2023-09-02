@@ -40,7 +40,6 @@ output_type = "num"  # 'num' or 'text'
 data_portion = 200_000
 pooling = "cls"
 
-
 use_bpe = False  # Set to True to use BPE, False to use a character encoder/decoder
 
 encoding_str = "bpe" if use_bpe else "char"
@@ -87,15 +86,14 @@ val_data = pd.read_csv(data_folder + val_data_path, dtype=str, index_col=None)
 
 float_col = train_data.iloc[:, -1].astype(float)
 
-
 y_min = float_col.min()
 y_max = float_col.max()
 y_mid = (y_max + y_min) / 2
 
 # Take out the middle 20% of y values
 y_range = y_max - y_min
-y_min = y_mid - y_range * 0.025
-y_max -= y_range * 0.025
+y_min = round(y_mid - y_range * 0.025, 2)
+y_max = round(y_mid + y_range * 0.025, 2)
 
 # Get the indices of the middle 20% of y values
 test_indices = float_col[(float_col > y_min) & (float_col < y_max)].index
@@ -120,7 +118,6 @@ train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
     shuffle=True,
     max_seq_len=block_size,
 )
-
 
 # update block size to be the max sequence length
 block_size = max_seq_len
@@ -182,6 +179,5 @@ test_loss = trainer.log_numerical_outputs(
 
 batch_logger.log_info(f"Training log is saved at {trainer.path} for")
 batch_logger.log_info(f"{function_name} on {data_folder} data with {output_type} "
-                      f"output, {pooling} pooling, {encoding_str} encoding and {len(train_data)} training examples.")
-batch_logger.log_info(f"Test loss: {test_loss:.4f} for values between {y_min:.4f} and {y_max:.4f}")
-
+                      f"output and {len(train_data)} training examples, {len(test_data)} test examples and ")
+batch_logger.log_info(f"Test loss: {test_loss:.4f} for values between {y_min:.2f} and {y_max:.2f}")
