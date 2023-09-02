@@ -78,6 +78,7 @@ train_data = pd.read_csv(data_folder + train_data_path, dtype=str)
 val_data = pd.read_csv(data_folder + val_data_path, dtype=str)
 # test_data = pd.read_csv(data_folder + test_data_path, dtype=str)
 
+print(train_data.head())
 # Remove the middle 20% of y values and make that the test data
 # Find range of last column of the training data
 # The values are strings so convert to float first
