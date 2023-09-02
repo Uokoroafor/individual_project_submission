@@ -78,7 +78,7 @@ train_data = pd.read_csv(data_folder + train_data_path, dtype=str)
 val_data = pd.read_csv(data_folder + val_data_path, dtype=str)
 # test_data = pd.read_csv(data_folder + test_data_path, dtype=str)
 
-print(train_data.head())
+
 # Remove the middle 20% of y values and make that the test data
 # Find range of last column of the training data
 # The values are strings so convert to float first
@@ -108,7 +108,10 @@ print(f'Val data size: {len(val_data)}')
 print(f'Test data size: {len(test_data)}')
 
 # Take subset of training data
-train_data = train_data.iloc[:data_portion]
+# train_data = train_data.iloc[:data_portion]
+
+print(train_data.head())
+print(test_data.head())
 
 train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
     tokeniser=gpt_tokeniser,
