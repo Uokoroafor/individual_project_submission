@@ -88,6 +88,11 @@ train_indices = float_col[(float_col <= y_min) | (float_col >= y_max)].index
 print(f'len(test_indices): {len(test_indices)}')
 print(f'len(train_indices): {len(train_indices)}')
 
+# Set the indices to range(0, len(data))
+train_data.index = list(range(len(train_data)))
+val_data.index = list(range(len(val_data)))
+
+
 # Get the test data
 test_data = train_data.iloc[test_indices]
 train_data = train_data.iloc[train_indices]
