@@ -203,6 +203,7 @@ for folder in folders:
     except Exception as e:
         batch_logger.log_info(f"Error: {e}")
         print(f"Error: {e}")
-        continue
+        raise e
+        # continue
 
 
