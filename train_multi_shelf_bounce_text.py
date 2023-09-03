@@ -95,8 +95,12 @@ for folder in folders:
         test_data = test_data[test_data.iloc[:, -1].astype(float) >= 10]
         oos_test_data = oos_test_data[oos_test_data.iloc[:, -1].astype(float) >= 10]
 
+        # Reset the keys from 0 to n
+        train_data = train_data.reset_index(drop=True)
+        val_data = val_data.reset_index(drop=True)
+        test_data = test_data.reset_index(drop=True)
+        oos_test_data = oos_test_data.reset_index(drop=True)
 
-        print(f"Size of train dataset: {len(train_data)}")
 
         train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
             tokeniser=gpt_tokeniser,
