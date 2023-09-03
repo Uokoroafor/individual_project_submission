@@ -18,7 +18,7 @@ set_seed(6_345_789)
 # Wilson Pickett - 634-5789 https://www.youtube.com/watch?v=TSGuaVAufV0
 
 # Create the logger
-batch_logger = TrainingLogger("msb_scratch_training_logs_num.txt", verbose=False)
+batch_logger = TrainingLogger("msb_scratch_training_logs_num2.txt", verbose=False)
 
 device = training_hyperparams["device"]
 block_size = training_hyperparams["max_seq_len"]
@@ -87,6 +87,12 @@ for folder in folders:
 
         # Take subset of training data
         train_data = train_data.iloc[:data_portion]
+
+        # From each, remove the rows where last column is less than 10
+        train_data = train_data[train_data.iloc[:, -1].astype(float) > 10]
+        val_data = val_data[val_data.iloc[:, -1].astype(float) > 10]
+        test_data = test_data[test_data.iloc[:, -1].astype(float) > 10]
+        oos_test_data = oos_test_data[oos_test_data.iloc[:, -1].astype(float) > 10]
 
         train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
             tokeniser=gpt_tokeniser,
@@ -172,7 +178,7 @@ for folder in folders:
 
         batch_logger.log_info(f"Training log is saved at {trainer.path} for")
         batch_logger.log_info(f"{function_name} on {folder} data with {output_type} "
-                              f"output, {pooling} pooling, {encoding_str} encoding and {data_portion} training examples.")
+                              f"output, {len(train_data):,} training examples, {len(test_data):,} test examples ")
         batch_logger.log_info(f"Test loss: {test_loss:.4f}")
         batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
 

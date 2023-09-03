@@ -67,7 +67,6 @@ print(len(val_data))
 train_data.index = list(range(len(train_data)))
 val_data.index = list(range(len(val_data)))
 
-
 float_col = train_data.iloc[:, -1].astype(float)
 
 y_min = float_col.min()
@@ -81,17 +80,12 @@ y_max = round(y_mid + y_range * 0.025, 2)
 
 print(f"y_min: {y_min}, y_max: {y_max}")
 
-
-
 # Get the indices of the middle 20% of y values
 test_indices = float_col[(float_col > y_min) & (float_col < y_max)].index
 train_indices = float_col[(float_col <= y_min) | (float_col >= y_max)].index
 
 print(f'len(test_indices): {test_indices[:10]}')
 print(f'len(train_indices): {len(train_indices)}')
-
-
-
 
 # Get the test data
 test_data = train_data.iloc[test_indices]
@@ -108,7 +102,6 @@ test_data.index = [None] * len(test_data)
 train_data = PhysicalDataset(train_data)
 val_data = PhysicalDataset(val_data)
 test_data = PhysicalDataset(test_data)
-
 
 train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
 val_loader = torch.utils.data.DataLoader(val_data, batch_size=batch_size, shuffle=True)
@@ -144,7 +137,8 @@ model, _, _ = trainer.train(
 
 test_error = trainer.evaluate(test_loader)
 batch_logger.log_info(f"Training log is saved at {trainer.path}")
-batch_logger.log_info(f"{function_name} on {data_folder} data with {len(train_data):,} training examples, {len(test_data):,} test examples ")
+batch_logger.log_info(
+    f"{function_name} on {data_folder} data with {len(train_data):,} training examples, {len(test_data):,} test examples ")
 
 batch_logger.log_info(f"Test loss: {test_error:.4f} for values between {y_min:.2f} and {y_max:.2f}")
 

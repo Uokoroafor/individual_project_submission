@@ -1,4 +1,4 @@
-batch_size: 32
+batch_size: 16
 epochs: 500
 learning_rate: 3e-4
 max_seq_len: 128
