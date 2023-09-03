@@ -105,6 +105,8 @@ for folder in folders:
             max_seq_len=block_size,
         )
 
+        print("Made Data Loaders")
+
         oos_test_loader, _ = make_data_loader(
             tokeniser=gpt_tokeniser,
             data=oos_test_data,
@@ -113,6 +115,8 @@ for folder in folders:
             shuffle=True,
             max_seq_len=block_size,
         )
+
+        print("Made OOS Test Loader")
 
         # update block size to be the max sequence length
         block_size = max_seq_len
@@ -123,6 +127,8 @@ for folder in folders:
             if output_type == "num"
             else nn.CrossEntropyLoss(ignore_index=encoder_dict[gpt_tokeniser.pad])
         )
+
+        print("Created Loss Function")
 
         model = DecodeOnlyTransformer(
             src_pad=encoder_dict["<pad>"],
@@ -139,6 +145,8 @@ for folder in folders:
             device=device,
         )
 
+        print("Created Model")
+
         optimiser = torch.optim.Adam(model.parameters(), lr=lr)
         scheduler = None
 
@@ -148,6 +156,8 @@ for folder in folders:
         model = model.to(device)
         loss_fn = loss_fn.to(device)
 
+        print("Moved Model and Loss Function to Device")
+
         trainer = PhysicalTrainer(
             model=model,
             optimiser=optimiser,
@@ -156,6 +166,8 @@ for folder in folders:
             encoding_utils=encoding_utils,
             scheduler=scheduler,
         )
+
+        print("Created Trainer")
 
         model, _, _ = trainer.train(
             train_dataloader=train_loader,
@@ -168,13 +180,19 @@ for folder in folders:
             logging_intro=logging_intro,
         )
 
+        print("Trained Model")
+
         test_loss = trainer.log_numerical_outputs(
             test_loader, decode, "test_log.txt", output_type=output_type
         )
 
+        print("Logged Test Loss")
+
         oos_test_loss = trainer.log_numerical_outputs(
             oos_test_loader, decode, "oos_test_log.txt", output_type=output_type,
         oos_data=True)
+
+        print("Logged OOS Test Loss")
 
         batch_logger.log_info(f"Training log is saved at {trainer.path} for")
         batch_logger.log_info(f"{function_name} on {folder} data with {output_type} "
@@ -184,6 +202,7 @@ for folder in folders:
 
     except Exception as e:
         batch_logger.log_info(f"Error: {e}")
+        print(f"Error: {e}")
         continue
 
 
