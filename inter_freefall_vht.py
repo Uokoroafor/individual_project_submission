@@ -27,7 +27,7 @@ eval_iters = training_hyperparams["eval_every"]
 max_iters = training_hyperparams["epochs"]
 lr = training_hyperparams["learning_rate"]
 
-data_folder = "data/freefall/variable_height/"
+data_folder = "data/freefall/variable_height_time/"
 file_path = "minimal_text.txt"  # Update this to the file containing the data
 function_name = "Freefall Environment"  # Update this to the name of the dataset being trained (or the name of the function)
 train_data_path = f"train_data.csv"
@@ -79,6 +79,9 @@ val_data = pd.read_csv(data_folder + val_data_path, dtype=str, index_col=None)
 # train_data.index = [None] * len(train_data)
 # val_data.index = [None] * len(val_data)
 # print(train_data.head())
+
+# Truncate the train data to 160,000 examples
+train_data = train_data[:200_000]
 
 # Remove the middle 20% of y values and make that the test data
 # Find range of last column of the training data

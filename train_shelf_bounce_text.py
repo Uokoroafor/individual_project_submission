@@ -2,7 +2,7 @@ import pandas as pd
 import torch
 from torch import nn
 import random
-from models.gpt.models.do_transformer import DecodeOnlyTransformer
+from models.gpt.models.eo_transformer import EncodeOnlyTransformer
 from utils.basic_tokeniser import BasicTokeniser
 from utils.bpe import BPE
 from utils.data_utils import read_in_data, make_data_loaders, make_data_loader
@@ -122,7 +122,7 @@ for folder in folders:
             else nn.CrossEntropyLoss(ignore_index=encoder_dict[gpt_tokeniser.pad])
         )
 
-        model = DecodeOnlyTransformer(
+        model = EncodeOnlyTransformer(
             src_pad=encoder_dict["<pad>"],
             src_sos=encoder_dict["<sos>"],
             vocab_size_enc=len(encoder_dict),

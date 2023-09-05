@@ -20,7 +20,7 @@ class GPT(nn.Module):
         dropout_prob: Optional[float] = 0.1,
         device: Optional[str] = "cpu",
     ):
-        """Constructor class for the transformer. It consists of both the encoder and the decoder.
+        """Constructor class for the transformer. It consists of just the decoder.
         Args:
             trg_pad (int): Target padding index
             trg_sos (int): Target start of sentence token

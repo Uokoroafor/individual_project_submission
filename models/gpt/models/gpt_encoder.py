@@ -20,7 +20,7 @@ class GPTEncoder(nn.Module):
         dropout_prob: float,
         pooling: Optional[str] = "mean",
     ):
-        """Constructor class for the decoder of GPT model which is a decoder-only transformer
+        """Constructor class for the encoder variant of a GPT model which is a decoder-only transformer.
 
         Args:
             vocab_size_enc (int): Size of the vocabulary of the encoder

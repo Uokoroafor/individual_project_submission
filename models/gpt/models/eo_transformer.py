@@ -4,7 +4,7 @@ from torch import nn
 from models.gpt.models.gpt_encoder import GPTEncoder
 
 
-class DecodeOnlyTransformer(nn.Module):
+class EncodeOnlyTransformer(nn.Module):
     def __init__(
         self,
         src_pad: int,
@@ -20,7 +20,7 @@ class DecodeOnlyTransformer(nn.Module):
         dropout_prob: Optional[float] = 0.1,
         device: Optional[str] = "cpu",
     ):
-        """Constructor class for the transformer. It consists of both the encoder and the decoder.
+        """Constructor class for the Encoder Only transformer. It consists of just the encoder.
         Args:
             src_pad (int): Source padding index
             src_sos (int): Source start of sentence token
@@ -35,7 +35,7 @@ class DecodeOnlyTransformer(nn.Module):
             dropout_prob (float): Dropout probability
             device (str): Device - 'cpu' or 'cuda'
         """
-        super(DecodeOnlyTransformer, self).__init__()
+        super(EncodeOnlyTransformer, self).__init__()
         self.src_pad = src_pad
         self.src_sos = src_sos
         self.vocab_size_enc = vocab_size_enc
