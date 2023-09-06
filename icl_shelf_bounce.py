@@ -24,7 +24,7 @@ set_seed(seed)
 batch_logger = TrainingLogger("GPT_training_logs.txt", verbose=False)
 file_paths = ['descriptive_text.txt']
 
-data_folder = "data/shelfbounce/variable_ballheight/"
+data_folder = "data/shelf_bounce/variable_ballheight/"
 
 for file_path in file_paths:
     # file_path = "descriptive_text.txt"  # Update this to the file containing the data
@@ -50,8 +50,8 @@ for file_path in file_paths:
 
     # Context Generator Args
     line_delimiter = "\n"
-    ans_delimiter = " ans: Ball is at y="
-    question = ', what is the value of y?'
+    ans_delimiter = " ans: y="
+    question = ', what is y?'
     answer_str = ' ans: '
     model_name = "text-davinci-003"
 
