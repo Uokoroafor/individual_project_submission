@@ -34,7 +34,7 @@ max_length = training_params['max_seq_len']
 batch_size = training_params['batch_size']
 
 folder_loc = 'data/shelf_bounce/'
-function_name = 'variable_shelfheight'
+function_name = 'variable_shelfheight_ballheight'
 
 for pct in [0.025, 0.05, 0.1]:
 
