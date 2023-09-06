@@ -22,7 +22,7 @@ set_seed(seed)
 
 # Create the logger
 batch_logger = TrainingLogger("GPT_training_logs.txt", verbose=False)
-file_paths = ['minimal_text.txt', 'descriptive_text.txt']
+file_paths = ['descriptive_text.txt']
 
 data_folder = "data/freefall/variable_height_time/"
 
