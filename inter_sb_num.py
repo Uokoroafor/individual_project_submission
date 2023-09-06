@@ -27,7 +27,7 @@ eval_iters = training_hyperparams["eval_every"]
 max_iters = training_hyperparams["epochs"]
 lr = training_hyperparams["learning_rate"]
 
-data_folder = "data/shelf_bounce/variable_ballheight/"
+data_folder = "data/shelf_bounce/variable_shelfheight/"
 file_path = "minimal_text.txt"  # Update this to the file containing the data
 function_name = "ShelfBounce Environment"  # Update this to the name of the dataset being trained (or the name of the function)
 train_data_path = f"train_data.csv"
@@ -71,116 +71,116 @@ encoder_dict, decoder_dict, encode, decode = (
 encoding_utils = dict(
     enc_dict=encoder_dict, dec_dict=decoder_dict, encode_fn=encode, decode_fn=decode
 )
+for pct in [0.025, 0.05, 0.1]:
+    # Read in the data as pandas dataframes but dont't include the index
+    train_data = pd.read_csv(data_folder + train_data_path, dtype=str, index_col=None)
+    val_data = pd.read_csv(data_folder + val_data_path, dtype=str, index_col=None)
+    # test_data = pd.read_csv(data_folder + test_data_path, dtype=str)
+    # train_data.index = [None] * len(train_data)
+    # val_data.index = [None] * len(val_data)
+    # print(train_data.head())
 
-# Read in the data as pandas dataframes but dont't include the index
-train_data = pd.read_csv(data_folder + train_data_path, dtype=str, index_col=None)
-val_data = pd.read_csv(data_folder + val_data_path, dtype=str, index_col=None)
-# test_data = pd.read_csv(data_folder + test_data_path, dtype=str)
-# train_data.index = [None] * len(train_data)
-# val_data.index = [None] * len(val_data)
-# print(train_data.head())
+    # Truncate the train data to 160,000 examples
+    train_data = train_data[:200_000]
 
-# Truncate the train data to 160,000 examples
-train_data = train_data[:200_000]
+    # Remove the middle 20% of y values and make that the test data
+    # Find range of last column of the training data
+    # The values are strings so convert to float first
 
-# Remove the middle 20% of y values and make that the test data
-# Find range of last column of the training data
-# The values are strings so convert to float first
+    float_col = train_data.iloc[:, -1].astype(float)
 
-float_col = train_data.iloc[:, -1].astype(float)
+    y_min = float_col.min()
+    y_max = float_col.max()
+    y_mid = (y_max + y_min) / 2
 
-y_min = float_col.min()
-y_max = float_col.max()
-y_mid = (y_max + y_min) / 2
+    # Take out the middle 20% of y values
+    y_range = y_max - y_min
+    y_min = round(y_mid - y_range * pct, 2)
+    y_max = round(y_mid + y_range * pct, 2)
 
-# Take out the middle 20% of y values
-y_range = y_max - y_min
-y_min = round(y_mid - y_range * 0.025, 2)
-y_max = round(y_mid + y_range * 0.025, 2)
+    # Get the indices of the middle 20% of y values
+    test_indices = float_col[(float_col > y_min) & (float_col < y_max)].index
+    train_indices = float_col[(float_col <= y_min) | (float_col >= y_max)].index
 
-# Get the indices of the middle 20% of y values
-test_indices = float_col[(float_col > y_min) & (float_col < y_max)].index
-train_indices = float_col[(float_col <= y_min) | (float_col >= y_max)].index
+    # Get the test data
+    test_data = train_data.iloc[test_indices]
+    train_data = train_data.iloc[train_indices]
 
-# Get the test data
-test_data = train_data.iloc[test_indices]
-train_data = train_data.iloc[train_indices]
+    # Reset the indices
+    train_data.index = [None] * len(train_data)
+    val_data.index = [None] * len(val_data)
+    test_data.index = [None] * len(test_data)
 
-# Reset the indices
-train_data.index = [None] * len(train_data)
-val_data.index = [None] * len(val_data)
-test_data.index = [None] * len(test_data)
+    train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
+        tokeniser=gpt_tokeniser,
+        train_data=train_data,
+        val_data=val_data,
+        test_data=test_data,
+        batch_size=batch_size,
+        output=output_type,
+        shuffle=True,
+        max_seq_len=block_size,
+    )
 
-train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
-    tokeniser=gpt_tokeniser,
-    train_data=train_data,
-    val_data=val_data,
-    test_data=test_data,
-    batch_size=batch_size,
-    output=output_type,
-    shuffle=True,
-    max_seq_len=block_size,
-)
+    # update block size to be the max sequence length
+    block_size = max_seq_len
 
-# update block size to be the max sequence length
-block_size = max_seq_len
+    # Create the model, loss function and optimiser
+    loss_fn = (
+        nn.MSELoss()
+        if output_type == "num"
+        else nn.CrossEntropyLoss(ignore_index=encoder_dict[gpt_tokeniser.pad])
+    )
 
-# Create the model, loss function and optimiser
-loss_fn = (
-    nn.MSELoss()
-    if output_type == "num"
-    else nn.CrossEntropyLoss(ignore_index=encoder_dict[gpt_tokeniser.pad])
-)
+    model = EncodeOnlyTransformer(
+        src_pad=encoder_dict["<pad>"],
+        src_sos=encoder_dict["<sos>"],
+        vocab_size_enc=len(encoder_dict),
+        output_size=1 if output_type == "num" else len(encoder_dict),
+        pooling=pooling if output_type == "num" else "none",
+        max_seq_len=block_size,
+        num_heads=training_hyperparams["num_heads"],
+        num_layers=training_hyperparams["num_layers"],
+        d_model=training_hyperparams["d_model"],
+        d_ff=training_hyperparams["d_ff"],
+        dropout_prob=training_hyperparams["dropout_prob"],
+        device=device,
+    )
 
-model = EncodeOnlyTransformer(
-    src_pad=encoder_dict["<pad>"],
-    src_sos=encoder_dict["<sos>"],
-    vocab_size_enc=len(encoder_dict),
-    output_size=1 if output_type == "num" else len(encoder_dict),
-    pooling=pooling if output_type == "num" else "none",
-    max_seq_len=block_size,
-    num_heads=training_hyperparams["num_heads"],
-    num_layers=training_hyperparams["num_layers"],
-    d_model=training_hyperparams["d_model"],
-    d_ff=training_hyperparams["d_ff"],
-    dropout_prob=training_hyperparams["dropout_prob"],
-    device=device,
-)
+    optimiser = torch.optim.Adam(model.parameters(), lr=lr)
+    scheduler = None
 
-optimiser = torch.optim.Adam(model.parameters(), lr=lr)
-scheduler = None
+    device = torch.device(training_hyperparams["device"])
 
-device = torch.device(training_hyperparams["device"])
+    # Move the model and loss function to the device
+    model = model.to(device)
+    loss_fn = loss_fn.to(device)
 
-# Move the model and loss function to the device
-model = model.to(device)
-loss_fn = loss_fn.to(device)
+    trainer = PhysicalTrainer(
+        model=model,
+        optimiser=optimiser,
+        loss_fn=loss_fn,
+        training_hyperparameters=training_hyperparams,
+        encoding_utils=encoding_utils,
+        scheduler=scheduler,
+    )
 
-trainer = PhysicalTrainer(
-    model=model,
-    optimiser=optimiser,
-    loss_fn=loss_fn,
-    training_hyperparameters=training_hyperparams,
-    encoding_utils=encoding_utils,
-    scheduler=scheduler,
-)
+    model, _, _ = trainer.train(
+        train_dataloader=train_loader,
+        val_dataloader=val_loader,
+        save_model=True,
+        plotting=True,
+        verbose=True,
+        early_stopping=True,
+        early_stopping_patience=20,
+        logging_intro=logging_intro,
+    )
 
-model, _, _ = trainer.train(
-    train_dataloader=train_loader,
-    val_dataloader=val_loader,
-    save_model=True,
-    plotting=True,
-    verbose=True,
-    early_stopping=True,
-    early_stopping_patience=20,
-    logging_intro=logging_intro,
-)
+    test_loss = trainer.log_numerical_outputs(
+        test_loader, decode, "test_log.txt", output_type=output_type
+    )
 
-test_loss = trainer.log_numerical_outputs(
-    test_loader, decode, "test_log.txt", output_type=output_type
-)
-
-batch_logger.log_info(f"Training log is saved at {trainer.path} for")
-batch_logger.log_info(f"{function_name} on {data_folder} data with {output_type} "
-                      f"output and {len(train_data)} training examples, {len(test_data)} test examples and ")
-batch_logger.log_info(f"Test loss: {test_loss:.4f} for values between {y_min:.2f} and {y_max:.2f}")
+    batch_logger.log_info(f"Training log is saved at {trainer.path} for")
+    batch_logger.log_info(f"{function_name} on {data_folder} data with {output_type} "
+                          f"output and {len(train_data)} training examples, {len(test_data)} test examples and ")
+    batch_logger.log_info(f"Test loss: {test_loss:.4f} for values between {y_min:.2f} and {y_max:.2f}")

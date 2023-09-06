@@ -25,7 +25,7 @@ eval_iters = training_hyperparams["eval_every"]
 max_iters = training_hyperparams["epochs"]
 lr = training_hyperparams["learning_rate"]
 
-data_folder ="data/shelf_bounce/variable_ballheight/"
+data_folder ="data/shelf_bounce/variable_shelfheight/"
 function_name = "ShelfBounce Environment"  # Update this to the name of the dataset being trained (or the name of the function)
 data_path = "numerical_logs.csv"
 train_indices_path = "train_indices.csv"
@@ -42,107 +42,108 @@ num_output_features = 1
 
 logging_intro = f"Training on {function_name} on {data_folder} data."
 
-# Read in the data
-data = pd.read_csv(data_folder + data_path)
+for pct in [0.025, 0.05, 0.1]:
+    # Read in the data
+    data = pd.read_csv(data_folder + data_path)
 
-train_indices = pd.read_csv(data_folder + train_indices_path).values.flatten()
-val_indices = pd.read_csv(data_folder + val_indices_path).values.flatten()
-# test_indices = pd.read_csv(data_folder + test_indices_path).values.flatten()
+    train_indices = pd.read_csv(data_folder + train_indices_path).values.flatten()
+    val_indices = pd.read_csv(data_folder + val_indices_path).values.flatten()
+    # test_indices = pd.read_csv(data_folder + test_indices_path).values.flatten()
 
-# Take subset of training data if required
-# train_indices = train_indices[:int(data_amount)]
+    # Take subset of training data if required
+    # train_indices = train_indices[:int(data_amount)]
 
-# # Scale the validation data by the same amount as the training data
-# val_indices = val_indices[:int(data_amount * len(val_indices) / len(train_indices))]
-print(len(train_indices))
-print(len(val_indices))
+    # # Scale the validation data by the same amount as the training data
+    # val_indices = val_indices[:int(data_amount * len(val_indices) / len(train_indices))]
+    print(len(train_indices))
+    print(len(val_indices))
 
-train_data = data.iloc[train_indices]
-val_data = data.iloc[val_indices]
+    train_data = data.iloc[train_indices]
+    val_data = data.iloc[val_indices]
 
-# Truncate the train data to 160,000 examples
-train_data = train_data[:200_000]
+    # Truncate the train data to 160,000 examples
+    train_data = train_data[:200_000]
 
-print(len(train_data))
-print(len(val_data))
+    print(len(train_data))
+    print(len(val_data))
 
-# Set the indices to range(0, len(data))
-train_data.index = list(range(len(train_data)))
-val_data.index = list(range(len(val_data)))
+    # Set the indices to range(0, len(data))
+    train_data.index = list(range(len(train_data)))
+    val_data.index = list(range(len(val_data)))
 
-float_col = train_data.iloc[:, -1].astype(float)
+    float_col = train_data.iloc[:, -1].astype(float)
 
-y_min = float_col.min()
-y_max = float_col.max()
-y_mid = (y_max + y_min) / 2
+    y_min = float_col.min()
+    y_max = float_col.max()
+    y_mid = (y_max + y_min) / 2
 
-# Take out the middle 20% of y values
-y_range = y_max - y_min
-y_min = round(y_mid - y_range * 0.025, 2)
-y_max = round(y_mid + y_range * 0.025, 2)
+    # Take out the middle 20% of y values
+    y_range = y_max - y_min
+    y_min = round(y_mid - y_range * pct, 2)
+    y_max = round(y_mid + y_range * pct, 2)
 
-print(f"y_min: {y_min}, y_max: {y_max}")
+    print(f"y_min: {y_min}, y_max: {y_max}")
 
-# Get the indices of the middle 20% of y values
-test_indices = float_col[(float_col > y_min) & (float_col < y_max)].index
-train_indices = float_col[(float_col <= y_min) | (float_col >= y_max)].index
+    # Get the indices of the middle 20% of y values
+    test_indices = float_col[(float_col > y_min) & (float_col < y_max)].index
+    train_indices = float_col[(float_col <= y_min) | (float_col >= y_max)].index
 
-print(f'len(test_indices): {test_indices[:10]}')
-print(f'len(train_indices): {len(train_indices)}')
+    print(f'len(test_indices): {test_indices[:10]}')
+    print(f'len(train_indices): {len(train_indices)}')
 
-# Get the test data
-test_data = train_data.iloc[test_indices]
-train_data = train_data.iloc[train_indices]
+    # Get the test data
+    test_data = train_data.iloc[test_indices]
+    train_data = train_data.iloc[train_indices]
 
-print(f'len(test_data): {len(test_data)}')
+    print(f'len(test_data): {len(test_data)}')
 
-# Reset the indices
-train_data.index = [None] * len(train_data)
-val_data.index = [None] * len(val_data)
-test_data.index = [None] * len(test_data)
+    # Reset the indices
+    train_data.index = [None] * len(train_data)
+    val_data.index = [None] * len(val_data)
+    test_data.index = [None] * len(test_data)
 
-# Create the datasets
-train_data = PhysicalDataset(train_data)
-val_data = PhysicalDataset(val_data)
-test_data = PhysicalDataset(test_data)
+    # Create the datasets
+    train_data = PhysicalDataset(train_data)
+    val_data = PhysicalDataset(val_data)
+    test_data = PhysicalDataset(test_data)
 
-train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
-val_loader = torch.utils.data.DataLoader(val_data, batch_size=batch_size, shuffle=True)
-test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size, shuffle=True)
+    train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
+    val_loader = torch.utils.data.DataLoader(val_data, batch_size=batch_size, shuffle=True)
+    test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size, shuffle=True)
 
-# Create the model, loss function and optimiser
-loss_fn = nn.MSELoss()
+    # Create the model, loss function and optimiser
+    loss_fn = nn.MSELoss()
 
-model = Net(input_size=num_input_features, hidden_sizes=hidden_layers, output_size=num_output_features,
-            activation=nn.ReLU())
-optimiser = torch.optim.Adam(model.parameters(), lr=lr)
-scheduler = None
+    model = Net(input_size=num_input_features, hidden_sizes=hidden_layers, output_size=num_output_features,
+                activation=nn.ReLU())
+    optimiser = torch.optim.Adam(model.parameters(), lr=lr)
+    scheduler = None
 
-device = torch.device(training_hyperparams["device"])
+    device = torch.device(training_hyperparams["device"])
 
-# Move the model and loss function to the device
-model = model.to(device)
-loss_fn = loss_fn.to(device)
+    # Move the model and loss function to the device
+    model = model.to(device)
+    loss_fn = loss_fn.to(device)
 
-trainer = NNTrainer(model=model, loss_fn=loss_fn, optimiser=optimiser, scheduler=scheduler)
+    trainer = NNTrainer(model=model, loss_fn=loss_fn, optimiser=optimiser, scheduler=scheduler)
 
-model, _, _ = trainer.train(
-    train_dataloader=train_loader,
-    val_dataloader=val_loader,
-    save_model=True,
-    plotting=True,
-    verbose=True,
-    early_stopping=True,
-    early_stopping_patience=10,
-    logging_intro=logging_intro,
-    epochs=max_iters,
-)
+    model, _, _ = trainer.train(
+        train_dataloader=train_loader,
+        val_dataloader=val_loader,
+        save_model=True,
+        plotting=True,
+        verbose=True,
+        early_stopping=True,
+        early_stopping_patience=10,
+        logging_intro=logging_intro,
+        epochs=max_iters,
+    )
 
-test_error = trainer.evaluate(test_loader)
-batch_logger.log_info(f"Training log is saved at {trainer.path}")
-batch_logger.log_info(
-    f"{function_name} on {data_folder} data with {len(train_data):,} training examples, {len(test_data):,} test examples ")
+    test_error = trainer.evaluate(test_loader)
+    batch_logger.log_info(f"Training log is saved at {trainer.path}")
+    batch_logger.log_info(
+        f"{function_name} on {data_folder} data with {len(train_data):,} training examples, {len(test_data):,} test examples ")
 
-batch_logger.log_info(f"Test loss: {test_error:.4f} for values between {y_min:.2f} and {y_max:.2f}")
+    batch_logger.log_info(f"Test loss: {test_error:.4f} for values between {y_min:.2f} and {y_max:.2f}")
 
-print("Finished_________________________________")
+    print("Finished_________________________________")
