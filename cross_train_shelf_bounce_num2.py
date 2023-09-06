@@ -30,7 +30,7 @@ lr = training_hyperparams["learning_rate"]
 test_folders = ["variable_shelfheight_ballheight_angle"]
 
 # Want to train on a concatenated set of two variables and train on the combined data
-train_folders = ["variable_ballheight_angle", "variable_shelfheight_angle"]
+train_folders =[["variable_ballheight_angle", "variable_shelfheight_angle"]]
 # split each folder name by _, then train on the first two variables
 
 # train_folders = []
@@ -113,6 +113,7 @@ for train_folder, test_folder in zip(train_folders, test_folders):
         test_data = pd.read_csv(test_folder + test_data_path, dtype=str)
         # We will not do OOS testing for this experiment
 
+        print('Success!')
 
         train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
             tokeniser=gpt_tokeniser,

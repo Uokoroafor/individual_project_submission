@@ -30,7 +30,7 @@ lr = training_hyperparams["learning_rate"]
 test_folders = ["variable_shelfheight_ballheight_angle"]
 
 # Want to train on a concatenated set of two variables and train on the combined data
-train_folders = ["variable_ballheight_angle", "variable_shelfheight_angle"]
+train_folders =[ ["variable_ballheight_angle", "variable_shelfheight_angle"]]
 # split each folder name by _, then train on the first two variables
 
 # train_folders = []
@@ -101,7 +101,7 @@ for train_folder, test_folder in zip(train_folders, test_folders):
             enc_dict=encoder_dict, dec_dict=decoder_dict, encode_fn=encode, decode_fn=decode
         )
 
-
+        print('Success!')
         # Read in the data as pandas dataframes and combine them
         train_data = [pd.read_csv(data_folder + train_data_path, dtype=str) for data_folder in data_folders]
         val_data = [pd.read_csv(data_folder + val_data_path, dtype=str) for data_folder in data_folders]
