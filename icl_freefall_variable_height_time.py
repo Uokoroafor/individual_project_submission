@@ -41,6 +41,9 @@ for file_path in file_paths:
     val_indices = pd.read_csv(data_folder + val_indices_path).values.flatten().tolist()
     test_indices = pd.read_csv(data_folder + test_indices_path).values.flatten().tolist()
 
+    # truncate test indices to 1000
+    test_indices = test_indices[:1000]
+
     # Load the datasets
     data = read_in_data(data_folder + file_path, make_dict=False)
     oos_data = read_in_data(data_folder + oos_test_data_path, make_dict=False)
@@ -65,33 +68,32 @@ for file_path in file_paths:
     batch_size = token_capacity // (trainer.calculate_prompt_size() + 5)
     # This will be divided by the number of shots in the evaluate function
 
-    num_shots = list(range(1, 10))
+    num_shot = 15
     errors = []
     oos_errors = []
 
-    for num_shot in num_shots:
-        # Evaluate the model on test data
-        mse, _, _ = trainer.evaluate(num_shots=num_shot, model_name="text-davinci-003", plotting=False, save_preds=True,
-                                     verbose=True, batch_size=max(batch_size // num_shot, 5))
+    # for num_shot in num_shots:
+    # Evaluate the model on test data
+    mse, _, _ = trainer.evaluate(num_shots=num_shot, model_name="text-davinci-003", plotting=False, save_preds=True,
+                                 verbose=True, batch_size=max(batch_size // num_shot, 5))
 
-        errors.append(mse)
+    # errors.append(mse)
 
-    plot_errors(errors, num_shots, model_name='text-davinci-003',
-                saved_path=f'{trainer.path}/training_logs/errors_vs_shots.png')
+    # plot_errors(errors, num_shots, model_name='text-davinci-003',saved_path=f'{trainer.path}/training_logs/errors_vs_shots.png')
 
-    for num_shot in num_shots:
-        # Evaluate the model on test data
-
-        oos_mse, _, _ = trainer.evaluate(num_shots=num_shot, model_name="text-davinci-003", plotting=False,
-                                         save_preds=True,
-                                         verbose=True, test_data=oos_data, batch_size=max(batch_size // num_shot, 5))
-
-        oos_errors.append(oos_mse)
-
-    plot_errors(oos_errors, num_shots, model_name='text-davinci-003',
-                saved_path=f'{trainer.path}/training_logs/oos_errors_vs_shots.png')
+    # for num_shot in num_shots:
+    #     # Evaluate the model on test data
+    #
+    #     oos_mse, _, _ = trainer.evaluate(num_shots=num_shot, model_name="text-davinci-003", plotting=False,
+    #                                      save_preds=True,
+    #                                      verbose=True, test_data=oos_data, batch_size=max(batch_size // num_shot, 5))
+    #
+    #     oos_errors.append(oos_mse)
+    #
+    # plot_errors(oos_errors, num_shots, model_name='text-davinci-003',
+    #             saved_path=f'{trainer.path}/training_logs/oos_errors_vs_shots.png')
 
     batch_logger.log_info(f"Training log is saved at {trainer.path} for")
     batch_logger.log_info(f"{function_name} on {data_folder} data with {file_path}")
     batch_logger.log_info(f"Test loss: {mse:.4f}")
-    batch_logger.log_info(f"OOS test loss: {oos_mse:.4f}")
+    # batch_logger.log_info(f"OOS test loss: {oos_mse:.4f}")
