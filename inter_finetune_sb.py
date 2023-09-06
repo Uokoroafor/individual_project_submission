@@ -57,8 +57,8 @@ y_mid = (y_max + y_min) / 2
 
 # Take out the middle 20% of y values
 y_range = y_max - y_min
-y_min = round(y_mid - y_range * 0.1, 2)
-y_max = round(y_mid + y_range * 0.1, 2)
+y_min = round(y_mid - y_range * 0.05, 2)
+y_max = round(y_mid + y_range * 0.05, 2)
 
 # Get the indices of the middle 20% of y values
 test_indices = float_col[(float_col > y_min) & (float_col < y_max)].index

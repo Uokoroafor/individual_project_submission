@@ -78,8 +78,8 @@ y_mid = (y_max + y_min) / 2
 
 # Take out the middle 20% of y values
 y_range = y_max - y_min
-y_min = round(y_mid - y_range * 0.1, 2)
-y_max = round(y_mid + y_range * 0.1, 2)
+y_min = round(y_mid - y_range * 0.05, 2)
+y_max = round(y_mid + y_range * 0.05, 2)
 
 print(f"y_min: {y_min}, y_max: {y_max}")
 
