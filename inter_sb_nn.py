@@ -25,7 +25,7 @@ eval_iters = training_hyperparams["eval_every"]
 max_iters = training_hyperparams["epochs"]
 lr = training_hyperparams["learning_rate"]
 
-data_folder ="data/shelf_bounce/variable_shelfheight_ballheight/"
+data_folder ="data/shelf_bounce/variable_shelfheight_ballheight_angle/"
 function_name = "ShelfBounce Environment"  # Update this to the name of the dataset being trained (or the name of the function)
 data_path = "numerical_logs.csv"
 train_indices_path = "train_indices.csv"
