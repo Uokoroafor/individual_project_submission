@@ -45,7 +45,7 @@ The repository amalgamates three repositories which I have worked on for the dif
     - [Shelf Bounce](#shelf-bounce)
     - [Multi Shelf Bounce](#multi-shelf-bounce)
   - [Usage](#usage)
-    - [Rending an Environment](#rending-an-environment)
+    - [Rendering an Environment](#rendering-an-environment)
     - [Generating Datasets](#generating-datasets)
   - [Training the LLMs](#training-the-llms)
   - [Structure](#structure)
@@ -118,7 +118,7 @@ At time 20.0 Ball is at x=574.21 ans: y=525.22
 
 
 ## Usage
-### Rending an Environment
+### Rendering an Environment
 ```python
 import random
 
@@ -141,25 +141,25 @@ To generate the data, you can do one of the following:
   - Update the required number of samples in gen_examples.py file
   - Run the following bash script:
     ```bash
-    ./generate_data.sh
+    ./data_generation/generate_data.sh
     ```
 - To generate the data for each environment individually:
-  - Update the required number of samples in gen_examples.py file
+  - Update the required number of samples in gen_examples.py file in th data_generation folder.
   - Run the following python scripts for the required environment:
     - Free Fall
       ```bash
-      python freefall_generator.py
-      python freefall_data_prep.py
+      python data_generation/freefall_generator.py
+      python data_generation/freefall_data_prep.py
       ```
     - Shelf Bounce
       ```bash
-      python shelf_bounce_generator.py
-      python shelf_bounce_data_prep.py
+      python data_generation/shelf_bounce_generator.py
+      python data_generation/shelf_bounce_data_prep.py
       ```
     - Multi Shelf Bounce
       ```bash
-      python multi_shelf_bounce_generator.py
-      python multi_shelf_bounce_data_prep.py
+      python data_generation/multi_shelf_bounce_generator.py
+      python data_generation/multi_shelf_bounce_data_prep.py
       ```
 ## Training the LLMs
 There is sample script for training the LLMs from scratch in the root directory. It is for training a Numerical LLM on the Free Fall environment. The script can be modified to train the LLMs on the other environments. 
