@@ -29,7 +29,7 @@ These scenarios are simulated using the [Arcade library](https://api.arcade.acad
 The repository amalgamates three repositories which I have worked on for the different parts of the project. While these repositories are not linked, sections of the code have been used in this project. The repositories are:
 
 [//]: # (- **[transformer_from_scratch]&#40;https://github.com/Uokoroafor/transformer_from_scratch&#41;**: An implementation of the Transformer architecture from scratch in PyTorch from the paper&#40;[Attention Is All You Need]&#40;https://arxiv.org/abs/1706.03762&#41;&#41;.)
-- **[gpt_from_scratch](https://github.com/Uokoroafor/gpt_from_scratch)**: An implementation of a smaller version of the GPT model from the paper([Language Models are Unsupervised Multitask Learners](https://d4mucfpksywv.cloudfront.net/better-language-models/language-models.pdf)) in PyTorch.
+- **[gpt_from_scratch](https://github.com/Uokoroafor/gpt_from_scratch)**: An implementation of a smaller version of the GPT model from the paper([link](https://d4mucfpksywv.cloudfront.net/better-language-models/language-models.pdf)) in PyTorch.
 - **[finetune_llms](https://github.com/Uokoroafor/finetune_llms)**: A sandbox repository that contains code for fine-tuning and performing In Context Learning on the LLMs.
 - **[robotics_environment](https://github.com/Uokoroafor/robotics_environment)**: A sandbox repository that contains code for the simulation of the physical scenarios in arcade and pymunk.
 
