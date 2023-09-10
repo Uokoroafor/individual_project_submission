@@ -83,7 +83,7 @@ pip install -r requirements.txt
   - [x] Fine Tuning Utils [link](./utils/finetune_utils.py)
   - [x] Environment Generation Utils - Defined in [link](./utils/env_utils.py)
   - [x] Byte Pair Encoding (BPE)
-    - [x] BPE Tokeniser and Encoder implemented from scratch [link](./utils/bpe.py)] 
+    - [x] BPE Tokeniser and Encoder implemented from scratch [link](./utils/bpe.py)
     - [x] Basic Tokeniser and Encoder implemented from scratch [link](./utils/basic_tokeniser.py)
 
 ## The Physical Scenarios
