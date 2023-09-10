@@ -1,0 +1,6 @@
+question,answer
+"shelf0_width: 150.0, shelf0_angle: -26.1, shelf0_x: 333.0, shelf0_y: 500.0, shelf1_width: 150.0, shelf1_angle: 26.1, shelf1_x: 667.0, shelf1_y: 500.0, radius: 10, ball_x0: 435.76, ball_y0: 839.68, elasticity: 0.5, t1: 20.0, ball_x1: 435.76,",10.0
+"shelf0_width: 150.0, shelf0_angle: -36.5, shelf0_x: 333.0, shelf0_y: 500.0, shelf1_width: 150.0, shelf1_angle: 36.5, shelf1_x: 667.0, shelf1_y: 500.0, radius: 10, ball_x0: 507.79, ball_y0: 897.66, elasticity: 0.5, t1: 20.0, ball_x1: 507.79,",10.0
+"shelf0_width: 150.0, shelf0_angle: -43.7, shelf0_x: 333.0, shelf0_y: 500.0, shelf1_width: 150.0, shelf1_angle: 43.7, shelf1_x: 667.0, shelf1_y: 500.0, radius: 10, ball_x0: 357.8, ball_y0: 880.3, elasticity: 0.5, t1: 20.0, ball_x1: 701.98,",300.48
+"shelf0_width: 150.0, shelf0_angle: -42.0, shelf0_x: 333.0, shelf0_y: 500.0, shelf1_width: 150.0, shelf1_angle: 42.0, shelf1_x: 667.0, shelf1_y: 500.0, radius: 10, ball_x0: 371.7, ball_y0: 916.02, elasticity: 0.5, t1: 20.0, ball_x1: 696.29,",337.04
+"shelf0_width: 150.0, shelf0_angle: -31.8, shelf0_x: 333.0, shelf0_y: 500.0, shelf1_width: 150.0, shelf1_angle: 31.8, shelf1_x: 667.0, shelf1_y: 500.0, radius: 10, ball_x0: 336.23, ball_y0: 990.43, elasticity: 0.5, t1: 20.0, ball_x1: 597.43,",490.3

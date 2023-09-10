@@ -1,0 +1,5 @@
+Shelf of width 100.0 and angle 30 degrees at x=500.0 y=450.0 Ball of radius 10 and elasticity 0.5 is dropped from x=500 and y=927.26 At time 20.0 Ball is at x=195.28 y=359.5
+Shelf of width 100.0 and angle 30 degrees at x=500.0 y=450.0 Ball of radius 10 and elasticity 0.5 is dropped from x=500 and y=696.25 At time 20.0 Ball is at x=145.16 y=198.2
+Shelf of width 100.0 and angle 30 degrees at x=500.0 y=450.0 Ball of radius 10 and elasticity 0.5 is dropped from x=500 and y=621.38 At time 20.0 Ball is at x=157.17 y=106.63
+Shelf of width 100.0 and angle 30 degrees at x=500.0 y=450.0 Ball of radius 10 and elasticity 0.5 is dropped from x=500 and y=697.37 At time 20.0 Ball is at x=145.51 y=198.84
+Shelf of width 100.0 and angle 30 degrees at x=500.0 y=450.0 Ball of radius 10 and elasticity 0.5 is dropped from x=500 and y=902.31 At time 20.0 Ball is at x=185.35 y=348.35

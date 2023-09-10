@@ -1,0 +1,5 @@
+shelf_width: 100.0, shelf_angle: -30.6, shelf_x: 500.0, shelf_y: 538.52, radius: 10, elasticity: 0.5, ball_x0: 500, ball_y0: 800.0, t1: 20.0, ball_x1: 785.86, ans: 424.46
+shelf_width: 100.0, shelf_angle: 6.6, shelf_x: 500.0, shelf_y: 549.25, radius: 10, elasticity: 0.5, ball_x0: 500, ball_y0: 800.0, t1: 20.0, ball_x1: 343.79, ans: 524.14
+shelf_width: 100.0, shelf_angle: 9.3, shelf_x: 500.0, shelf_y: 322.1, radius: 10, elasticity: 0.5, ball_x0: 500, ball_y0: 800.0, t1: 20.0, ball_x1: 339.61, ans: 406.47
+shelf_width: 100.0, shelf_angle: 21.6, shelf_x: 500.0, shelf_y: 524.28, radius: 10, elasticity: 0.5, ball_x0: 500, ball_y0: 800.0, t1: 20.0, ball_x1: 194.55, ans: 399.85
+shelf_width: 100.0, shelf_angle: -40.9, shelf_x: 500.0, shelf_y: 559.82, radius: 10, elasticity: 0.5, ball_x0: 500, ball_y0: 800.0, t1: 20.0, ball_x1: 851.65, ans: 307.02

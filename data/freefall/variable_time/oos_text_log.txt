@@ -1,0 +1,5 @@
+Ball of radius 10.0 dropped from y=500.00 At time 3.4 Ball is at y=471.95
+Ball of radius 10.0 dropped from y=500.00 At time 19.3 Ball is at y=10.00
+Ball of radius 10.0 dropped from y=500.00 At time 2.5 Ball is at y=485.00
+Ball of radius 10.0 dropped from y=500.00 At time 4.3 Ball is at y=454.85
+Ball of radius 10.0 dropped from y=500.00 At time 1.9 Ball is at y=491.45

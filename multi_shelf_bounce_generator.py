@@ -4,6 +4,7 @@ from environments.render_constants import SCREEN_HEIGHT as HEIGHT, SCREEN_WIDTH 
 from generated_environments.multi_shelf_bounce.multi_shelf_bounce import MultiShelfBounceEnv
 from utils.env_utils import RandomDict, pick_between_two_ranges, generate_environment_data
 from utils.train_utils import set_seed
+from gen_examples import test_iters, train_iters
 
 if __name__ == "__main__":
     # Set the seed for reproducibility
@@ -108,8 +109,8 @@ if __name__ == "__main__":
                                                                pick_between_two_ranges(time_limits_test[0],
                                                                                        time_limits_test[1]), 1))
 
-    num_iters_train = 200_000
-    num_iters_test = 40_000
+    num_iters_train = train_iters
+    num_iters_test = test_iters
     save_folder = 'data/multi_shelf_bounce/'
 
     # Generate all files

@@ -1,0 +1,17 @@
+Ball of radius 10.0 dropped from y=500.00 At time 13.7 ans: Ball is at y=34.20
+Ball of radius 10.0 dropped from y=500.00 At time 7.9 ans: Ball is at y=345.95
+Ball of radius 10.0 dropped from y=500.00 At time 8.2 ans: Ball is at y=333.95
+Ball of radius 10.0 dropped from y=500.00 At time 10.0 ans: Ball is at y=252.50
+Ball of radius 10.0 dropped from y=500.00 At time 12.9 ans: Ball is at y=87.20
+Ball of radius 10.0 dropped from y=500.00 At time 6.0 ans: Ball is at y=411.50
+Ball of radius 10.0 dropped from y=500.00 At time 11.9 ans: Ball is at y=148.95
+Ball of radius 10.0 dropped from y=500.00 At time 10.4 ans: Ball is at y=232.20
+Ball of radius 10.0 dropped from y=500.00 At time 9.4 ans: Ball is at y=281.45
+Ball of radius 10.0 dropped from y=500.00 At time 11.2 ans: Ball is at y=189.20
+Ball of radius 10.0 dropped from y=500.00 At time 8.0 ans: Ball is at y=342.00
+Ball of radius 10.0 dropped from y=500.00 At time 5.6 ans: Ball is at y=423.00
+Ball of radius 10.0 dropped from y=500.00 At time 13.9 ans: Ball is at y=20.45
+Ball of radius 10.0 dropped from y=500.00 At time 10.1 ans: Ball is at y=247.50
+Ball of radius 10.0 dropped from y=500.00 At time 5.1 ans: Ball is at y=436.25
+Ball of radius 10.0 dropped from y=500.00 At time 7.2 ans: Ball is at y=372.20
+Ball of radius 10.0 dropped from y=500.00 At time 8.9 ans: Ball is at y=304.20

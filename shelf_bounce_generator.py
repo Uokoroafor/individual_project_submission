@@ -4,6 +4,7 @@ from environments.render_constants import SCREEN_HEIGHT as HEIGHT
 from generated_environments.shelf_bounce.shelf_bounce import ShelfBounceEnv
 from utils.env_utils import RandomDict, pick_between_two_ranges, generate_environment_data
 from utils.train_utils import set_seed
+from gen_examples import test_iters, train_iters
 
 if __name__ == "__main__":
     # Set the seed for reproducibility
@@ -125,8 +126,8 @@ if __name__ == "__main__":
                                         angle=lambda: round(random.uniform(*angle_limits_test), 1),
                                         time_limit=fixed_time)
 
-    num_iters_train = 200_000
-    num_iters_test = 40_000
+    num_iters_train = train_iters
+    num_iters_test = test_iters
     save_folder = 'data/shelf_bounce/'
 
     # Generate all files

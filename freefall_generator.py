@@ -4,6 +4,7 @@ from environments.render_constants import SCREEN_HEIGHT as HEIGHT
 from generated_environments.freefall.freefall import FreefallEnv
 from utils.env_utils import RandomDict, pick_between_two_ranges, generate_environment_data
 from utils.train_utils import set_seed
+from gen_examples import test_iters, train_iters
 
 if __name__ == "__main__":
     # Set the seed for reproducibility
@@ -56,8 +57,8 @@ if __name__ == "__main__":
                                             pick_between_two_ranges(time_limits_test[0], time_limits_test[1]), 1))
 
     save_folder = 'data/freefall/'
-    num_iters_train = 500_000
-    num_iters_test = 100_000
+    num_iters_train = train_iters
+    num_iters_test = test_iters
     # Generate all files
     generate_environment_data(fixed_height_dict_train, Env, num_iters_train, save_path=save_folder + "variable_time/",
                               verbose=True)

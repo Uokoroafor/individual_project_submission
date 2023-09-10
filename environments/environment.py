@@ -89,7 +89,7 @@ class EnvironmentView(arcade.View):
         for obj in self.env.objects:
             obj.draw()
         if self.env.print_message is not None:
-            arcade.draw_text(self.env.print_message, 10, 10, arcade.color.WHITE, 14)
+            arcade.draw_text(self.env.print_message, 10, 10, arcade.color.WHITE, 20)
 
     def on_update(self, delta_time):
         """Updates the environment

@@ -1,0 +1,5 @@
+Ball of radius 10.0 dropped from y=187.71 At time 18.0 Ball is at y=10.00
+Ball of radius 10.0 dropped from y=856.34 At time 1.2 Ball is at y=853.04
+Ball of radius 10.0 dropped from y=92.51 At time 17.6 Ball is at y=10.00
+Ball of radius 10.0 dropped from y=959.65 At time 15.6 Ball is at y=355.15
+Ball of radius 10.0 dropped from y=239.46 At time 5.0 Ball is at y=178.21
