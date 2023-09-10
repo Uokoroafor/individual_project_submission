@@ -32,19 +32,22 @@ The repository amalgamates three repositories which I have worked on for the dif
 - **[gpt_from_scratch](https://github.com/Uokoroafor/gpt_from_scratch)**: An implementation of a smaller version of the GPT model from the paper([Language Models are Unsupervised Multitask Learners](https://d4mucfpksywv.cloudfront.net/better-language-models/language-models.pdf)) in PyTorch.
 - **[finetune_llms](https://github.com/Uokoroafor/finetune_llms)**: A sandbox repository that contains code for fine-tuning and performing In Context Learning on the LLMs.
 - **[robotics_environment](https://github.com/Uokoroafor/robotics_environment)**: A sandbox repository that contains code for the simulation of the physical scenarios in arcade and pymunk.
+
 ## Table of Contents
 - [Individual Project Submission](#individual-project-submission)
   - [Can Large Language Models learn physical models?](#can-large-language-models-learn-physical-models)
     - [Project Description](#project-description)
   - [Table of Contents](#table-of-contents)
   - [Getting Started](#getting-started)
-  - [Usage](#usage)
-  - [Rendering a physical simulation](#rendering-a-physical-simulation)
+  - [Features](#features)
+  - [The Physical Scenarios](#the-physical-scenarios)
     - [Free Fall](#free-fall)
     - [Shelf Bounce](#shelf-bounce)
     - [Multi Shelf Bounce](#multi-shelf-bounce)
-    - [Sample Usage of Environments](#sample-usage-of-environments)
-    - [Training the LLMs](#training-the-llms)
+  - [Usage](#usage)
+    - [Rending an Environment](#rending-an-environment)
+    - [Generating Datasets](#generating-datasets)
+  - [Training the LLMs](#training-the-llms)
   - [Structure](#structure)
   - [References](#references)
   - [License](#license)
@@ -80,12 +83,11 @@ pip install -r requirements.txt
   - [x] Fine Tuning Utils [link](./utils/finetune_utils.py)
   - [x] Environment Generation Utils - Defined in [link](./utils/env_utils.py)
   - [x] Byte Pair Encoding (BPE)
-    - [x] BPE Tokeniser and Encoder - Defined [link](./utils/bpe.py)] 
-    - [x] Basic Tokeniser and Encoder - Defined [link](./utils/basic_tokeniser.py)
-## Usage
+    - [x] BPE Tokeniser and Encoder implemented from scratch [link](./utils/bpe.py)] 
+    - [x] Basic Tokeniser and Encoder implemented from scratch [link](./utils/basic_tokeniser.py)
 
-### Rendering a physical simulation
-#### Free Fall
+## The Physical Scenarios
+### Free Fall
 A ball is dropped from a fixed height and its y-position after a set time is noted in a numerical and text log. 
  A sample prompt from the text log is shown below:
 ```
@@ -93,7 +95,7 @@ Ball of radius 10.0 dropped from y=664.87 At time 16.2 ans: Ball is at y=12.82
 ```
 <img src="./environment_renderings/freefall.gif" alt="Freefall Environment" width="300"/>
 
-#### Shelf Bounce
+### Shelf Bounce
 A ball is dropped from a fixed height and bounces off an angled shelf. The ball's y-position after a set time is noted in a numerical and text log. 
  A sample prompt is shown below:
 ```
@@ -104,7 +106,7 @@ At time 20.0 Ball is at x=574.21 ans: y=525.22
 
 <img src="./environment_renderings/shelf_bounce.gif" alt="Shelf Bounce Environment" width="300"/>
 
-#### Multi Shelf Bounce
+### Multi Shelf Bounce
 A ball is dropped from a fixed height above multiple angled shelves. The ball's y-position after a set time is noted in a numerical and text log. 
  A sample prompt is shown below:
 ```
@@ -114,7 +116,9 @@ At time 20.0 Ball is at x=574.21 ans: y=525.22
 ```
 <img src="./environment_renderings/multi_shelf_bounce.gif" alt="Multi Shelf Bounce Environment" width="300"/>
 
-### Sample Usage of Environments
+
+## Usage
+### Rending an Environment
 ```python
 import random
 
@@ -232,6 +236,8 @@ The repository is structured as follows with the main files in the root director
 │   └── training_scripts
 └── requirements.txt
 ```
+## Contact
+If you have any questions, suggestions, or comments, please raise an issue in the repository and I'll be happy to discuss.
 
 ## References
 - [Attention Is All You Need](https://arxiv.org/abs/1706.03762)

@@ -6,16 +6,31 @@ import pymunk
 
 from environments.environment import Environment, EnvironmentView
 from environments.objects import Ball, Ground, Rectangle
-from environments.render_constants import SCREEN_WIDTH as WIDTH, SCREEN_HEIGHT as HEIGHT, BALL_RADIUS, GRAVITY, DAMPING, \
-    SHELF_WIDTH, SHELF_COLLISION_TYPE, BALL_COLLISION_TYPE, GROUND_COLLISION_TYPE
+from environments.render_constants import (
+    SCREEN_WIDTH as WIDTH,
+    SCREEN_HEIGHT as HEIGHT,
+    BALL_RADIUS,
+    GRAVITY,
+    DAMPING,
+    SHELF_WIDTH,
+    SHELF_COLLISION_TYPE,
+    BALL_COLLISION_TYPE,
+    GROUND_COLLISION_TYPE,
+)
 
 SHELF_WIDTH *= 1.5
 
 
 class MultiShelfBounceEnv(Environment):
-    def __init__(self, render: bool = False, height_limit: float = 0.2, time_limit: float = 10.0,
-                 num_shelves=2, **kwargs):
-        """ This is an environment where a ball is dropped from a random height onto an angled shelf and the model has to predict
+    def __init__(
+        self,
+        render: bool = False,
+        height_limit: float = 0.2,
+        time_limit: float = 10.0,
+        num_shelves=2,
+        **kwargs,
+    ):
+        """This is an environment where a ball is dropped from a random height onto an angled shelf and the model has to predict
         x position of the ball when it hits the ground.
 
         Args:
@@ -92,11 +107,15 @@ class MultiShelfBounceEnv(Environment):
             self.fixed_ball_elasticity = False
 
         if self.fixed_shelf_y and self.fixed_shelf_x and self.num_shelves > 2:
-            print('Warning: fixed shelf y coordinates will be ignored if there are more than 2 shelves')
+            print(
+                "Warning: fixed shelf y coordinates will be ignored if there are more than 2 shelves"
+            )
             self.fixed_shelf_y = False
 
         # Add ground
-        ground = Ground(self.space, width=WIDTH, elasticity=0, collision_type=GROUND_COLLISION_TYPE)
+        ground = Ground(
+            self.space, width=WIDTH, elasticity=0, collision_type=GROUND_COLLISION_TYPE
+        )
 
         self.make_shelves()
         self.add_ball()
@@ -127,15 +146,24 @@ class MultiShelfBounceEnv(Environment):
         if self.fixed_ball_height:
             y = self.ball_y
         else:
-            y = round(random.uniform((1 - self.height_limit) * self.height, self.height), 2)
+            y = round(
+                random.uniform((1 - self.height_limit) * self.height, self.height), 2
+            )
 
         if self.fixed_ball_elasticity:
             elasticity = self.ball_elasticity
         else:
             elasticity = 0.5
 
-        self.ball = Ball(self.space, radius=BALL_RADIUS, mass=1, x=x, y=y, collision_type=BALL_COLLISION_TYPE,
-                         elasticity=elasticity)
+        self.ball = Ball(
+            self.space,
+            radius=BALL_RADIUS,
+            mass=1,
+            x=x,
+            y=y,
+            collision_type=BALL_COLLISION_TYPE,
+            elasticity=elasticity,
+        )
 
         self.objects.append(self.ball)
         # Update the initial conditions in the numerical log and text log
@@ -143,8 +171,10 @@ class MultiShelfBounceEnv(Environment):
         self.numerical_log["ball_y0"] = y
         self.numerical_log["elasticity"] = elasticity
 
-        self.text_log.append(f"Ball of radius {BALL_RADIUS} and elasticity {elasticity} is dropped from "
-                             f"x={round(x, 2)} and y={round(y, 2)}")
+        self.text_log.append(
+            f"Ball of radius {BALL_RADIUS} and elasticity {elasticity} is dropped from "
+            f"x={round(x, 2)} and y={round(y, 2)}"
+        )
 
     def make_shelves(self):
         """Makes a number of shelves and adds them to the environment"""
@@ -155,7 +185,6 @@ class MultiShelfBounceEnv(Environment):
         y_list = self.make_shelf_y_list()
 
         for i in range(self.num_shelves):
-
             x = x_list[i]
             y = y_list[i]
 
@@ -182,8 +211,15 @@ class MultiShelfBounceEnv(Environment):
         overlap = True
         while overlap:
             # Make the shelf
-            shelf = Rectangle(self.space, width=width, height=BALL_RADIUS, x=x, y=y, angle=angle,
-                              collision_type=SHELF_COLLISION_TYPE)
+            shelf = Rectangle(
+                self.space,
+                width=width,
+                height=BALL_RADIUS,
+                x=x,
+                y=y,
+                angle=angle,
+                collision_type=SHELF_COLLISION_TYPE,
+            )
             overlap = self.check_shelf_overlaps(shelf)
 
         self.shelf_list.append(shelf)
@@ -198,11 +234,13 @@ class MultiShelfBounceEnv(Environment):
         self.numerical_log[f"shelf{shelf_id}_y"] = round(float(y), 2)
         self.numerical_log[f"shelf{shelf_id}_angle"] = round(angle, 2)
         self.numerical_log[f"shelf{shelf_id}_width"] = float(width)
-        self.text_log.append(f'Shelf{shelf_id} of width {float(width)} and angle {angle} degrees at x={float(x)} y={y}')
+        self.text_log.append(
+            f"Shelf{shelf_id} of width {float(width)} and angle {angle} degrees at x={float(x)} y={y}"
+        )
 
     @staticmethod
     def check_shelf_overlap(shelf1: Rectangle, shelf2: Rectangle) -> bool:
-        """ Checks if two shelves overlap
+        """Checks if two shelves overlap
 
         Args:
             shelf1 (Rectangle): The first shelf
@@ -218,7 +256,7 @@ class MultiShelfBounceEnv(Environment):
         This checks if a shelf overlaps with any other shelf in the environment
         Args:
             shelf1: The shelf to check for overlaps with
-        
+
         Returns:
             bool: True if there is an overlap, False otherwise
         """
@@ -259,8 +297,10 @@ class MultiShelfBounceEnv(Environment):
         if self.elapsed_time >= self.time_limit and not self.time_up:
             self.log_state(self.elapsed_time)
             self.time_up = True
-            self.print_message = (f"At Time of {round(self.elapsed_time, 1)}: Ball was at "
-                                  f"x={round(self.ball.body.position.x, 2)} y={round(self.ball.body.position.y, 2)}")
+            self.print_message = (
+                f"At Time of {round(self.elapsed_time, 1)}: Ball was at "
+                f"x={round(self.ball.body.position.x, 2)} y={round(self.ball.body.position.y, 2)}"
+            )
 
         if self.ball.body.position.y <= BALL_RADIUS and self.time_up:
             self.end_episode = True
@@ -273,7 +313,7 @@ class MultiShelfBounceEnv(Environment):
 
         Args:
             t (float): The time at which the state is logged
-            """
+        """
         # Get the final y coordinate of the ball
         x = self.ball.body.position.x
         y = float(max(self.ball.body.position.y, BALL_RADIUS))
@@ -287,14 +327,16 @@ class MultiShelfBounceEnv(Environment):
 
     def make_shelf_x_list(self) -> List[float]:
         """Want to make a list of x coordinates of the shelves. For simplicity, the shelves will be of the same width
-        and mirrored across the centre of the screen. x coordinates can be either given or randomly generated. They can also be given as a single value or a list"""
+        and mirrored across the centre of the screen. x coordinates can be either given or randomly generated. They can also be given as a single value or a list
+        """
         # Pick a random x coordinate for the shelf
         # Want the x coordinate to be between the width limit and the middle of the screen
         shelf_x_list = []
         if self.fixed_shelf_x:
             if type(self.shelf_x) == list:
-                assert len(
-                    self.shelf_x) == self.num_shelves, "The number of shelves must match the number of x coordinates"
+                assert (
+                    len(self.shelf_x) == self.num_shelves
+                ), "The number of shelves must match the number of x coordinates"
                 shelf_x_list = self.shelf_x
                 return shelf_x_list
             else:
@@ -317,20 +359,25 @@ class MultiShelfBounceEnv(Environment):
 
     def make_shelf_y_list(self) -> List[float]:
         """Want to make a list of y coordinates of the shelves. For simplicity, the shelves will be of the same width
-        and mirrored across the centre of the screen. y coordinates can be either given or randomly generated. They can also be given as a single value or a list"""
+        and mirrored across the centre of the screen. y coordinates can be either given or randomly generated. They can also be given as a single value or a list
+        """
         shelf_y_list = []
         for i in range(self.num_shelves):
             if self.fixed_shelf_y:
                 if type(self.shelf_y) == list:
-                    assert len(
-                        self.shelf_y) == self.num_shelves, "The number of shelves must match the number of y coordinates"
+                    assert (
+                        len(self.shelf_y) == self.num_shelves
+                    ), "The number of shelves must match the number of y coordinates"
                     shelf_y_list = self.shelf_y
                     return shelf_y_list
                 else:
                     y = self.shelf_y
 
             else:
-                y = round(random.uniform(self.height_limit * self.height, 0.5 * self.height), 2)
+                y = round(
+                    random.uniform(self.height_limit * self.height, 0.5 * self.height),
+                    2,
+                )
             shelf_y_list.append(y)
 
         return shelf_y_list
@@ -340,10 +387,19 @@ if __name__ == "__main__":
     # env = ShelfBounceEnv(render=True)  # Set render=True for visualization, set render=False for text logging
     for _ in range(5):
         # Render Fixed Angle and shelf x with random shelf y and variable time limit
-        env = MultiShelfBounceEnv(render=True, fixed_angle=True, angle=-30, fixed_shelf_x=True, shelf_x=WIDTH // 3,
-                                  fixed_shelf_y=True, shelf_y=[0.5 * HEIGHT, 0.5 * HEIGHT],
-                                  time_limit=round(random.uniform(5, 15), 1), fixed_ball_y=True,
-                                  ball_y=0.8 * HEIGHT, num_shelves=2)
+        env = MultiShelfBounceEnv(
+            render=True,
+            fixed_angle=True,
+            angle=-30,
+            fixed_shelf_x=True,
+            shelf_x=WIDTH // 3,
+            fixed_shelf_y=True,
+            shelf_y=[0.5 * HEIGHT, 0.5 * HEIGHT],
+            time_limit=round(random.uniform(5, 15), 1),
+            fixed_ball_y=True,
+            ball_y=0.8 * HEIGHT,
+            num_shelves=2,
+        )
 
         if env.render_mode:
             arcade.run()

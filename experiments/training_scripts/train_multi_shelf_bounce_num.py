@@ -27,7 +27,14 @@ eval_iters = training_hyperparams["eval_every"]
 max_iters = training_hyperparams["epochs"]
 lr = training_hyperparams["learning_rate"]
 
-folders = ["variable_angle", "variable_time", "variable_shelfheight", "variable_time_angle", "variable_angle_shelfheight", "variable_time_angle_shelfheight"]
+folders = [
+    "variable_angle",
+    "variable_time",
+    "variable_shelfheight",
+    "variable_time_angle",
+    "variable_angle_shelfheight",
+    "variable_time_angle_shelfheight",
+]
 
 for folder in folders:
     try:
@@ -42,17 +49,21 @@ for folder in folders:
 
         # pooling = "cls"  # 'max', 'mean', 'cls', 'none' use none for text generation
         data_portion = 200_000
-        pooling = "cls" # Defaulting to cls now as it seems to be the best
+        pooling = "cls"  # Defaulting to cls now as it seems to be the best
 
         # # print(f"Training for pooling: {pooling}")
         # data_portion = 1
 
-        use_bpe = False  # Set to True to use BPE, False to use a character encoder/decoder
+        use_bpe = (
+            False  # Set to True to use BPE, False to use a character encoder/decoder
+        )
 
         encoding_str = "bpe" if use_bpe else "char"
 
-        logging_intro = (f"Training on {function_name} with {output_type} output and {pooling} pooling on "
-                         f"{data_folder + file_path} data. Using {encoding_str} encoding.")
+        logging_intro = (
+            f"Training on {function_name} with {output_type} output and {pooling} pooling on "
+            f"{data_folder + file_path} data. Using {encoding_str} encoding."
+        )
 
         # Read in the data
         data = read_in_data(data_folder + file_path, make_dict=False)
@@ -76,7 +87,10 @@ for folder in folders:
         )
 
         encoding_utils = dict(
-            enc_dict=encoder_dict, dec_dict=decoder_dict, encode_fn=encode, decode_fn=decode
+            enc_dict=encoder_dict,
+            dec_dict=decoder_dict,
+            encode_fn=encode,
+            decode_fn=decode,
         )
 
         # Read in the data as pandas dataframes
@@ -100,8 +114,6 @@ for folder in folders:
         test_data = test_data.reset_index(drop=True)
         oos_test_data = oos_test_data.reset_index(drop=True)
 
-
-
         train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
             tokeniser=gpt_tokeniser,
             train_data=train_data,
@@ -113,7 +125,6 @@ for folder in folders:
             max_seq_len=block_size,
         )
 
-
         oos_test_loader, _ = make_data_loader(
             tokeniser=gpt_tokeniser,
             data=oos_test_data,
@@ -122,7 +133,6 @@ for folder in folders:
             shuffle=True,
             max_seq_len=block_size,
         )
-
 
         # update block size to be the max sequence length
         block_size = max_seq_len
@@ -133,7 +143,6 @@ for folder in folders:
             if output_type == "num"
             else nn.CrossEntropyLoss(ignore_index=encoder_dict[gpt_tokeniser.pad])
         )
-
 
         model = EncodeOnlyTransformer(
             src_pad=encoder_dict["<pad>"],
@@ -150,7 +159,6 @@ for folder in folders:
             device=device,
         )
 
-
         optimiser = torch.optim.Adam(model.parameters(), lr=lr)
         scheduler = None
 
@@ -160,7 +168,6 @@ for folder in folders:
         model = model.to(device)
         loss_fn = loss_fn.to(device)
 
-
         trainer = PhysicalTrainer(
             model=model,
             optimiser=optimiser,
@@ -169,7 +176,6 @@ for folder in folders:
             encoding_utils=encoding_utils,
             scheduler=scheduler,
         )
-
 
         model, _, _ = trainer.train(
             train_dataloader=train_loader,
@@ -182,25 +188,26 @@ for folder in folders:
             logging_intro=logging_intro,
         )
 
-
         test_loss = trainer.log_numerical_outputs(
             test_loader, decode, "test_log.txt", output_type=output_type
         )
 
-
         oos_test_loss = trainer.log_numerical_outputs(
-            oos_test_loader, decode, "oos_test_log.txt", output_type=output_type,
-        oos_data=True)
-
+            oos_test_loader,
+            decode,
+            "oos_test_log.txt",
+            output_type=output_type,
+            oos_data=True,
+        )
 
         batch_logger.log_info(f"Training log is saved at {trainer.path} for")
-        batch_logger.log_info(f"{function_name} on {folder} data with {output_type} "
-                              f"output, {len(train_data):,} training examples, {len(test_data):,} test examples ")
+        batch_logger.log_info(
+            f"{function_name} on {folder} data with {output_type} "
+            f"output, {len(train_data):,} training examples, {len(test_data):,} test examples "
+        )
         batch_logger.log_info(f"Test loss: {test_loss:.4f}")
         batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
 
     except Exception as e:
         batch_logger.log_info(f"Error: {e}")
         continue
-
-

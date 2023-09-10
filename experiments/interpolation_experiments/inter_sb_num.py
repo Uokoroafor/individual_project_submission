@@ -44,8 +44,10 @@ use_bpe = False  # Set to True to use BPE, False to use a character encoder/deco
 
 encoding_str = "bpe" if use_bpe else "char"
 
-logging_intro = (f"Training on {function_name} with {output_type} output and {pooling} pooling on "
-                 f"{data_folder + file_path} data. Using {encoding_str} encoding.")
+logging_intro = (
+    f"Training on {function_name} with {output_type} output and {pooling} pooling on "
+    f"{data_folder + file_path} data. Using {encoding_str} encoding."
+)
 
 # Read in the data
 data = read_in_data(data_folder + file_path, make_dict=False)
@@ -181,6 +183,10 @@ for pct in [0.025, 0.05, 0.1]:
     )
 
     batch_logger.log_info(f"Training log is saved at {trainer.path} for")
-    batch_logger.log_info(f"{function_name} on {data_folder} data with {output_type} "
-                          f"output and {len(train_data)} training examples, {len(test_data)} test examples and ")
-    batch_logger.log_info(f"Test loss: {test_loss:.4f} for values between {y_min:.2f} and {y_max:.2f}")
+    batch_logger.log_info(
+        f"{function_name} on {data_folder} data with {output_type} "
+        f"output and {len(train_data)} training examples, {len(test_data)} test examples and "
+    )
+    batch_logger.log_info(
+        f"Test loss: {test_loss:.4f} for values between {y_min:.2f} and {y_max:.2f}"
+    )

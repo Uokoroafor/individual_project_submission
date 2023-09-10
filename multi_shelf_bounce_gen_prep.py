@@ -1,9 +1,15 @@
 import random
 
 from environments.render_constants import SCREEN_HEIGHT as HEIGHT, SCREEN_WIDTH as WIDTH
-from generated_environments.multi_shelf_bounce.multi_shelf_bounce import MultiShelfBounceEnv
+from generated_environments.multi_shelf_bounce.multi_shelf_bounce import (
+    MultiShelfBounceEnv,
+)
 from utils.data_utils import data_prep, test_data_prep
-from utils.env_utils import RandomDict, pick_between_two_ranges, generate_environment_data
+from utils.env_utils import (
+    RandomDict,
+    pick_between_two_ranges,
+    generate_environment_data,
+)
 from utils.train_utils import set_seed
 
 if __name__ == "__main__":
@@ -34,178 +40,374 @@ if __name__ == "__main__":
     # Create Environment Dictionaries
 
     # Variable Angle
-    variable_angle_dict_train = RandomDict(render=False, fixed_shelf_y=True, shelf_y=shelf_fixed_height,
-                                           fixed_shelf_x=True, shelf_x=shelf_fixed_x, fixed_angle=True,
-                                           angle=lambda: round(random.uniform(*angle_limits_train), 1),
-                                           time_limit=fixed_time)
+    variable_angle_dict_train = RandomDict(
+        render=False,
+        fixed_shelf_y=True,
+        shelf_y=shelf_fixed_height,
+        fixed_shelf_x=True,
+        shelf_x=shelf_fixed_x,
+        fixed_angle=True,
+        angle=lambda: round(random.uniform(*angle_limits_train), 1),
+        time_limit=fixed_time,
+    )
 
-    variable_angle_dict_test = RandomDict(render=False, fixed_shelf_y=True, shelf_y=shelf_fixed_height,
-                                          fixed_shelf_x=True, shelf_x=shelf_fixed_x, fixed_angle=True,
-                                          angle=lambda: round(random.uniform(*angle_limits_test), 1),
-                                          time_limit=fixed_time)
+    variable_angle_dict_test = RandomDict(
+        render=False,
+        fixed_shelf_y=True,
+        shelf_y=shelf_fixed_height,
+        fixed_shelf_x=True,
+        shelf_x=shelf_fixed_x,
+        fixed_angle=True,
+        angle=lambda: round(random.uniform(*angle_limits_test), 1),
+        time_limit=fixed_time,
+    )
 
     # Variable Shelf Height
-    variable_shelfheight_dict_train = RandomDict(render=False, fixed_shelf_y=True, shelf_y=lambda: round(
-        random.uniform(*shelf_height_limits_train) * HEIGHT, 2),
-                                                 fixed_shelf_x=True, shelf_x=shelf_fixed_x, fixed_angle=True,
-                                                 angle=fixed_angle, time_limit=fixed_time)
+    variable_shelfheight_dict_train = RandomDict(
+        render=False,
+        fixed_shelf_y=True,
+        shelf_y=lambda: round(random.uniform(*shelf_height_limits_train) * HEIGHT, 2),
+        fixed_shelf_x=True,
+        shelf_x=shelf_fixed_x,
+        fixed_angle=True,
+        angle=fixed_angle,
+        time_limit=fixed_time,
+    )
 
-    variable_shelfheight_dict_test = RandomDict(render=False, fixed_shelf_y=True, shelf_y=lambda: round(
-        pick_between_two_ranges(shelf_height_limits_test[0], shelf_height_limits_test[1]) * HEIGHT, 2),
-                                                fixed_shelf_x=True, shelf_x=shelf_fixed_x, fixed_angle=True,
-                                                angle=fixed_angle, time_limit=fixed_time)
+    variable_shelfheight_dict_test = RandomDict(
+        render=False,
+        fixed_shelf_y=True,
+        shelf_y=lambda: round(
+            pick_between_two_ranges(
+                shelf_height_limits_test[0], shelf_height_limits_test[1]
+            )
+            * HEIGHT,
+            2,
+        ),
+        fixed_shelf_x=True,
+        shelf_x=shelf_fixed_x,
+        fixed_angle=True,
+        angle=fixed_angle,
+        time_limit=fixed_time,
+    )
 
     # Variable Time
-    variable_time_dict_train = RandomDict(render=False, fixed_shelf_y=True, shelf_y=shelf_fixed_height,
-                                          fixed_shelf_x=True, shelf_x=shelf_fixed_x, fixed_angle=True,
-                                          angle=fixed_angle,
-                                          time_limit=lambda: round(random.uniform(*time_limits_train), 1))
+    variable_time_dict_train = RandomDict(
+        render=False,
+        fixed_shelf_y=True,
+        shelf_y=shelf_fixed_height,
+        fixed_shelf_x=True,
+        shelf_x=shelf_fixed_x,
+        fixed_angle=True,
+        angle=fixed_angle,
+        time_limit=lambda: round(random.uniform(*time_limits_train), 1),
+    )
 
-    variable_time_dict_test = RandomDict(render=False, fixed_shelf_y=True, shelf_y=shelf_fixed_height,
-                                         fixed_shelf_x=True, shelf_x=shelf_fixed_x, fixed_angle=True,
-                                         angle=fixed_angle, time_limit=lambda: round(
-            pick_between_two_ranges(time_limits_test[0], time_limits_test[1]), 1))
+    variable_time_dict_test = RandomDict(
+        render=False,
+        fixed_shelf_y=True,
+        shelf_y=shelf_fixed_height,
+        fixed_shelf_x=True,
+        shelf_x=shelf_fixed_x,
+        fixed_angle=True,
+        angle=fixed_angle,
+        time_limit=lambda: round(
+            pick_between_two_ranges(time_limits_test[0], time_limits_test[1]), 1
+        ),
+    )
 
     # Variable Angle and Time
-    variable_time_angle_dict_train = RandomDict(render=False, fixed_shelf_y=True, shelf_y=shelf_fixed_height,
-                                                fixed_shelf_x=True, shelf_x=shelf_fixed_x, fixed_angle=True,
-                                                angle=lambda: round(random.uniform(*angle_limits_train), 1),
-                                                time_limit=lambda: round(random.uniform(*time_limits_train), 1))
+    variable_time_angle_dict_train = RandomDict(
+        render=False,
+        fixed_shelf_y=True,
+        shelf_y=shelf_fixed_height,
+        fixed_shelf_x=True,
+        shelf_x=shelf_fixed_x,
+        fixed_angle=True,
+        angle=lambda: round(random.uniform(*angle_limits_train), 1),
+        time_limit=lambda: round(random.uniform(*time_limits_train), 1),
+    )
 
-    variable_time_angle_dict_test = RandomDict(render=False, fixed_shelf_y=True, shelf_y=shelf_fixed_height,
-                                               fixed_shelf_x=True, shelf_x=shelf_fixed_x, fixed_angle=True,
-                                               angle=lambda: round(random.uniform(*angle_limits_test), 1),
-                                               time_limit=lambda: round(
-                                                   pick_between_two_ranges(time_limits_test[0], time_limits_test[1]),
-                                                   1))
+    variable_time_angle_dict_test = RandomDict(
+        render=False,
+        fixed_shelf_y=True,
+        shelf_y=shelf_fixed_height,
+        fixed_shelf_x=True,
+        shelf_x=shelf_fixed_x,
+        fixed_angle=True,
+        angle=lambda: round(random.uniform(*angle_limits_test), 1),
+        time_limit=lambda: round(
+            pick_between_two_ranges(time_limits_test[0], time_limits_test[1]), 1
+        ),
+    )
 
     # Variable Angle and Shelf Height
-    variable_angle_shelfheight_dict_train = RandomDict(render=False, fixed_shelf_y=True, shelf_y=lambda: round(
-        random.uniform(*shelf_height_limits_train) * HEIGHT, 2), fixed_shelf_x=True, shelf_x=shelf_fixed_x,
-                                                       fixed_angle=True,
-                                                       angle=lambda: round(random.uniform(*angle_limits_train), 1),
-                                                       time_limit=fixed_time)
+    variable_angle_shelfheight_dict_train = RandomDict(
+        render=False,
+        fixed_shelf_y=True,
+        shelf_y=lambda: round(random.uniform(*shelf_height_limits_train) * HEIGHT, 2),
+        fixed_shelf_x=True,
+        shelf_x=shelf_fixed_x,
+        fixed_angle=True,
+        angle=lambda: round(random.uniform(*angle_limits_train), 1),
+        time_limit=fixed_time,
+    )
 
-    variable_angle_shelfheight_dict_test = RandomDict(render=False, fixed_shelf_y=True, shelf_y=lambda: round(
-        pick_between_two_ranges(shelf_height_limits_test[0], shelf_height_limits_test[1]) * HEIGHT, 2),
-                                                      fixed_shelf_x=True, shelf_x=shelf_fixed_x, fixed_angle=True,
-                                                      angle=lambda: round(random.uniform(*angle_limits_test), 1),
-                                                      time_limit=fixed_time)
+    variable_angle_shelfheight_dict_test = RandomDict(
+        render=False,
+        fixed_shelf_y=True,
+        shelf_y=lambda: round(
+            pick_between_two_ranges(
+                shelf_height_limits_test[0], shelf_height_limits_test[1]
+            )
+            * HEIGHT,
+            2,
+        ),
+        fixed_shelf_x=True,
+        shelf_x=shelf_fixed_x,
+        fixed_angle=True,
+        angle=lambda: round(random.uniform(*angle_limits_test), 1),
+        time_limit=fixed_time,
+    )
 
     # Variable Angle, Shelf Height and Time
-    variable_time_angle_shelfheight_dict_train = RandomDict(render=False, fixed_shelf_y=True, shelf_y=lambda: round(
-        random.uniform(*shelf_height_limits_train) * HEIGHT, 2), fixed_shelf_x=True, shelf_x=shelf_fixed_x,
-                                                            fixed_angle=True,
-                                                            angle=lambda: round(random.uniform(*angle_limits_train),
-                                                                                1),
-                                                            time_limit=lambda: round(
-                                                                random.uniform(*time_limits_train), 1))
+    variable_time_angle_shelfheight_dict_train = RandomDict(
+        render=False,
+        fixed_shelf_y=True,
+        shelf_y=lambda: round(random.uniform(*shelf_height_limits_train) * HEIGHT, 2),
+        fixed_shelf_x=True,
+        shelf_x=shelf_fixed_x,
+        fixed_angle=True,
+        angle=lambda: round(random.uniform(*angle_limits_train), 1),
+        time_limit=lambda: round(random.uniform(*time_limits_train), 1),
+    )
 
-    variable_time_angle_shelfheight_dict_test = RandomDict(render=False, fixed_shelf_y=True, shelf_y=lambda: round(
-        pick_between_two_ranges(shelf_height_limits_test[0], shelf_height_limits_test[1]) * HEIGHT, 2),
-                                                           fixed_shelf_x=True, shelf_x=shelf_fixed_x, fixed_angle=True,
-                                                           angle=lambda: round(random.uniform(*angle_limits_test), 1),
-                                                           time_limit=lambda: round(
-                                                               pick_between_two_ranges(time_limits_test[0],
-                                                                                       time_limits_test[1]), 1))
+    variable_time_angle_shelfheight_dict_test = RandomDict(
+        render=False,
+        fixed_shelf_y=True,
+        shelf_y=lambda: round(
+            pick_between_two_ranges(
+                shelf_height_limits_test[0], shelf_height_limits_test[1]
+            )
+            * HEIGHT,
+            2,
+        ),
+        fixed_shelf_x=True,
+        shelf_x=shelf_fixed_x,
+        fixed_angle=True,
+        angle=lambda: round(random.uniform(*angle_limits_test), 1),
+        time_limit=lambda: round(
+            pick_between_two_ranges(time_limits_test[0], time_limits_test[1]), 1
+        ),
+    )
 
     num_iters_train = 200_000
     num_iters_test = 40_000
-    save_folder = 'data/multi_shelf_bounce/'
+    save_folder = "data/multi_shelf_bounce/"
     train_test_split = [0.8, 0.1, 0.1]
 
     # Generate all files
     # Variable Angle
-    generate_environment_data(variable_angle_dict_train, Env, num_iters_train,
-                              save_path=save_folder + "variable_angle/",
-                              verbose=True)
-    generate_environment_data(variable_angle_dict_test, Env, num_iters_test,
-                              save_path=save_folder + "variable_angle/oos_",
-                              verbose=True)
+    generate_environment_data(
+        variable_angle_dict_train,
+        Env,
+        num_iters_train,
+        save_path=save_folder + "variable_angle/",
+        verbose=True,
+    )
+    generate_environment_data(
+        variable_angle_dict_test,
+        Env,
+        num_iters_test,
+        save_path=save_folder + "variable_angle/oos_",
+        verbose=True,
+    )
 
-    data_prep(folder_loc=save_folder + "variable_angle/",
-              file_name='minimal_text.txt', line_delimiter='\n', ans_delimiter=' ans: ', split=train_test_split,
-              save_indices=True, split_method='train_val_test')
+    data_prep(
+        folder_loc=save_folder + "variable_angle/",
+        file_name="minimal_text.txt",
+        line_delimiter="\n",
+        ans_delimiter=" ans: ",
+        split=train_test_split,
+        save_indices=True,
+        split_method="train_val_test",
+    )
 
-    test_data_prep(folder_loc=save_folder + "variable_angle/",
-                   file_name='oos_minimal_text.txt',
-                   line_delimiter='\n', ans_delimiter=' ans: ')
+    test_data_prep(
+        folder_loc=save_folder + "variable_angle/",
+        file_name="oos_minimal_text.txt",
+        line_delimiter="\n",
+        ans_delimiter=" ans: ",
+    )
 
     # Variable Shelf Height
 
-    generate_environment_data(variable_shelfheight_dict_train, Env, num_iters_train,
-                              save_path=save_folder + "variable_shelfheight/", verbose=True)
-    generate_environment_data(variable_shelfheight_dict_test, Env, num_iters_test,
-                              save_path=save_folder + "variable_shelfheight/oos_", verbose=True)
+    generate_environment_data(
+        variable_shelfheight_dict_train,
+        Env,
+        num_iters_train,
+        save_path=save_folder + "variable_shelfheight/",
+        verbose=True,
+    )
+    generate_environment_data(
+        variable_shelfheight_dict_test,
+        Env,
+        num_iters_test,
+        save_path=save_folder + "variable_shelfheight/oos_",
+        verbose=True,
+    )
 
-    data_prep(folder_loc=save_folder + "variable_shelfheight/",
-              file_name='minimal_text.txt', line_delimiter='\n', ans_delimiter=' ans: ', split=train_test_split,
-              save_indices=True, split_method='train_val_test')
+    data_prep(
+        folder_loc=save_folder + "variable_shelfheight/",
+        file_name="minimal_text.txt",
+        line_delimiter="\n",
+        ans_delimiter=" ans: ",
+        split=train_test_split,
+        save_indices=True,
+        split_method="train_val_test",
+    )
 
-    test_data_prep(folder_loc=save_folder + "variable_shelfheight/",
-                   file_name='oos_minimal_text.txt',
-                   line_delimiter='\n', ans_delimiter=' ans: ')
+    test_data_prep(
+        folder_loc=save_folder + "variable_shelfheight/",
+        file_name="oos_minimal_text.txt",
+        line_delimiter="\n",
+        ans_delimiter=" ans: ",
+    )
 
     # Variable Time
 
-    generate_environment_data(variable_time_dict_train, Env, num_iters_train,
-                              save_path=save_folder + "variable_time/", verbose=True)
-    generate_environment_data(variable_time_dict_test, Env, num_iters_test,
-                              save_path=save_folder + "variable_time/oos_", verbose=True)
+    generate_environment_data(
+        variable_time_dict_train,
+        Env,
+        num_iters_train,
+        save_path=save_folder + "variable_time/",
+        verbose=True,
+    )
+    generate_environment_data(
+        variable_time_dict_test,
+        Env,
+        num_iters_test,
+        save_path=save_folder + "variable_time/oos_",
+        verbose=True,
+    )
 
-    data_prep(folder_loc=save_folder + "variable_time/",
-              file_name='minimal_text.txt', line_delimiter='\n', ans_delimiter=' ans: ', split=train_test_split,
-              save_indices=True, split_method='train_val_test')
+    data_prep(
+        folder_loc=save_folder + "variable_time/",
+        file_name="minimal_text.txt",
+        line_delimiter="\n",
+        ans_delimiter=" ans: ",
+        split=train_test_split,
+        save_indices=True,
+        split_method="train_val_test",
+    )
 
-    test_data_prep(folder_loc=save_folder + "variable_time/",
-                   file_name='oos_minimal_text.txt',
-                   line_delimiter='\n', ans_delimiter=' ans: ')
+    test_data_prep(
+        folder_loc=save_folder + "variable_time/",
+        file_name="oos_minimal_text.txt",
+        line_delimiter="\n",
+        ans_delimiter=" ans: ",
+    )
 
     # Variable Angle and Time
 
+    generate_environment_data(
+        variable_time_angle_dict_train,
+        Env,
+        num_iters_train,
+        save_path=save_folder + "variable_time_angle/",
+        verbose=True,
+    )
 
-    generate_environment_data(variable_time_angle_dict_train, Env, num_iters_train,
-                              save_path=save_folder + "variable_time_angle/", verbose=True)
+    generate_environment_data(
+        variable_time_angle_dict_test,
+        Env,
+        num_iters_test,
+        save_path=save_folder + "variable_time_angle/oos_",
+        verbose=True,
+    )
 
-    generate_environment_data(variable_time_angle_dict_test, Env, num_iters_test,
-                              save_path=save_folder + "variable_time_angle/oos_", verbose=True)
+    data_prep(
+        folder_loc=save_folder + "variable_time_angle/",
+        file_name="minimal_text.txt",
+        line_delimiter="\n",
+        ans_delimiter=" ans: ",
+        split=train_test_split,
+        save_indices=True,
+        split_method="train_val_test",
+    )
 
-    data_prep(folder_loc=save_folder + "variable_time_angle/",
-              file_name='minimal_text.txt', line_delimiter='\n', ans_delimiter=' ans: ', split=train_test_split,
-              save_indices=True, split_method='train_val_test')
-
-    test_data_prep(folder_loc=save_folder + "variable_time_angle/",
-                   file_name='oos_minimal_text.txt',
-                   line_delimiter='\n', ans_delimiter=' ans: ')
+    test_data_prep(
+        folder_loc=save_folder + "variable_time_angle/",
+        file_name="oos_minimal_text.txt",
+        line_delimiter="\n",
+        ans_delimiter=" ans: ",
+    )
 
     # Variable Angle and Shelf Height
-    generate_environment_data(variable_angle_shelfheight_dict_train, Env, num_iters_train,
-                              save_path=save_folder + "variable_angle_shelfheight/", verbose=True)
+    generate_environment_data(
+        variable_angle_shelfheight_dict_train,
+        Env,
+        num_iters_train,
+        save_path=save_folder + "variable_angle_shelfheight/",
+        verbose=True,
+    )
 
-    generate_environment_data(variable_angle_shelfheight_dict_test, Env, num_iters_test,
-                              save_path=save_folder + "variable_angle_shelfheight/oos_", verbose=True)
+    generate_environment_data(
+        variable_angle_shelfheight_dict_test,
+        Env,
+        num_iters_test,
+        save_path=save_folder + "variable_angle_shelfheight/oos_",
+        verbose=True,
+    )
 
-    data_prep(folder_loc=save_folder + "variable_angle_shelfheight/",
-              file_name='minimal_text.txt', line_delimiter='\n', ans_delimiter=' ans: ', split=train_test_split,
-              save_indices=True, split_method='train_val_test')
+    data_prep(
+        folder_loc=save_folder + "variable_angle_shelfheight/",
+        file_name="minimal_text.txt",
+        line_delimiter="\n",
+        ans_delimiter=" ans: ",
+        split=train_test_split,
+        save_indices=True,
+        split_method="train_val_test",
+    )
 
-    test_data_prep(folder_loc=save_folder + "variable_angle_shelfheight/",
-                   file_name='oos_minimal_text.txt',
-                   line_delimiter='\n', ans_delimiter=' ans: ')
+    test_data_prep(
+        folder_loc=save_folder + "variable_angle_shelfheight/",
+        file_name="oos_minimal_text.txt",
+        line_delimiter="\n",
+        ans_delimiter=" ans: ",
+    )
 
     # Variable Angle, Shelf Height and Time
 
-    generate_environment_data(variable_time_angle_shelfheight_dict_train, Env, num_iters_train,
-                              save_path=save_folder + "variable_time_angle_shelfheight/", verbose=True)
+    generate_environment_data(
+        variable_time_angle_shelfheight_dict_train,
+        Env,
+        num_iters_train,
+        save_path=save_folder + "variable_time_angle_shelfheight/",
+        verbose=True,
+    )
 
-    generate_environment_data(variable_time_angle_shelfheight_dict_test, Env, num_iters_test,
-                              save_path=save_folder + "variable_time_angle_shelfheight/oos_", verbose=True)
+    generate_environment_data(
+        variable_time_angle_shelfheight_dict_test,
+        Env,
+        num_iters_test,
+        save_path=save_folder + "variable_time_angle_shelfheight/oos_",
+        verbose=True,
+    )
 
-    data_prep(folder_loc=save_folder + "variable_time_angle_shelfheight/",
-                file_name='minimal_text.txt', line_delimiter='\n', ans_delimiter=' ans: ', split=train_test_split,
-                save_indices=True, split_method='train_val_test')
+    data_prep(
+        folder_loc=save_folder + "variable_time_angle_shelfheight/",
+        file_name="minimal_text.txt",
+        line_delimiter="\n",
+        ans_delimiter=" ans: ",
+        split=train_test_split,
+        save_indices=True,
+        split_method="train_val_test",
+    )
 
-    test_data_prep(folder_loc=save_folder + "variable_time_angle_shelfheight/",
-                     file_name='oos_minimal_text.txt',
-                        line_delimiter='\n', ans_delimiter=' ans: ')
-
+    test_data_prep(
+        folder_loc=save_folder + "variable_time_angle_shelfheight/",
+        file_name="oos_minimal_text.txt",
+        line_delimiter="\n",
+        ans_delimiter=" ans: ",
+    )

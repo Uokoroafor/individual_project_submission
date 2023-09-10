@@ -12,7 +12,7 @@ import random
 
 
 def read_in_data(
-        filepath: str, make_dict: Optional[bool] = True
+    filepath: str, make_dict: Optional[bool] = True
 ) -> Union[Tuple[Dict[str, List[str]], str], str]:
     """Read in the data from a file and makes the character dictionary.
     Args:
@@ -127,7 +127,7 @@ def get_numerics_from_string(string: str) -> int:
 
 
 def text_to_tensor_(
-        text: str, tokeniser: Any, add_sos_eos: Optional[bool] = True
+    text: str, tokeniser: Any, add_sos_eos: Optional[bool] = True
 ) -> torch.Tensor:
     """Convert a string of text into a tensor of token indices using sent_tokeniser. This version adds <sos> and <eos>
     tokens to the start and end of each sentence. It also adds a <newline> token to the end of each sentence.
@@ -165,7 +165,7 @@ def text_to_tensor_(
 
 
 def text_to_tensor(
-        text: str, tokeniser: Any, add_sos_eos: Optional[bool] = True
+    text: str, tokeniser: Any, add_sos_eos: Optional[bool] = True
 ) -> torch.Tensor:
     """Convert a string of text into a tensor of token indices using sent_tokeniser.
     Args:
@@ -194,13 +194,13 @@ def text_to_tensor(
 
 
 def data_prep(
-        folder_loc: str,
-        file_name: str,
-        line_delimiter: str,
-        ans_delimiter: str,
-        split: Optional[List[float]] = None,
-        save_indices: Optional[bool] = False,
-        split_method: Optional[str] = "train_val_test",
+    folder_loc: str,
+    file_name: str,
+    line_delimiter: str,
+    ans_delimiter: str,
+    split: Optional[List[float]] = None,
+    save_indices: Optional[bool] = False,
+    split_method: Optional[str] = "train_val_test",
 ) -> None:
     """Prepares the data for training and testing.
 
@@ -234,7 +234,7 @@ def data_prep(
             raise ValueError("A split must be provided when saving indices.")
 
         assert (
-                split_method == "train_val_test"
+            split_method == "train_val_test"
         ), "Indices can only be saved for 'train_val_test' method."
 
         # Randomly shuffle the indices
@@ -248,18 +248,20 @@ def data_prep(
         # Split the indices into train, validation and test sets
         train_indices = indices[: int(tr_weights * len(indices))]
         val_indices = indices[
-                      int(tr_weights * len(indices)): int(
-                          (tr_weights + val_weights) * len(indices))]
-        test_indices = indices[int((tr_weights + val_weights) * len(indices)):]
+            int(tr_weights * len(indices)) : int(
+                (tr_weights + val_weights) * len(indices)
+            )
+        ]
+        test_indices = indices[int((tr_weights + val_weights) * len(indices)) :]
 
         # Save the indices
-        pd.DataFrame(train_indices, columns=['indices']).to_csv(
+        pd.DataFrame(train_indices, columns=["indices"]).to_csv(
             os.path.join(folder_loc, "train_indices.csv"), index=False
         )
-        pd.DataFrame(val_indices, columns=['indices']).to_csv(
+        pd.DataFrame(val_indices, columns=["indices"]).to_csv(
             os.path.join(folder_loc, "val_indices.csv"), index=False
         )
-        pd.DataFrame(test_indices, columns=['indices']).to_csv(
+        pd.DataFrame(test_indices, columns=["indices"]).to_csv(
             os.path.join(folder_loc, "test_indices.csv"), index=False
         )
     else:
@@ -293,11 +295,11 @@ def data_prep(
 
 
 def test_data_prep(
-        folder_loc: str,
-        file_name: str,
-        line_delimiter: str,
-        ans_delimiter: str,
-        save_name: Optional[str] = None,
+    folder_loc: str,
+    file_name: str,
+    line_delimiter: str,
+    ans_delimiter: str,
+    save_name: Optional[str] = None,
 ) -> None:
     """Prepares the data for training and testing.
 
@@ -322,7 +324,7 @@ def test_data_prep(
     data = [line.split(ans_delimiter) for line in data.split(line_delimiter)]
 
     if save_name is None:
-        save_name = 'oos_test_data.csv'
+        save_name = "oos_test_data.csv"
 
     # Save the data as csv files
     pd.DataFrame(data, columns=["question", "answer"]).to_csv(
@@ -331,15 +333,15 @@ def test_data_prep(
 
 
 def make_data_loaders(
-        tokeniser: Any,
-        train_data: pd.DataFrame,
-        val_data: pd.DataFrame,
-        test_data: pd.DataFrame,
-        batch_size: int = 32,
-        max_seq_len: Optional[int] = None,
-        max_ans_len: Optional[int] = None,
-        output: str = "text",
-        shuffle: bool = True,
+    tokeniser: Any,
+    train_data: pd.DataFrame,
+    val_data: pd.DataFrame,
+    test_data: pd.DataFrame,
+    batch_size: int = 32,
+    max_seq_len: Optional[int] = None,
+    max_ans_len: Optional[int] = None,
+    output: str = "text",
+    shuffle: bool = True,
 ) -> Tuple[DataLoader, DataLoader, DataLoader, int]:
     """Creates the data loaders for the training validation and testing data.
 
@@ -410,13 +412,13 @@ def make_data_loaders(
 
 
 def make_data_loader(
-        tokeniser: Any,
-        data: pd.DataFrame,
-        batch_size: int = 32,
-        max_seq_len: Optional[int] = None,
-        max_ans_len: Optional[int] = None,
-        output: str = "text",
-        shuffle: bool = True,
+    tokeniser: Any,
+    data: pd.DataFrame,
+    batch_size: int = 32,
+    max_seq_len: Optional[int] = None,
+    max_ans_len: Optional[int] = None,
+    output: str = "text",
+    shuffle: bool = True,
 ) -> Tuple[DataLoader, int]:
     """Creates the data loader for provided data. This will primarily be used for out of sample testing.
 
@@ -465,7 +467,7 @@ def make_data_loader(
 
 
 def encode_and_pad(
-        data: pd.DataFrame, tokeniser: Any, max_seq_len: int, output: str
+    data: pd.DataFrame, tokeniser: Any, max_seq_len: int, output: str
 ) -> Tuple[List, List]:
     """Encodes and pads the data.
 
@@ -505,6 +507,6 @@ def encode_and_pad(
         if output == "text":
             if len(y[-1]) < max_seq_len:
                 y[-1] = (
-                        sos_tok + y[-1] + eos_tok + pad_tok * (max_seq_len - len(y[-1]) - 2)
+                    sos_tok + y[-1] + eos_tok + pad_tok * (max_seq_len - len(y[-1]) - 2)
                 )
     return x, y

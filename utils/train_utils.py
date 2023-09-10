@@ -11,13 +11,13 @@ import sys
 
 class Trainer:
     def __init__(
-            self,
-            model: nn.Module,
-            optimiser: torch.optim.Optimizer,
-            loss_fn: torch.nn.modules.loss._Loss,
-            training_hyperparameters: Dict,
-            encoding_utils: Dict,
-            scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
+        self,
+        model: nn.Module,
+        optimiser: torch.optim.Optimizer,
+        loss_fn: torch.nn.modules.loss._Loss,
+        training_hyperparameters: Dict,
+        encoding_utils: Dict,
+        scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
     ):
         """Constructor class for Trainer used to train a transformer model for language modelling and text generation
         Args:
@@ -72,15 +72,15 @@ class Trainer:
             pickle.dump(self.encoding_utils, file)
 
     def train(
-            self,
-            train_data: torch.Tensor,
-            val_data: torch.Tensor,
-            save_model: bool = True,
-            save_model_path: Optional[str] = None,
-            plotting: bool = True,
-            verbose: bool = True,
-            early_stopping: bool = False,
-            logging_intro: Optional[str] = None,
+        self,
+        train_data: torch.Tensor,
+        val_data: torch.Tensor,
+        save_model: bool = True,
+        save_model_path: Optional[str] = None,
+        plotting: bool = True,
+        verbose: bool = True,
+        early_stopping: bool = False,
+        logging_intro: Optional[str] = None,
     ):
         """Train the model
         Args:
@@ -137,7 +137,8 @@ class Trainer:
                         # Generate a sample from the model
                         chars = decode(
                             self.model.generate(
-                                start_token=self.model.trg_sos * torch.ones((1, 1), dtype=torch.long),
+                                start_token=self.model.trg_sos
+                                * torch.ones((1, 1), dtype=torch.long),
                                 max_length=30,
                                 sampled=False,
                             )[0].tolist()
@@ -155,9 +156,9 @@ class Trainer:
                     )
 
                     if (
-                            early_stopping
-                            and i > 0
-                            and val_losses[-1] > val_losses[-2] > val_losses[-3]
+                        early_stopping
+                        and i > 0
+                        and val_losses[-1] > val_losses[-2] > val_losses[-3]
                     ):
                         logger.log_info(f"Stopping early after {i} iterations")
                         break
@@ -233,10 +234,10 @@ class Trainer:
         return self.model, train_losses, val_losses
 
     def evaluate(
-            self,
-            test_data: torch.Tensor,
-            verbose: bool = True,
-            num_iters: Optional[int] = None,
+        self,
+        test_data: torch.Tensor,
+        verbose: bool = True,
+        num_iters: Optional[int] = None,
     ) -> float:
         """Evaluate the model
         Args:
@@ -300,7 +301,7 @@ class Trainer:
         return lowest_val_loss
 
     def get_batch(
-            self, split: Optional[str] = None, data: Optional[torch.Tensor] = None
+        self, split: Optional[str] = None, data: Optional[torch.Tensor] = None
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Get a batch of data from the train, validation or a provided data tensor
         Args:
@@ -320,8 +321,8 @@ class Trainer:
             else:
                 raise ValueError(f"Unknown split: '{split}'")
         ix = torch.randint(len(data) - self.max_seq_len, (self.batch_size,))
-        x = torch.stack([data[i: i + self.max_seq_len] for i in ix])
-        y = torch.stack([data[i + 1: i + self.max_seq_len + 1] for i in ix])
+        x = torch.stack([data[i : i + self.max_seq_len] for i in ix])
+        y = torch.stack([data[i + 1 : i + self.max_seq_len + 1] for i in ix])
         x, y = x.to(self.device), y.to(
             self.device
         )  # Transfer the data to the GPU if we are using it
@@ -360,7 +361,7 @@ class Trainer:
         return test_loss.item()
 
     def estimate_test_loss(
-            self, test_data: torch.Tensor, num_iters: int = 100
+        self, test_data: torch.Tensor, num_iters: int = 100
     ) -> float:
         """Estimate the loss on the test data by sampling a number of batches
         Args:
@@ -381,13 +382,13 @@ class Trainer:
 
 class PhysicalTrainer(Trainer):
     def __init__(
-            self,
-            model: nn.Module,
-            optimiser: torch.optim.Optimizer,
-            loss_fn: torch.nn.modules.loss._Loss,
-            training_hyperparameters: Dict,
-            encoding_utils: Dict,
-            scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
+        self,
+        model: nn.Module,
+        optimiser: torch.optim.Optimizer,
+        loss_fn: torch.nn.modules.loss._Loss,
+        training_hyperparameters: Dict,
+        encoding_utils: Dict,
+        scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
     ):
         """Initialize the trainer for the physical model. This is for training on the generated physical scenarios.
         No generation is done during training so this method is obviated. The training data is loaded from the
@@ -413,17 +414,16 @@ class PhysicalTrainer(Trainer):
         self.logger = None
 
     def train(
-            self,
-            train_dataloader: torch.utils.data.DataLoader,
-            val_dataloader: torch.utils.data.DataLoader,
-            save_model: bool = True,
-            save_model_path: Optional[str] = None,
-            plotting: bool = True,
-            verbose: bool = True,
-            early_stopping: bool = False,
-            early_stopping_patience: int = 10,
-            logging_intro: Optional[str] = None,
-
+        self,
+        train_dataloader: torch.utils.data.DataLoader,
+        val_dataloader: torch.utils.data.DataLoader,
+        save_model: bool = True,
+        save_model_path: Optional[str] = None,
+        plotting: bool = True,
+        verbose: bool = True,
+        early_stopping: bool = False,
+        early_stopping_patience: int = 10,
+        logging_intro: Optional[str] = None,
     ):
         """Train the model
 
@@ -540,7 +540,7 @@ class PhysicalTrainer(Trainer):
         return self.model, train_losses, val_losses
 
     def training_loop(
-            self, dataloader: torch.utils.data.DataLoader, method: str = "train"
+        self, dataloader: torch.utils.data.DataLoader, method: str = "train"
     ) -> float:
         """Training loop for the model
 
@@ -594,7 +594,7 @@ class PhysicalTrainer(Trainer):
         return total_loss / len(dataloader)
 
     def update_best_model_dict_(
-            self, loss_val: float, lowest_val_loss: float, count: int
+        self, loss_val: float, lowest_val_loss: float, count: int
     ) -> Tuple[float, int]:
         """Update the best model dictionary if the validation loss is the lowest so far
         Args:
@@ -635,13 +635,13 @@ class PhysicalTrainer(Trainer):
         return test_loss.item()
 
     def log_numerical_outputs(
-            self,
-            dataloader: torch.utils.data.DataLoader,
-            decode: Callable,
-            log_name: Optional[str] = None,
-            output_type: str = "num",
-            oos_data: bool = False,
-    )-> float:
+        self,
+        dataloader: torch.utils.data.DataLoader,
+        decode: Callable,
+        log_name: Optional[str] = None,
+        output_type: str = "num",
+        oos_data: bool = False,
+    ) -> float:
         """Log the numerical outputs of the model to a file. It also plots the predictions vs the targets
         Args:
             dataloader (DataLoader): DataLoader for the data
@@ -718,9 +718,7 @@ class PhysicalTrainer(Trainer):
             test_loss /= len(dataloader)
             self.logger.log_info(f"Test loss{oos_str} was {test_loss :,.4f}")
 
-            plot_save_path = (
-                f"{self.path}/training_logs/{type(self.model).__name__}_predictions{oos_str}.png"
-            )
+            plot_save_path = f"{self.path}/training_logs/{type(self.model).__name__}_predictions{oos_str}.png"
 
             if output_type == "text":
                 predictions, targets, count, error_log = self.convert_string_to_float(
@@ -732,8 +730,10 @@ class PhysicalTrainer(Trainer):
                     )
                     self.logger.log_warning(error_log)
                 # log MSE error
-                self.logger.log_info(f"MSE Error on converted numerical outputs "
-                                     f"is {nn.MSELoss()(torch.tensor(predictions), torch.tensor(targets)) :,.4f}")
+                self.logger.log_info(
+                    f"MSE Error on converted numerical outputs "
+                    f"is {nn.MSELoss()(torch.tensor(predictions), torch.tensor(targets)) :,.4f}"
+                )
 
             plot_predictions(
                 predictions=predictions,
@@ -746,7 +746,7 @@ class PhysicalTrainer(Trainer):
 
     @staticmethod
     def convert_string_to_float(
-            predictions: List[str], targets: List[str], decode: Callable
+        predictions: List[str], targets: List[str], decode: Callable
     ) -> Tuple[List[float], List[float], int, str]:
         """Convert the predictions and targets from strings to floats
         Args:
@@ -761,12 +761,12 @@ class PhysicalTrainer(Trainer):
         pred_out = []
         target_out = []
         count = 0
-        error_log = ''
+        error_log = ""
 
         for i in range(len(predictions)):
             try:
                 pred = "".join(decode(predictions[i]))
-                pred = pred.split('<eos>')[0].replace('<sos>', '')
+                pred = pred.split("<eos>")[0].replace("<sos>", "")
                 pred_out.append(float(pred))
                 target_out.append(float("".join(decode(targets[i], True))))
 
@@ -775,24 +775,27 @@ class PhysicalTrainer(Trainer):
                 if count <= 20:
                     # Only want to log the first 20 errors otherwise the log file gets too big
                     error_log += f"Could not convert Prediction: {pred} to float.\n"
-                    error_log += f"Target was {float(''.join(decode(targets[i], True)))}\n\n"
+                    error_log += (
+                        f"Target was {float(''.join(decode(targets[i], True)))}\n\n"
+                    )
                 continue
         return pred_out, target_out, count, error_log
 
 
 class NNTrainer:
     def __init__(
-            self,
-            model: nn.Module,
-            optimiser: torch.optim.Optimizer,
-            loss_fn: torch.nn.modules.loss._Loss,
-            scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None):
+        self,
+        model: nn.Module,
+        optimiser: torch.optim.Optimizer,
+        loss_fn: torch.nn.modules.loss._Loss,
+        scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
+    ):
         """Constructor class for Trainer used to train a standard neural network model
         Args:
             model (nn.Module): Model to train
             optimiser (torch.optim.Optimizer): Optimiser to use for training
             loss_fn (torch.nn.modules.loss._Loss): Loss function to use for training
-          """
+        """
         self.train_data = None
         self.val_data = None
         self.model = model
@@ -816,18 +819,18 @@ class NNTrainer:
             f.write(str(self.model))
 
     def train(
-            self,
-            train_dataloader: torch.utils.data.DataLoader,
-            val_dataloader: torch.utils.data.DataLoader,
-            epochs: int,
-            eval_every: int = 1,
-            save_model: bool = True,
-            save_model_path: Optional[str] = None,
-            plotting: bool = True,
-            verbose: bool = True,
-            early_stopping: bool = False,
-            early_stopping_patience: int = 10,
-            logging_intro: Optional[str] = None,
+        self,
+        train_dataloader: torch.utils.data.DataLoader,
+        val_dataloader: torch.utils.data.DataLoader,
+        epochs: int,
+        eval_every: int = 1,
+        save_model: bool = True,
+        save_model_path: Optional[str] = None,
+        plotting: bool = True,
+        verbose: bool = True,
+        early_stopping: bool = False,
+        early_stopping_patience: int = 10,
+        logging_intro: Optional[str] = None,
     ):
         """Train the model
         Args:
@@ -857,9 +860,7 @@ class NNTrainer:
         if logging_intro is not None:
             logger.log_info(logging_intro)
 
-        logger.log_info(
-            f"Training {type(self.model).__name__} for {epochs} iterations"
-        )
+        logger.log_info(f"Training {type(self.model).__name__} for {epochs} iterations")
         count = 0
 
         try:
@@ -867,10 +868,11 @@ class NNTrainer:
                 # Running for one extra epoch to get the final validation loss
                 if i % eval_every == 0:
                     train_loss, val_loss = self.train_loop(
-                        train_dataloader, val_dataloader)
+                        train_dataloader, val_dataloader
+                    )
 
                     logger.log_info(
-                        f'At Iteration: {max(1, i)}/{epochs}, Train loss: {train_loss:.4f}, Val loss: {val_loss:.4f}'
+                        f"At Iteration: {max(1, i)}/{epochs}, Train loss: {train_loss:.4f}, Val loss: {val_loss:.4f}"
                     )
 
                     train_losses.append(train_loss)
@@ -948,7 +950,9 @@ class NNTrainer:
         self.save_model(best_model_path)
         return best_model_path
 
-    def update_best_model_dict(self, loss_val: float, lowest_val_loss: float, count: int) -> Tuple[float, int]:
+    def update_best_model_dict(
+        self, loss_val: float, lowest_val_loss: float, count: int
+    ) -> Tuple[float, int]:
         """Update the best model dictionary if the validation loss is the lowest so far
         Args:
             loss_val (float): Dictionary containing the training and validation losses
@@ -967,8 +971,11 @@ class NNTrainer:
             count += 1
         return lowest_val_loss, count
 
-    def train_loop(self, dataloader_train: torch.utils.data.DataLoader,
-                   dataloader_val: Optional[torch.utils.data.DataLoader] = None) -> Tuple[float, Optional[float]]:
+    def train_loop(
+        self,
+        dataloader_train: torch.utils.data.DataLoader,
+        dataloader_val: Optional[torch.utils.data.DataLoader] = None,
+    ) -> Tuple[float, Optional[float]]:
         """Train the model for one epoch and return the train and validation loss.
 
         Args:
@@ -1012,7 +1019,9 @@ class NNTrainer:
 
         return train_loss, val_loss
 
-    def evaluate(self, testdata: Union[torch.utils.data.DataLoader, torch.Tensor]) -> float:
+    def evaluate(
+        self, testdata: Union[torch.utils.data.DataLoader, torch.Tensor]
+    ) -> float:
         """Test the model and return the test loss and accuracy.
 
         Args:

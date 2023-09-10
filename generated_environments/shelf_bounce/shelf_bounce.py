@@ -4,13 +4,24 @@ import arcade
 
 from environments.environment import Environment, EnvironmentView
 from environments.objects import Ball, Ground, Rectangle
-from environments.render_constants import SCREEN_WIDTH as WIDTH, SCREEN_HEIGHT as HEIGHT, BALL_RADIUS, GRAVITY, DAMPING, \
-    SHELF_WIDTH, SHELF_COLLISION_TYPE, BALL_COLLISION_TYPE, GROUND_COLLISION_TYPE
+from environments.render_constants import (
+    SCREEN_WIDTH as WIDTH,
+    SCREEN_HEIGHT as HEIGHT,
+    BALL_RADIUS,
+    GRAVITY,
+    DAMPING,
+    SHELF_WIDTH,
+    SHELF_COLLISION_TYPE,
+    BALL_COLLISION_TYPE,
+    GROUND_COLLISION_TYPE,
+)
 
 
 class ShelfBounceEnv(Environment):
-    def __init__(self, render: bool = False, height_limit: float = 0.2, time_limit=10, **kwargs):
-        """ This is an environment where a ball is dropped from a random height onto an angled shelf and the model has to predict
+    def __init__(
+        self, render: bool = False, height_limit: float = 0.2, time_limit=10, **kwargs
+    ):
+        """This is an environment where a ball is dropped from a random height onto an angled shelf and the model has to predict
         x position of the ball when it hits the ground.
 
         Args:
@@ -95,7 +106,9 @@ class ShelfBounceEnv(Environment):
             self.fixed_ball_elasticity = False
 
         # Add ground to the space
-        ground = Ground(self.space, width=WIDTH, elasticity=0, collision_type=GROUND_COLLISION_TYPE)
+        ground = Ground(
+            self.space, width=WIDTH, elasticity=0, collision_type=GROUND_COLLISION_TYPE
+        )
 
         self.add_shelf()
         self.add_ball()
@@ -124,15 +137,24 @@ class ShelfBounceEnv(Environment):
         if self.fixed_ball_height:
             y = self.ball_y
         else:
-            y = round(random.uniform((1 - self.height_limit) * self.height, self.height), 2)
+            y = round(
+                random.uniform((1 - self.height_limit) * self.height, self.height), 2
+            )
 
         if self.fixed_ball_elasticity:
             elasticity = self.ball_elasticity
         else:
             elasticity = 0.5
 
-        self.ball = Ball(self.space, radius=BALL_RADIUS, mass=1, x=x, y=y, collision_type=BALL_COLLISION_TYPE,
-                         elasticity=elasticity)
+        self.ball = Ball(
+            self.space,
+            radius=BALL_RADIUS,
+            mass=1,
+            x=x,
+            y=y,
+            collision_type=BALL_COLLISION_TYPE,
+            elasticity=elasticity,
+        )
 
         self.objects.append(self.ball)
         # Update the initial conditions in the numerical log and text log
@@ -140,8 +162,10 @@ class ShelfBounceEnv(Environment):
         self.numerical_log["ball_y0"] = y
         self.numerical_log["elasticity"] = elasticity
 
-        self.text_log.append(f"Ball of radius {BALL_RADIUS} and elasticity {elasticity} is dropped from "
-                             f"x={round(x, 2)} and y={round(y, 2)}")
+        self.text_log.append(
+            f"Ball of radius {BALL_RADIUS} and elasticity {elasticity} is dropped from "
+            f"x={round(x, 2)} and y={round(y, 2)}"
+        )
 
     def add_shelf(self):
         """Makes a rectangular shelf and adds it to the environment"""
@@ -157,7 +181,9 @@ class ShelfBounceEnv(Environment):
         if self.fixed_shelf_y:
             y = self.shelf_y
         else:
-            y = round(random.uniform(self.height_limit * self.height, 0.5 * self.height), 2)
+            y = round(
+                random.uniform(self.height_limit * self.height, 0.5 * self.height), 2
+            )
 
         if self.fixed_angle:
             angle = self.angle
@@ -168,8 +194,15 @@ class ShelfBounceEnv(Environment):
         width = SHELF_WIDTH
 
         # Make the shelf
-        self.shelf = Rectangle(self.space, width=width, height=BALL_RADIUS, x=x, y=y, angle=angle,
-                               collision_type=SHELF_COLLISION_TYPE)
+        self.shelf = Rectangle(
+            self.space,
+            width=width,
+            height=BALL_RADIUS,
+            x=x,
+            y=y,
+            angle=angle,
+            collision_type=SHELF_COLLISION_TYPE,
+        )
 
         # Add the shelf to the environment
         self.objects.append(self.shelf)
@@ -179,7 +212,9 @@ class ShelfBounceEnv(Environment):
         self.numerical_log["shelf_y"] = round(float(y), 2)
         self.numerical_log["shelf_angle"] = angle
         self.numerical_log["shelf_width"] = float(width)
-        self.text_log.append(f'Shelf of width {float(width)} and angle {angle} degrees at x={float(x)} y={y}')
+        self.text_log.append(
+            f"Shelf of width {float(width)} and angle {angle} degrees at x={float(x)} y={y}"
+        )
 
     def update(self, delta_time):
         if self.render_mode:
@@ -191,11 +226,14 @@ class ShelfBounceEnv(Environment):
         if round(self.elapsed_time, 1) >= self.time_limit and not self.time_up:
             self.log_state(self.elapsed_time)
             self.time_up = True
-            self.print_message = (f"At Time of {round(self.elapsed_time, 1)}: Ball was at "
-                                  f"x={round(self.ball.body.position.x, 2)} y={round(self.ball.body.position.y, 2)}")
+            self.print_message = (
+                f"At Time of {round(self.elapsed_time, 1)}: Ball was at "
+                f"x={round(self.ball.body.position.x, 2)} y={round(self.ball.body.position.y, 2)}"
+            )
 
-        if (self.ball.body.position.y <= BALL_RADIUS and self.time_up) or \
-                (self.time_up and not self.render_mode):
+        if (self.ball.body.position.y <= BALL_RADIUS and self.time_up) or (
+            self.time_up and not self.render_mode
+        ):
             # End the episode if the ball hits the ground in render mode or hits time limit in logging mode
             self.end_episode = True
 
@@ -207,7 +245,7 @@ class ShelfBounceEnv(Environment):
 
         Args:
             t (float): The time at which the state is logged
-            """
+        """
         # Get the final y coordinate of the ball
         x = self.ball.body.position.x
         y = float(max(self.ball.body.position.y, BALL_RADIUS))

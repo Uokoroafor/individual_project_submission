@@ -41,17 +41,20 @@ data_portions = [500, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000]
 poolings = ["max", "mean", "cls"]
 
 for data_portion in data_portions:
-
     for pooling in poolings:
         # # print(f"Training for pooling: {pooling}")
         # data_portion = 1
 
-        use_bpe = False  # Set to True to use BPE, False to use a character encoder/decoder
+        use_bpe = (
+            False  # Set to True to use BPE, False to use a character encoder/decoder
+        )
 
         encoding_str = "bpe" if use_bpe else "char"
 
-        logging_intro = (f"Training on {function_name} with {output_type} output and {pooling} pooling on "
-                         f"{data_folder + file_path} data. Using {encoding_str} encoding.")
+        logging_intro = (
+            f"Training on {function_name} with {output_type} output and {pooling} pooling on "
+            f"{data_folder + file_path} data. Using {encoding_str} encoding."
+        )
 
         # Read in the data
         data = read_in_data(data_folder + file_path, make_dict=False)
@@ -75,7 +78,10 @@ for data_portion in data_portions:
         )
 
         encoding_utils = dict(
-            enc_dict=encoder_dict, dec_dict=decoder_dict, encode_fn=encode, decode_fn=decode
+            enc_dict=encoder_dict,
+            dec_dict=decoder_dict,
+            encode_fn=encode,
+            decode_fn=decode,
         )
 
         # Read in the data as pandas dataframes
@@ -170,8 +176,9 @@ for data_portion in data_portions:
         )
 
         batch_logger.log_info(f"Training log is saved at {trainer.path} for")
-        batch_logger.log_info(f"{function_name} on {data_folder} data with {output_type} "
-                              f"output, {pooling} pooling, {encoding_str} encoding and {data_portion} training examples.")
+        batch_logger.log_info(
+            f"{function_name} on {data_folder} data with {output_type} "
+            f"output, {pooling} pooling, {encoding_str} encoding and {data_portion} training examples."
+        )
         batch_logger.log_info(f"Test loss: {test_loss:.4f}")
         batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
-

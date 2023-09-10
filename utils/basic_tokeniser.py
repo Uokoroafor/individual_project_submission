@@ -37,12 +37,12 @@ class BasicTokeniser(BPE):
 
 class NumericTokeniser(BPE):
     def __init__(
-            self,
-            vocab_size: Optional[int] = 100000,
-            sos: Optional[str] = "<sos>",
-            eos: Optional[str] = "<eos>",
-            pad: Optional[str] = "<pad>",
-            unk: Optional[str] = "<unk>",
+        self,
+        vocab_size: Optional[int] = 100000,
+        sos: Optional[str] = "<sos>",
+        eos: Optional[str] = "<eos>",
+        pad: Optional[str] = "<pad>",
+        unk: Optional[str] = "<unk>",
     ):
         """Constructor class for a tokeniser that only tokenises numbers. Basically the BPE class but only for numbers.
         Args:
@@ -221,5 +221,3 @@ if __name__ == "__main__":
     print("Original data: ", data[:100])
     print("Encoded data: ", encoded_data)
     print("Decoded data: ", decoded_data)
-
-

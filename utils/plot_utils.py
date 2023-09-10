@@ -4,11 +4,11 @@ import torch
 
 
 def plot_losses(
-        train_losses: List[float],
-        val_losses: List[float],
-        model_name: Optional[str] = None,
-        num_epochs: Optional[int] = None,
-        saved_path: Optional[str] = None,
+    train_losses: List[float],
+    val_losses: List[float],
+    model_name: Optional[str] = None,
+    num_epochs: Optional[int] = None,
+    saved_path: Optional[str] = None,
 ) -> None:
     """Plot the training and validation losses
     Args:
@@ -43,10 +43,10 @@ def plot_losses(
 
 
 def plot_predictions(
-        predictions: List[float],
-        targets: List[float],
-        model_name: Optional[str] = None,
-        saved_path: Optional[str] = None,
+    predictions: List[float],
+    targets: List[float],
+    model_name: Optional[str] = None,
+    saved_path: Optional[str] = None,
 ) -> None:
     """Plot the predictions and targets
     Args:
@@ -58,7 +58,9 @@ def plot_predictions(
 
     # Scatter of predictions vs targets with a diagonal line
     plt.scatter(predictions, targets, s=1)
-    plt.plot(targets, targets, color="red", label="Perfect Predictions", linestyle="dashed")
+    plt.plot(
+        targets, targets, color="red", label="Perfect Predictions", linestyle="dashed"
+    )
     plt.title(f"Predictions vs Targets for the {model_name} model")
     plt.xlabel("Predictions")
     plt.ylabel("Targets")
@@ -70,10 +72,10 @@ def plot_predictions(
 
 
 def plot_errors(
-        errors: List[float],
-        shots: List[int] = None,
-        model_name: Optional[str] = None,
-        saved_path: Optional[str] = None,
+    errors: List[float],
+    shots: List[int] = None,
+    model_name: Optional[str] = None,
+    saved_path: Optional[str] = None,
 ) -> None:
     """Plot the errors over the number of shots
     Args:

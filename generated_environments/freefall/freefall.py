@@ -5,12 +5,24 @@ import arcade
 
 from environments.environment import Environment, EnvironmentView
 from environments.objects import Ball, Ground
-from environments.render_constants import SCREEN_WIDTH as WIDTH, SCREEN_HEIGHT as HEIGHT, BALL_RADIUS, GRAVITY, DAMPING
+from environments.render_constants import (
+    SCREEN_WIDTH as WIDTH,
+    SCREEN_HEIGHT as HEIGHT,
+    BALL_RADIUS,
+    GRAVITY,
+    DAMPING,
+)
 
 
 class FreefallEnv(Environment):
-    def __init__(self, render: bool = True, height_range: float = 0.2, time_limit: float = 5.0, **kwargs):
-        """ This is an environment where a ball is dropped from a random height and the model has to predict the
+    def __init__(
+        self,
+        render: bool = True,
+        height_range: float = 0.2,
+        time_limit: float = 5.0,
+        **kwargs,
+    ):
+        """This is an environment where a ball is dropped from a random height and the model has to predict the
         height after a certain time.
         Args:
             render (bool, optional): Whether to render the environment or not. Defaults to True.
@@ -102,7 +114,9 @@ class FreefallEnv(Environment):
         if self.fixed_height:
             y = float(self.drop_height)
         else:
-            y = round(random.uniform((1 - self.height_limit) * self.height, self.height), 2)
+            y = round(
+                random.uniform((1 - self.height_limit) * self.height, self.height), 2
+            )
         self.ball = Ball(self.space, radius=BALL_RADIUS, mass=1, x=x, y=y)
 
         # Set the elasticity of the ball
@@ -111,7 +125,9 @@ class FreefallEnv(Environment):
         self.objects.append(self.ball)
         # Update the initial conditions in the numerical log and text log
         self.numerical_log["y_0"] = round(y, 2)
-        self.text_log.append(f"Ball of radius {float(BALL_RADIUS)} dropped from y={y:.2f}")
+        self.text_log.append(
+            f"Ball of radius {float(BALL_RADIUS)} dropped from y={y:.2f}"
+        )
 
     def log_state(self, t):
         y1 = max(self.ball.body.position.y, float(self.ball.radius))
@@ -121,7 +137,9 @@ class FreefallEnv(Environment):
         self.text_log.append(f"At time {round(t, 1)}")
         self.text_log.append(f"Ball is at y={y1:.2f}")
 
-    def make_minimal_text(self, split_text: str = "ans: ", ans_key: Optional[str] = None) -> str:
+    def make_minimal_text(
+        self, split_text: str = "ans: ", ans_key: Optional[str] = None
+    ) -> str:
         """Joins up the text in the numerical log to make a minimal text"""
         # Join the column names and values
         if ans_key is None:
@@ -136,7 +154,9 @@ class FreefallEnv(Environment):
         text += f"{split_text}{self.numerical_log[ans_key]}"
         return text
 
-    def make_descriptive_text(self, split_text: str = "ans: ", ans_index: Optional[int] = None) -> str:
+    def make_descriptive_text(
+        self, split_text: str = "ans: ", ans_index: Optional[int] = None
+    ) -> str:
         """Joins up the text in the text log to make a descriptive text"""
         # Join the column names and values
         if ans_index is None:
@@ -156,6 +176,8 @@ if __name__ == "__main__":
     # Example Usage
 
     time_limit = round(random.uniform(1, 10), 2)
-    env = FreefallEnv(render=False, time_limit=time_limit, fixed_height=True, drop_height=HEIGHT // 2)
+    env = FreefallEnv(
+        render=False, time_limit=time_limit, fixed_height=True, drop_height=HEIGHT // 2
+    )
     print(env.numerical_log)
     print(env.text_log)

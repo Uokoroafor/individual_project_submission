@@ -30,7 +30,7 @@ lr = training_hyperparams["learning_rate"]
 test_folders = ["variable_shelfheight_ballheight_angle"]
 
 # Want to train on a concatenated set of two variables and train on the combined data
-train_folders =[ ["variable_ballheight_angle", "variable_shelfheight_angle"]]
+train_folders = [["variable_ballheight_angle", "variable_shelfheight_angle"]]
 # split each folder name by _, then train on the first two variables
 
 # train_folders = []
@@ -67,14 +67,18 @@ for train_folder, test_folder in zip(train_folders, test_folders):
         # # print(f"Training for pooling: {pooling}")
         # data_portion = 1
 
-        use_bpe = False  # Set to True to use BPE, False to use a character encoder/decoder
+        use_bpe = (
+            False  # Set to True to use BPE, False to use a character encoder/decoder
+        )
 
         encoding_str = "bpe" if use_bpe else "char"
 
         data_folder_str = ", ".join(train_folder)
 
-        logging_intro = (f"Training on {function_name} with {output_type} output and {pooling} pooling on "
-                         f"({data_folder_str}) datasets.")
+        logging_intro = (
+            f"Training on {function_name} with {output_type} output and {pooling} pooling on "
+            f"({data_folder_str}) datasets."
+        )
 
         # Train the encoder on the test dataset which is a combination of the two variables
         data = read_in_data(test_folder + file_path, make_dict=False)
@@ -98,13 +102,22 @@ for train_folder, test_folder in zip(train_folders, test_folders):
         )
 
         encoding_utils = dict(
-            enc_dict=encoder_dict, dec_dict=decoder_dict, encode_fn=encode, decode_fn=decode
+            enc_dict=encoder_dict,
+            dec_dict=decoder_dict,
+            encode_fn=encode,
+            decode_fn=decode,
         )
 
-        print('Success!')
+        print("Success!")
         # Read in the data as pandas dataframes and combine them
-        train_data = [pd.read_csv(data_folder + train_data_path, dtype=str) for data_folder in data_folders]
-        val_data = [pd.read_csv(data_folder + val_data_path, dtype=str) for data_folder in data_folders]
+        train_data = [
+            pd.read_csv(data_folder + train_data_path, dtype=str)
+            for data_folder in data_folders
+        ]
+        val_data = [
+            pd.read_csv(data_folder + val_data_path, dtype=str)
+            for data_folder in data_folders
+        ]
 
         # for data_folder in data_folders:
         #     train_data.append(pd.read_csv(data_folder + train_data_path, dtype=str))
@@ -186,10 +199,11 @@ for train_folder, test_folder in zip(train_folders, test_folders):
             test_loader, decode, "test_log.txt", output_type=output_type
         )
 
-
         batch_logger.log_info(f"Training log is saved at {trainer.path} for")
-        batch_logger.log_info(f"{function_name} on ({data_folder_str}) data with {output_type} "
-                              f"output, {pooling} pooling, {encoding_str} encoding and {len(train_data)} training  examples.")
+        batch_logger.log_info(
+            f"{function_name} on ({data_folder_str}) data with {output_type} "
+            f"output, {pooling} pooling, {encoding_str} encoding and {len(train_data)} training  examples."
+        )
         batch_logger.log_info(f"Test loss: {test_loss:.4f}")
 
     except Exception as e:

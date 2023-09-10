@@ -5,8 +5,13 @@ import torch.nn as nn
 
 
 class Net(nn.Module):
-    def __init__(self, input_size: int, hidden_sizes: List[int], output_size: int = 1,
-                 activation: Optional[nn.Module] = None):
+    def __init__(
+        self,
+        input_size: int,
+        hidden_sizes: List[int],
+        output_size: int = 1,
+        activation: Optional[nn.Module] = None,
+    ):
         """This class is used to create a neural network with the specified number of hidden layers and hidden units.
 
         Args:

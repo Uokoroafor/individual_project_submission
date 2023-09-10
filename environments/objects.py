@@ -6,10 +6,18 @@ import pymunk
 
 
 class Ball:
-    def __init__(self, space: pymunk.Space, x: float, y: float, radius: float, collision_type: int = 1,
-                 elasticity: float = 0.8,
-                 mass: float = 10.0, colour: arcade.Color = arcade.color.GOLD):
-        """ This is a ball object that can be used in any arcade environment.
+    def __init__(
+        self,
+        space: pymunk.Space,
+        x: float,
+        y: float,
+        radius: float,
+        collision_type: int = 1,
+        elasticity: float = 0.8,
+        mass: float = 10.0,
+        colour: arcade.Color = arcade.color.GOLD,
+    ):
+        """This is a ball object that can be used in any arcade environment.
         It is a wrapper around pymunk's circle object.
 
         Args:
@@ -26,7 +34,9 @@ class Ball:
         self.body = pymunk.Body(mass, moment)
         self.body.position = pymunk.Vec2d(x, y)
         self.shape = pymunk.Circle(self.body, radius)
-        self.shape.elasticity = elasticity  # This means that the coin will bounce back with elasticity%
+        self.shape.elasticity = (
+            elasticity  # This means that the coin will bounce back with elasticity%
+        )
         # of its original speed
         self.radius = radius
         self.shape.collision_type = collision_type
@@ -34,14 +44,24 @@ class Ball:
         space.add(self.body, self.shape)
 
     def draw(self):
-        arcade.draw_circle_filled(self.body.position.x, self.body.position.y, self.radius, self.colour)
+        arcade.draw_circle_filled(
+            self.body.position.x, self.body.position.y, self.radius, self.colour
+        )
 
 
 class Rectangle:
-    def __init__(self, space: pymunk.Space, x: float, y: float, width: float, height: float, angle: float = 0,
-                 collision_type: int = 1,
-                 colour: arcade.Color = arcade.color.BROWN):
-        """ This is a rectangle object that can be used in any arcade environment.
+    def __init__(
+        self,
+        space: pymunk.Space,
+        x: float,
+        y: float,
+        width: float,
+        height: float,
+        angle: float = 0,
+        collision_type: int = 1,
+        colour: arcade.Color = arcade.color.BROWN,
+    ):
+        """This is a rectangle object that can be used in any arcade environment.
         It is a wrapper around pymunk's segment object.
 
         Args:
@@ -56,8 +76,12 @@ class Rectangle:
 
         self.body = pymunk.Body(body_type=pymunk.Body.STATIC)
         self.body.position = pymunk.Vec2d(x, y)
-        self.shape = pymunk.Segment(self.body, pymunk.Vec2d(-width / 2, -height / 2),
-                                    pymunk.Vec2d(width / 2, height / 2), 1)
+        self.shape = pymunk.Segment(
+            self.body,
+            pymunk.Vec2d(-width / 2, -height / 2),
+            pymunk.Vec2d(width / 2, height / 2),
+            1,
+        )
         self.shape.elasticity = 1.0
         self.body.angle = math.radians(angle)
         self.width = width
@@ -84,7 +108,7 @@ class Rectangle:
         return self.center_y - self.height / 2
 
     def get_corners(self) -> List[Tuple[float, float]]:
-        """ Returns the four corners of the rectangle. """
+        """Returns the four corners of the rectangle."""
         half_width = self.width / 2
         half_height = self.height / 2
 
@@ -93,13 +117,19 @@ class Rectangle:
             (-half_width, -half_height),
             (half_width, -half_height),
             (half_width, half_height),
-            (-half_width, half_height)
+            (-half_width, half_height),
         ]
 
         # Rotate each corner around the center of the rectangle.
-        corners = [(x * math.cos(math.radians(self.angle)) - y * math.sin(math.radians(self.angle)),
-                    x * math.sin(math.radians(self.angle)) + y * math.cos(math.radians(self.angle)))
-                   for x, y in corners]
+        corners = [
+            (
+                x * math.cos(math.radians(self.angle))
+                - y * math.sin(math.radians(self.angle)),
+                x * math.sin(math.radians(self.angle))
+                + y * math.cos(math.radians(self.angle)),
+            )
+            for x, y in corners
+        ]
 
         # Offset each corner by the position of the rectangle.
         corners = [(x + self.center_x, y + self.center_y) for x, y in corners]
@@ -107,7 +137,7 @@ class Rectangle:
         return corners
 
     def draw(self):
-        """ Draws the rectangle. """
+        """Draws the rectangle."""
         # Offset each corner by the position of the rectangle.
         corners = self.get_corners()
 
@@ -115,9 +145,15 @@ class Rectangle:
 
 
 class Ground:
-
-    def __init__(self, space: pymunk.Space, width: int, radius: float = 0.0001, elasticity: float = 1.0, collision_type: int = 1):
-        """ This is an object that can be used in any arcade environment. It is a pymunk static segment object that
+    def __init__(
+        self,
+        space: pymunk.Space,
+        width: int,
+        radius: float = 0.0001,
+        elasticity: float = 1.0,
+        collision_type: int = 1,
+    ):
+        """This is an object that can be used in any arcade environment. It is a pymunk static segment object that
         will be added to the space and used as the ground.
 
         Args:
@@ -129,7 +165,9 @@ class Ground:
         """
 
         self.body = pymunk.Body(body_type=pymunk.Body.STATIC)
-        self.shape = pymunk.Segment(self.body, (-10*width, 0), (10*width, 0), radius)
+        self.shape = pymunk.Segment(
+            self.body, (-10 * width, 0), (10 * width, 0), radius
+        )
         self.shape.elasticity = elasticity
         self.shape.friction = 1.0
         self.shape.collision_type = collision_type
@@ -137,9 +175,16 @@ class Ground:
 
 
 class Boundary:
-
-    def __init__(self, space: pymunk.Space, length: int, boundary_type: str, radius: float = 0.0001, elasticity: float = 1.0, collision_type: int = 1):
-        """ This is an object that can be used in any arcade environment. It is a pymunk static segment object that
+    def __init__(
+        self,
+        space: pymunk.Space,
+        length: int,
+        boundary_type: str,
+        radius: float = 0.0001,
+        elasticity: float = 1.0,
+        collision_type: int = 1,
+    ):
+        """This is an object that can be used in any arcade environment. It is a pymunk static segment object that
         will be added to the space and used as the boundary.
 
         Args:

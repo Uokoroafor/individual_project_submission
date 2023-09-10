@@ -42,13 +42,14 @@ data_portion = 200_000
 pooling = "none"
 
 
-
 use_bpe = False  # Set to True to use BPE, False to use a character encoder/decoder
 
 encoding_str = "bpe" if use_bpe else "char"
 
-logging_intro = (f"Training on {function_name} with {output_type} output and {pooling} pooling on "
-                 f"{data_folder + file_path} data. Using {encoding_str} encoding.")
+logging_intro = (
+    f"Training on {function_name} with {output_type} output and {pooling} pooling on "
+    f"{data_folder + file_path} data. Using {encoding_str} encoding."
+)
 
 # Read in the data
 data = read_in_data(data_folder + file_path, make_dict=False)
@@ -76,7 +77,6 @@ encoding_utils = dict(
 )
 
 for pct in [0.025, 0.05, 0.1]:
-
     # Read in the data as pandas dataframes
     train_data = pd.read_csv(data_folder + train_data_path, dtype=str)
     val_data = pd.read_csv(data_folder + val_data_path, dtype=str)
@@ -115,7 +115,6 @@ for pct in [0.025, 0.05, 0.1]:
     train_data.index = [None] * len(train_data)
     val_data.index = [None] * len(val_data)
     test_data.index = [None] * len(test_data)
-
 
     train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
         tokeniser=gpt_tokeniser,
@@ -198,7 +197,10 @@ for pct in [0.025, 0.05, 0.1]:
     #     oos_test_loader, decode, "oos_test_log.txt", output_type=output_type
     # )
     batch_logger.log_info(f"Training log is saved at {trainer.path} for")
-    batch_logger.log_info(f"{function_name} on {data_folder} data with {output_type} "
-                          f"output and {len(train_data)} training examples, {len(test_data)} test examples and ")
-    batch_logger.log_info(f"Test loss: {test_loss:.4f} for values between {y_min:.2f} and {y_max:.2f}")
-
+    batch_logger.log_info(
+        f"{function_name} on {data_folder} data with {output_type} "
+        f"output and {len(train_data)} training examples, {len(test_data)} test examples and "
+    )
+    batch_logger.log_info(
+        f"Test loss: {test_loss:.4f} for values between {y_min:.2f} and {y_max:.2f}"
+    )

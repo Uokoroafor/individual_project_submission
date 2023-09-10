@@ -18,7 +18,9 @@ class Environment:
         self.render_mode = render
         self.print_message = None
 
-    def make_minimal_text(self, split_text: str = "ans: ", ans_key: Optional[str] = None) -> str:
+    def make_minimal_text(
+        self, split_text: str = "ans: ", ans_key: Optional[str] = None
+    ) -> str:
         """Joins up the text in the numerical log to make a minimal text
 
         Args:
@@ -41,7 +43,9 @@ class Environment:
         text += f"{split_text}{self.numerical_log[ans_key]}"
         return text
 
-    def make_descriptive_text(self, split_text: str = "ans: ", ans_index: Optional[int] = None) -> str:
+    def make_descriptive_text(
+        self, split_text: str = "ans: ", ans_index: Optional[int] = None
+    ) -> str:
         """Joins up the text in the text log to make a descriptive text
 
         Args:

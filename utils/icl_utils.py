@@ -16,10 +16,17 @@ import openai
 
 
 class ContextGenerator:
-    def __init__(self, data: str, line_delimiter: str = None, ans_delimiter: str = None,
-                 question: Optional[str] = None, answer_str: Optional[str] = None,
-                 train_indices: Optional[List[int]] = None, val_indices: Optional[List[int]] = None,
-                 test_indices: Optional[List[int]] = None):
+    def __init__(
+        self,
+        data: str,
+        line_delimiter: str = None,
+        ans_delimiter: str = None,
+        question: Optional[str] = None,
+        answer_str: Optional[str] = None,
+        train_indices: Optional[List[int]] = None,
+        val_indices: Optional[List[int]] = None,
+        test_indices: Optional[List[int]] = None,
+    ):
         """This class is used to generate contexts for ICL experiments. It will be used to generate contexts of the form:
         context + question + answer
 
@@ -41,11 +48,18 @@ class ContextGenerator:
         self.train_data = None
         self.val_data = None
         self.test_data = None
-        self.prep_txt_data(data=data, line_delimiter=line_delimiter, ans_delimiter=ans_delimiter,
-                           train_indices=train_indices, val_indices=val_indices,
-                           test_indices=test_indices)
+        self.prep_txt_data(
+            data=data,
+            line_delimiter=line_delimiter,
+            ans_delimiter=ans_delimiter,
+            train_indices=train_indices,
+            val_indices=val_indices,
+            test_indices=test_indices,
+        )
 
-    def prep_line(self, line: str, ans_delimiter: Optional[str] = None) -> Tuple[str, str]:
+    def prep_line(
+        self, line: str, ans_delimiter: Optional[str] = None
+    ) -> Tuple[str, str]:
         """Prepares a line of data by splitting it into the context and answer.
 
         Args:
@@ -64,14 +78,15 @@ class ContextGenerator:
         return context, answer
 
     def prep_txt_data(
-            self,
-            data: str,
-            line_delimiter: Optional[str] = None,
-            ans_delimiter: Optional[str] = None,
-            train_indices: Optional[List[int]] = None,
-            val_indices: Optional[List[int]] = None,
-            test_indices: Optional[List[int]] = None,
-            only_test: Optional[bool] = False) -> Optional[List[List[str]]]:
+        self,
+        data: str,
+        line_delimiter: Optional[str] = None,
+        ans_delimiter: Optional[str] = None,
+        train_indices: Optional[List[int]] = None,
+        val_indices: Optional[List[int]] = None,
+        test_indices: Optional[List[int]] = None,
+        only_test: Optional[bool] = False,
+    ) -> Optional[List[List[str]]]:
         """Prepares the data for training and testing.
 
         Args:
@@ -90,7 +105,10 @@ class ContextGenerator:
 
         # Split into questions and answers
         # data = [line.split(ans_delimiter) for line in data.rsplit(line_delimiter)]
-        data = [list(self.prep_line(line, ans_delimiter=ans_delimiter)) for line in data.rsplit(line_delimiter)]
+        data = [
+            list(self.prep_line(line, ans_delimiter=ans_delimiter))
+            for line in data.rsplit(line_delimiter)
+        ]
 
         if only_test:
             return data
@@ -107,11 +125,12 @@ class ContextGenerator:
 
         return None
 
-    def prep_test_data(self,
-                       data: str,
-                       line_delimiter: Optional[str] = None,
-                       ans_delimiter: Optional[str] = None
-                       ) -> None:
+    def prep_test_data(
+        self,
+        data: str,
+        line_delimiter: Optional[str] = None,
+        ans_delimiter: Optional[str] = None,
+    ) -> None:
         """Get test data and prepare it for testing.
 
         Args:
@@ -119,12 +138,21 @@ class ContextGenerator:
             line_delimiter (str): The text to split the lines on.
             ans_delimiter (str): The text to split the answers on.
         """
-        data = self.prep_txt_data(data=data, line_delimiter=line_delimiter,
-                                  ans_delimiter=ans_delimiter, only_test=True)
+        data = self.prep_txt_data(
+            data=data,
+            line_delimiter=line_delimiter,
+            ans_delimiter=ans_delimiter,
+            only_test=True,
+        )
 
         return data
 
-    def split_data(self, train_indices: List[int], val_indices: Optional[List[int]], test_indices: List[int]):
+    def split_data(
+        self,
+        train_indices: List[int],
+        val_indices: Optional[List[int]],
+        test_indices: List[int],
+    ):
         """Splits the data into train, validation and test sets.
 
         Args:
@@ -138,8 +166,13 @@ class ContextGenerator:
             self.val_data = [self.train_data[i] for i in val_indices]
         self.test_data = [self.train_data[i] for i in test_indices]
 
-    def generate_prompt(self, context: str, question: str = '', answer: str = '',
-                        answer_str: Optional[str] = None) -> str:
+    def generate_prompt(
+        self,
+        context: str,
+        question: str = "",
+        answer: str = "",
+        answer_str: Optional[str] = None,
+    ) -> str:
         """Generates a prompt for the question and answer. If an answer is provided, then a new line is appeded to the prompt.
 
         Args:
@@ -159,8 +192,13 @@ class ContextGenerator:
 
         return prompt
 
-    def generate_few_shot_prompt(self, context: str, question: Optional[str] = None, answer: str = '',
-                                 num_shots: int = 5) -> str:
+    def generate_few_shot_prompt(
+        self,
+        context: str,
+        question: Optional[str] = None,
+        answer: str = "",
+        num_shots: int = 5,
+    ) -> str:
         """Generates a prompt for the question and answer. If an answer is provided, then a new line is appended to the prompt.
         It picks num_shots random contexts, questions and answers from self.train_data then appends the given context, question and answer at the end.
 
@@ -185,12 +223,15 @@ class ContextGenerator:
         answers = [self.train_data[i][1] for i in indices]
 
         # Generate the prompts
-        prompts = [self.generate_prompt(context_, question, answer_) for context_, answer_ in zip(contexts, answers)]
+        prompts = [
+            self.generate_prompt(context_, question, answer_)
+            for context_, answer_ in zip(contexts, answers)
+        ]
 
         # Append the given context, question and answer to the end
         prompts.append(self.generate_prompt(context, question, answer))
 
-        return '\n'.join(prompts)
+        return "\n".join(prompts)
 
     def get_random_indices(self, num_indices: int):
         """Gets a list of random indices from the data.
@@ -210,7 +251,6 @@ class ContextGenerator:
 
 
 class LLMTrainer:
-
     def __init__(self, cg: ContextGenerator):
         """This uses pretrained LLMs from OpenAI to perform in context learning on a dataset. Trainer is somewhat of a misnomer but it is in keeping with the nomenclature for the other trainers.
 
@@ -221,9 +261,16 @@ class LLMTrainer:
         self.path = create_training_folder()
         self.logger = None
 
-    def evaluate(self, num_shots: int = 5, model_name="Davinci", plotting: bool = True, save_preds: bool = True,
-                 verbose: bool = True, test_data: Optional[str] = None, batch_size: int = 5) -> Tuple[
-        float, List[float], List[float]]:
+    def evaluate(
+        self,
+        num_shots: int = 5,
+        model_name="Davinci",
+        plotting: bool = True,
+        save_preds: bool = True,
+        verbose: bool = True,
+        test_data: Optional[str] = None,
+        batch_size: int = 5,
+    ) -> Tuple[float, List[float], List[float]]:
         """Trains and evaluates the model on the test data. Again, train here is a misnomer, but it is in keeping with the nomenclature for the other trainers.
 
         Args:
@@ -237,7 +284,7 @@ class LLMTrainer:
         """
         timer = EpochTimer()
         timer.start()
-        oos_str = '_oos' if test_data is not None else ''
+        oos_str = "_oos" if test_data is not None else ""
 
         if test_data is not None:
             test_data = self.cg.prep_test_data(data=test_data)
@@ -247,7 +294,10 @@ class LLMTrainer:
         # Generate the prompts
         contexts = [test_data[i][0] for i in range(len(test_data))]
         answers = [test_data[i][1] for i in range(len(test_data))]
-        prompts = [self.cg.generate_few_shot_prompt(context=context, num_shots=num_shots) for context in contexts]
+        prompts = [
+            self.cg.generate_few_shot_prompt(context=context, num_shots=num_shots)
+            for context in contexts
+        ]
 
         if self.logger is None:
             logger = TrainingLogger(
@@ -256,38 +306,64 @@ class LLMTrainer:
                 verbose=verbose,
             )
             self.logger = logger
-            self.logger.log_info(f'Logger created at {self.path}/training_logs/training_log.txt')
-            self.logger.log_info(f'Using {model_name} model. with batch size {batch_size}')
+            self.logger.log_info(
+                f"Logger created at {self.path}/training_logs/training_log.txt"
+            )
+            self.logger.log_info(
+                f"Using {model_name} model. with batch size {batch_size}"
+            )
 
         # Get the predictions
-        predictions = self.get_predictions(prompts=prompts, model_name=model_name, batch_size=batch_size)
+        predictions = self.get_predictions(
+            prompts=prompts, model_name=model_name, batch_size=batch_size
+        )
 
         # Convert the predictions and actuals to floats and calculate the mean squared error
-        actuals, predictions, count = self.convert_strings_to_floats(actuals=answers, predictions=predictions)
+        actuals, predictions, count = self.convert_strings_to_floats(
+            actuals=answers, predictions=predictions
+        )
 
         if count > 0:
-            self.logger.log_info(f'Unable to convert {count} strings to floats.')
+            self.logger.log_info(f"Unable to convert {count} strings to floats.")
 
-        mse = sum([(pred - actual) ** 2 for pred, actual in zip(predictions, actuals)]) / len(predictions)
+        mse = sum(
+            [(pred - actual) ** 2 for pred, actual in zip(predictions, actuals)]
+        ) / len(predictions)
 
         # Log the MSE
-        self.logger.log_info(f'MSE for {num_shots}-shot for {len(prompts)} Test Examples: {mse:,.4f}')
+        self.logger.log_info(
+            f"MSE for {num_shots}-shot for {len(prompts)} Test Examples: {mse:,.4f}"
+        )
 
         if plotting:
             plot_saved_path = (
-                f"{self.path}/training_logs/{model_name}_{num_shots}shot_predictions{oos_str}.png"
-            ) if save_preds else None
-            plot_predictions(predictions, actuals, model_name=f'{model_name}_{num_shots}shot',
-                             saved_path=plot_saved_path)
+                (
+                    f"{self.path}/training_logs/{model_name}_{num_shots}shot_predictions{oos_str}.png"
+                )
+                if save_preds
+                else None
+            )
+            plot_predictions(
+                predictions,
+                actuals,
+                model_name=f"{model_name}_{num_shots}shot",
+                saved_path=plot_saved_path,
+            )
 
         if save_preds:
-            self.save_predictions(predictions, actuals, model_name=f'{model_name}_{num_shots}shot{oos_str}')
+            self.save_predictions(
+                predictions,
+                actuals,
+                model_name=f"{model_name}_{num_shots}shot{oos_str}",
+            )
 
         timer.lap()
         self.logger.log_info(timer.print_total_time(label="Total time taken: "))
         return mse, predictions, actuals
 
-    def save_predictions(self, predictions: List[float], actuals: List[float], model_name: str):
+    def save_predictions(
+        self, predictions: List[float], actuals: List[float], model_name: str
+    ):
         """Saves the predictions and actuals to a csv file.
 
         Args:
@@ -295,10 +371,14 @@ class LLMTrainer:
             actuals (List[float]): The actuals.
             model_name (str): The name of the model.
         """
-        df = pd.DataFrame({'predictions': predictions, 'actuals': actuals})
-        df.to_csv(f'{self.path}/training_logs/{model_name}_predictions.csv', index=False)
+        df = pd.DataFrame({"predictions": predictions, "actuals": actuals})
+        df.to_csv(
+            f"{self.path}/training_logs/{model_name}_predictions.csv", index=False
+        )
 
-    def get_predictions(self, prompts: List[str], model_name: str = "Davinci", batch_size: int = 5) -> List[str]:
+    def get_predictions(
+        self, prompts: List[str], model_name: str = "Davinci", batch_size: int = 5
+    ) -> List[str]:
         """Gets the predictions from the model.
 
         Args:
@@ -310,12 +390,19 @@ class LLMTrainer:
         """
 
         # Get the predictions
-        predictions = self.get_responses(prompts=prompts, model_name=model_name, batch_size=batch_size)
+        predictions = self.get_responses(
+            prompts=prompts, model_name=model_name, batch_size=batch_size
+        )
 
         return predictions
 
-    def get_responses(self, prompts: List[str], model_name: str = "Davinci", max_tokens: int = 5,
-                      batch_size: int = 5) -> List[str]:
+    def get_responses(
+        self,
+        prompts: List[str],
+        model_name: str = "Davinci",
+        max_tokens: int = 5,
+        batch_size: int = 5,
+    ) -> List[str]:
         """Gets the responses from the model in batches.
 
         Args:
@@ -331,7 +418,7 @@ class LLMTrainer:
 
         # Split prompts into batches
         for i in range(0, len(prompts), batch_size):
-            batch = prompts[i: i + batch_size]
+            batch = prompts[i : i + batch_size]
 
             # Get the responses for the current batch
             batch_responses = openai.Completion.create(
@@ -357,15 +444,16 @@ class LLMTrainer:
         extracted_responses = []
 
         # Loop over each item in the batched response
-        for item in api_response['choices']:
+        for item in api_response["choices"]:
             # Extract the text of the completion and append to the list
-            extracted_responses.append(item['text'].strip())
+            extracted_responses.append(item["text"].strip())
 
         # Only return the first num_choices
         return extracted_responses
 
-    def convert_strings_to_floats(self, actuals: List[str], predictions: List[str]) -> Tuple[
-        List[float], List[float], int]:
+    def convert_strings_to_floats(
+        self, actuals: List[str], predictions: List[str]
+    ) -> Tuple[List[float], List[float], int]:
         """Converts the actuals and predictions to floats.
 
         Args:
@@ -381,7 +469,7 @@ class LLMTrainer:
         actuals_ = []
         predictions_ = []
         count = 0
-        message = ''
+        message = ""
         for i in range(len(actuals)):
             try:
                 pred = float(predictions[i])
@@ -390,12 +478,14 @@ class LLMTrainer:
                 actuals_.append(actual)
             except ValueError:
                 count += 1
-                message += f'Unable to convert {actuals[i]} or {predictions[i]} to a float.\n'
+                message += (
+                    f"Unable to convert {actuals[i]} or {predictions[i]} to a float.\n"
+                )
                 continue
 
         # Save the message to a text file if there are any errors
         if count > 0:
-            with open(f'{self.path}/training_logs/conversion_errors.txt', 'w') as f:
+            with open(f"{self.path}/training_logs/conversion_errors.txt", "w") as f:
                 f.write(message)
         return actuals_, predictions_, count
 
@@ -407,7 +497,9 @@ class LLMTrainer:
         context = self.cg.train_data[0][0]
         question = self.cg.question
         answer = self.cg.train_data[0][1]
-        prompt = self.cg.generate_prompt(context=context, question=question, answer=answer)
+        prompt = self.cg.generate_prompt(
+            context=context, question=question, answer=answer
+        )
         # Count the number of tokens in the prompt
         num_tokens = count_tokens_in_batch([prompt])
         return num_tokens
@@ -438,8 +530,13 @@ if __name__ == "__main__":
     test_data = read_in_data(test_file_path, make_dict=False)
     # print(data)
 
-    cg = ContextGenerator(data=train_data, line_delimiter="\n", ans_delimiter=" ans: Ball is at y=",
-                          question=', what is the value of y?', answer_str=' ans: ')
+    cg = ContextGenerator(
+        data=train_data,
+        line_delimiter="\n",
+        ans_delimiter=" ans: Ball is at y=",
+        question=", what is the value of y?",
+        answer_str=" ans: ",
+    )
     cg.prep_test_data(data=test_data)
 
     # Create the trainer
@@ -467,12 +564,21 @@ if __name__ == "__main__":
     errors = []
 
     for num_shot in range(1, 5):
-        mse, _, _ = trainer.evaluate(num_shots=num_shot, model_name="text-davinci-003", plotting=True, save_preds=True,
-                                     verbose=True)
+        mse, _, _ = trainer.evaluate(
+            num_shots=num_shot,
+            model_name="text-davinci-003",
+            plotting=True,
+            save_preds=True,
+            verbose=True,
+        )
 
         errors.append(mse)
-    plot_errors(errors, shots, model_name='text-davinci-003',
-                saved_path=f'{trainer.path}/training_logs/errors_vs_shots.png')
+    plot_errors(
+        errors,
+        shots,
+        model_name="text-davinci-003",
+        saved_path=f"{trainer.path}/training_logs/errors_vs_shots.png",
+    )
 
     # for num_shot in range(5):
     #     predictions = []

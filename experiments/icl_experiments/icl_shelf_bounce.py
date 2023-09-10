@@ -22,7 +22,7 @@ set_seed(seed)
 
 # Create the logger
 batch_logger = TrainingLogger("../../GPT_training_logs.txt", verbose=False)
-file_paths = ['descriptive_text.txt']
+file_paths = ["descriptive_text.txt"]
 
 data_folder = "data/shelf_bounce/variable_ballheight/"
 
@@ -37,9 +37,13 @@ for file_path in file_paths:
     test_indices_path = "test_indices.csv"
 
     # Get train and test indices and convert to lists
-    train_indices = pd.read_csv(data_folder + train_indices_path).values.flatten().tolist()
+    train_indices = (
+        pd.read_csv(data_folder + train_indices_path).values.flatten().tolist()
+    )
     val_indices = pd.read_csv(data_folder + val_indices_path).values.flatten().tolist()
-    test_indices = pd.read_csv(data_folder + test_indices_path).values.flatten().tolist()
+    test_indices = (
+        pd.read_csv(data_folder + test_indices_path).values.flatten().tolist()
+    )
 
     # truncate test indices to 1000
     test_indices = test_indices[:1000]
@@ -51,15 +55,21 @@ for file_path in file_paths:
     # Context Generator Args
     line_delimiter = "\n"
     ans_delimiter = " ans: y="
-    question = ', what is y?'
-    answer_str = ' ans: '
+    question = ", what is y?"
+    answer_str = " ans: "
     model_name = "text-davinci-003"
 
     # Create the context generator
-    context_generator = ContextGenerator(data=data, line_delimiter=line_delimiter, ans_delimiter=ans_delimiter,
-                                         question=question, answer_str=answer_str,
-                                         train_indices=train_indices, val_indices=val_indices,
-                                         test_indices=test_indices)
+    context_generator = ContextGenerator(
+        data=data,
+        line_delimiter=line_delimiter,
+        ans_delimiter=ans_delimiter,
+        question=question,
+        answer_str=answer_str,
+        train_indices=train_indices,
+        val_indices=val_indices,
+        test_indices=test_indices,
+    )
 
     # Create the trainer
     trainer = LLMTrainer(cg=context_generator)
@@ -74,8 +84,14 @@ for file_path in file_paths:
 
     # for num_shot in num_shots:
     # Evaluate the model on test data
-    mse, _, _ = trainer.evaluate(num_shots=num_shot, model_name="text-davinci-003", plotting=False, save_preds=True,
-                                 verbose=True, batch_size=max(batch_size // num_shot, 5))
+    mse, _, _ = trainer.evaluate(
+        num_shots=num_shot,
+        model_name="text-davinci-003",
+        plotting=False,
+        save_preds=True,
+        verbose=True,
+        batch_size=max(batch_size // num_shot, 5),
+    )
 
     # errors.append(mse)
 

@@ -26,9 +26,14 @@ def pick_between_two_ranges(range1: List[float], range2: List[float]) -> float:
         return random.uniform(*range2)
 
 
-def generate_environment_data(env_dict: Dict, env_: Callable, iters: int, save_path: Optional[str] = None, verbose: bool = False) -> Tuple[
-    List, List, List, List]:
-    """ Generates a number of freefall environments and saves the logs to a csv and txt file
+def generate_environment_data(
+    env_dict: Dict,
+    env_: Callable,
+    iters: int,
+    save_path: Optional[str] = None,
+    verbose: bool = False,
+) -> Tuple[List, List, List, List]:
+    """Generates a number of freefall environments and saves the logs to a csv and txt file
     Args:
         env_dict (Dict): A dictionary of the environment parameters
         env_ (Callable): The environment class
@@ -38,7 +43,7 @@ def generate_environment_data(env_dict: Dict, env_: Callable, iters: int, save_p
 
     Returns:
         Tuple[List, List, List, List]: The numerical logs, text logs, minimal texts and descriptive texts
-        """
+    """
 
     numerical_logs = []
     text_logs = []
@@ -68,7 +73,7 @@ def generate_environment_data(env_dict: Dict, env_: Callable, iters: int, save_p
             unique_indices.append(i)
     # Get the unique logs
     numerical_logs = [dict(numerical_logs[i]) for i in unique_indices]
-    text_logs = [' '.join(list(text_logs[i])) for i in unique_indices]
+    text_logs = [" ".join(list(text_logs[i])) for i in unique_indices]
     minimal_texts = [minimal_texts[i] for i in unique_indices]
     descriptive_texts = [descriptive_texts[i] for i in unique_indices]
 
@@ -90,9 +95,14 @@ def generate_environment_data(env_dict: Dict, env_: Callable, iters: int, save_p
             f.write("\n".join(minimal_texts))
         with open(save_path + "descriptive_text.txt", "w") as f:
             f.write("\n".join(descriptive_texts))
-    if len(numerical_logs) != len(text_logs) or len(numerical_logs) != len(minimal_texts) or len(
-            numerical_logs) != len(descriptive_texts):
-        print("Warning: The number of numerical logs, text logs, minimal texts and descriptive texts are not equal")
+    if (
+        len(numerical_logs) != len(text_logs)
+        or len(numerical_logs) != len(minimal_texts)
+        or len(numerical_logs) != len(descriptive_texts)
+    ):
+        print(
+            "Warning: The number of numerical logs, text logs, minimal texts and descriptive texts are not equal"
+        )
         print(f"Number of unique numerical logs: {len(numerical_logs)}")
         print(f"Number of unique text logs: {len(text_logs)}")
         print(f"Number of unique minimal texts: {len(minimal_texts)}")

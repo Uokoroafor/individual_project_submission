@@ -87,14 +87,14 @@ print(f"y_min: {y_min}, y_max: {y_max}")
 test_indices = float_col[(float_col > y_min) & (float_col < y_max)].index
 train_indices = float_col[(float_col <= y_min) | (float_col >= y_max)].index
 
-print(f'len(test_indices): {test_indices[:10]}')
-print(f'len(train_indices): {len(train_indices)}')
+print(f"len(test_indices): {test_indices[:10]}")
+print(f"len(train_indices): {len(train_indices)}")
 
 # Get the test data
 test_data = train_data.iloc[test_indices]
 train_data = train_data.iloc[train_indices]
 
-print(f'len(test_data): {len(test_data)}')
+print(f"len(test_data): {len(test_data)}")
 
 # Reset the indices
 train_data.index = [None] * len(train_data)
@@ -106,15 +106,23 @@ train_data = PhysicalDataset(train_data)
 val_data = PhysicalDataset(val_data)
 test_data = PhysicalDataset(test_data)
 
-train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
+train_loader = torch.utils.data.DataLoader(
+    train_data, batch_size=batch_size, shuffle=True
+)
 val_loader = torch.utils.data.DataLoader(val_data, batch_size=batch_size, shuffle=True)
-test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size, shuffle=True)
+test_loader = torch.utils.data.DataLoader(
+    test_data, batch_size=batch_size, shuffle=True
+)
 
 # Create the model, loss function and optimiser
 loss_fn = nn.MSELoss()
 
-model = Net(input_size=num_input_features, hidden_sizes=hidden_layers, output_size=num_output_features,
-            activation=nn.ReLU())
+model = Net(
+    input_size=num_input_features,
+    hidden_sizes=hidden_layers,
+    output_size=num_output_features,
+    activation=nn.ReLU(),
+)
 optimiser = torch.optim.Adam(model.parameters(), lr=lr)
 scheduler = None
 
@@ -124,7 +132,9 @@ device = torch.device(training_hyperparams["device"])
 model = model.to(device)
 loss_fn = loss_fn.to(device)
 
-trainer = NNTrainer(model=model, loss_fn=loss_fn, optimiser=optimiser, scheduler=scheduler)
+trainer = NNTrainer(
+    model=model, loss_fn=loss_fn, optimiser=optimiser, scheduler=scheduler
+)
 
 model, _, _ = trainer.train(
     train_dataloader=train_loader,
@@ -141,8 +151,11 @@ model, _, _ = trainer.train(
 test_error = trainer.evaluate(test_loader)
 batch_logger.log_info(f"Training log is saved at {trainer.path}")
 batch_logger.log_info(
-    f"{function_name} on {data_folder} data with {len(train_data):,} training examples, {len(test_data):,} test examples ")
+    f"{function_name} on {data_folder} data with {len(train_data):,} training examples, {len(test_data):,} test examples "
+)
 
-batch_logger.log_info(f"Test loss: {test_error:.4f} for values between {y_min:.2f} and {y_max:.2f}")
+batch_logger.log_info(
+    f"Test loss: {test_error:.4f} for values between {y_min:.2f} and {y_max:.2f}"
+)
 
 print("Finished_________________________________")

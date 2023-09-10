@@ -8,22 +8,22 @@ from models.gpt.models.gpt_encoder import GPTEncoder
 
 class EncoderDecoderTransformer(nn.Module):
     def __init__(
-            self,
-            src_pad: int,
-            src_sos: int,
-            trg_pad: int,
-            trg_sos: int,
-            vocab_size_enc: int,
-            vocab_size_dec: int,
-            output_size: int,
-            pooling: str,
-            d_model: int,
-            d_ff: int,
-            max_seq_len: int,
-            num_layers: Optional[int] = 6,
-            num_heads: Optional[int] = 8,
-            dropout_prob: Optional[float] = 0.1,
-            device: Optional[str] = "cpu",
+        self,
+        src_pad: int,
+        src_sos: int,
+        trg_pad: int,
+        trg_sos: int,
+        vocab_size_enc: int,
+        vocab_size_dec: int,
+        output_size: int,
+        pooling: str,
+        d_model: int,
+        d_ff: int,
+        max_seq_len: int,
+        num_layers: Optional[int] = 6,
+        num_heads: Optional[int] = 8,
+        dropout_prob: Optional[float] = 0.1,
+        device: Optional[str] = "cpu",
     ):
         """Constructor class for the transformer. It consists of both the encoder and the decoder.
         Args:
@@ -129,7 +129,9 @@ class EncoderDecoderTransformer(nn.Module):
         trg_pad_mask = (trg != self.trg_pad).unsqueeze(1).unsqueeze(2)
         # trg_pad_mask = [batch size, 1, 1, trg len]
         trg_len = trg.shape[1]
-        trg_sub_mask = torch.tril(torch.ones((trg_len, trg_len), device=self.device)).bool()
+        trg_sub_mask = torch.tril(
+            torch.ones((trg_len, trg_len), device=self.device)
+        ).bool()
         # trg_sub_mask = [trg len, trg len]
         trg_mask = trg_pad_mask & trg_sub_mask
         # trg_mask = [batch size, 1, trg len, trg len]
@@ -165,7 +167,9 @@ class EncoderDecoderTransformer(nn.Module):
             # trg = [batch size, i+2]
         return trg[:, 1:]
 
-    def beam_search_decode(self, src: torch.Tensor, max_len: int = 50, beam_size: int = 5) -> torch.Tensor:
+    def beam_search_decode(
+        self, src: torch.Tensor, max_len: int = 50, beam_size: int = 5
+    ) -> torch.Tensor:
         """Beam search decoding
         Args:
             src (torch.Tensor): Source tensor

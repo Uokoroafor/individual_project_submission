@@ -54,7 +54,7 @@ for data_amount in data_amounts:
         test_indices = pd.read_csv(data_folder + test_indices_path).values.flatten()
 
         # Take subset of training data if required
-        train_indices = train_indices[:int(data_amount)]
+        train_indices = train_indices[: int(data_amount)]
 
         # # Scale the validation data by the same amount as the training data
         # val_indices = val_indices[:int(data_amount * len(val_indices) / len(train_indices))]
@@ -71,16 +71,28 @@ for data_amount in data_amounts:
             print(f"WARNING: Only {len(train_data):,} training examples using all data")
             stop_training = True
 
-        train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
-        val_loader = torch.utils.data.DataLoader(val_data, batch_size=batch_size, shuffle=True)
-        test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size, shuffle=True)
-        oos_test_loader = torch.utils.data.DataLoader(oos_test_data, batch_size=batch_size, shuffle=True)
+        train_loader = torch.utils.data.DataLoader(
+            train_data, batch_size=batch_size, shuffle=True
+        )
+        val_loader = torch.utils.data.DataLoader(
+            val_data, batch_size=batch_size, shuffle=True
+        )
+        test_loader = torch.utils.data.DataLoader(
+            test_data, batch_size=batch_size, shuffle=True
+        )
+        oos_test_loader = torch.utils.data.DataLoader(
+            oos_test_data, batch_size=batch_size, shuffle=True
+        )
 
         # Create the model, loss function and optimiser
         loss_fn = nn.MSELoss()
 
-        model = Net(input_size=num_input_features, hidden_sizes=hidden_layers, output_size=num_output_features,
-                    activation=nn.ReLU())
+        model = Net(
+            input_size=num_input_features,
+            hidden_sizes=hidden_layers,
+            output_size=num_output_features,
+            activation=nn.ReLU(),
+        )
         optimiser = torch.optim.Adam(model.parameters(), lr=lr)
         scheduler = None
 
@@ -90,7 +102,9 @@ for data_amount in data_amounts:
         model = model.to(device)
         loss_fn = loss_fn.to(device)
 
-        trainer = NNTrainer(model=model, loss_fn=loss_fn, optimiser=optimiser, scheduler=scheduler)
+        trainer = NNTrainer(
+            model=model, loss_fn=loss_fn, optimiser=optimiser, scheduler=scheduler
+        )
 
         model, _, _ = trainer.train(
             train_dataloader=train_loader,
@@ -106,12 +120,20 @@ for data_amount in data_amounts:
 
         test_error = trainer.evaluate(test_loader)
         batch_logger.log_info(f"Training log is saved at {trainer.path}")
-        batch_logger.log_info(f"{function_name} on {data_folder} data with {len(train_data):,} training examples")
-        print(f"Test error: {test_error: ,.4f} for {len(train_data):,} training examples")
+        batch_logger.log_info(
+            f"{function_name} on {data_folder} data with {len(train_data):,} training examples"
+        )
+        print(
+            f"Test error: {test_error: ,.4f} for {len(train_data):,} training examples"
+        )
 
         oos_test_error = trainer.evaluate(oos_test_loader)
-        print(f"OOS Test error: {oos_test_error: ,.4f} for {len(train_data):,} training examples")
+        print(
+            f"OOS Test error: {oos_test_error: ,.4f} for {len(train_data):,} training examples"
+        )
 
-        batch_logger.log_info(f"Test error: {test_error: ,.4f}, OOS Test error: {oos_test_error: ,.4f}.")
+        batch_logger.log_info(
+            f"Test error: {test_error: ,.4f}, OOS Test error: {oos_test_error: ,.4f}."
+        )
 
         print("Finished_________________________________")

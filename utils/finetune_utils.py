@@ -14,15 +14,14 @@ from torch.utils.data import TensorDataset, DataLoader, RandomSampler, Sequentia
 
 
 class FineTuneTrainer:
-
     def __init__(
-            self,
-            model: PreTrainedModel,
-            optimiser: torch.optim.Optimizer,
-            loss_fn: torch.nn.modules.loss._Loss,
-            training_hyperparameters: Dict,
-            tokenizer: PreTrainedTokenizer,
-            scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
+        self,
+        model: PreTrainedModel,
+        optimiser: torch.optim.Optimizer,
+        loss_fn: torch.nn.modules.loss._Loss,
+        training_hyperparameters: Dict,
+        tokenizer: PreTrainedTokenizer,
+        scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
     ):
         """Constructor class for Trainer used to train a transformer model for language modelling and text generation
         Args:
@@ -75,15 +74,15 @@ class FineTuneTrainer:
         self.logger = None
 
     def train(
-            self,
-            train_dataloader: DataLoader,
-            val_dataloader: DataLoader,
-            save_model: bool = True,
-            save_model_path: Optional[str] = None,
-            plotting: bool = True,
-            verbose: bool = True,
-            early_stopping: bool = False,
-            early_stopping_patience: int = 10,
+        self,
+        train_dataloader: DataLoader,
+        val_dataloader: DataLoader,
+        save_model: bool = True,
+        save_model_path: Optional[str] = None,
+        plotting: bool = True,
+        verbose: bool = True,
+        early_stopping: bool = False,
+        early_stopping_patience: int = 10,
     ):
         """Train the model
 
@@ -144,7 +143,9 @@ class FineTuneTrainer:
                     )
 
                 # Update the best model state dict and lowest validation loss
-                lowest_val_loss, count = self.update_best_model_dict(val_loss, lowest_val_loss, count)
+                lowest_val_loss, count = self.update_best_model_dict(
+                    val_loss, lowest_val_loss, count
+                )
 
                 if early_stopping and i > 0 and count >= early_stopping_patience:
                     logger.log_info(f"Stopping early after {i + 1} iterations")
@@ -198,9 +199,7 @@ class FineTuneTrainer:
 
         return self.model, train_losses, val_losses
 
-    def training_loop(
-            self, dataloader: DataLoader, method: str = "train"
-    ) -> float:
+    def training_loop(self, dataloader: DataLoader, method: str = "train") -> float:
         """Training loop for the model
 
         Args:
@@ -255,7 +254,7 @@ class FineTuneTrainer:
         return total_loss / len(dataloader)
 
     def update_best_model_dict(
-            self, loss_val: float, lowest_val_loss: float, count: int
+        self, loss_val: float, lowest_val_loss: float, count: int
     ) -> Tuple[float, int]:
         """Update the best model dictionary if the validation loss is the lowest so far
         Args:
@@ -278,7 +277,9 @@ class FineTuneTrainer:
 
         return lowest_val_loss, count
 
-    def calculate_test_loss(self, test_data: DataLoader, log_error: bool = True) -> float:
+    def calculate_test_loss(
+        self, test_data: DataLoader, log_error: bool = True
+    ) -> float:
         """Calculate the loss on the full test data (without sampling)
         Args:
             test_data (Union[torch.Tensor, DataLoader]): Test data
@@ -293,11 +294,11 @@ class FineTuneTrainer:
         return test_loss
 
     def log_numerical_outputs(
-            self,
-            dataloader: torch.utils.data.DataLoader,
-            log_name: Optional[str] = None,
-            output_type: str = "num",
-            oos_str: str = "",
+        self,
+        dataloader: torch.utils.data.DataLoader,
+        log_name: Optional[str] = None,
+        output_type: str = "num",
+        oos_str: str = "",
     ) -> float:
         """Log the numerical outputs of the model to a file. It also plots the predictions vs the targets
         Args:
@@ -357,11 +358,10 @@ class FineTuneTrainer:
                                     + "".join(self.decode_data(target[i, :].tolist()))
                                     + "\n"
                                 )
-                                pred = "".join(self.decode_data(output[i, :].argmax(-1).tolist()))
-                                f.write(
-                                    f"Prediction is {pred}"
-                                    + "\n\n"
+                                pred = "".join(
+                                    self.decode_data(output[i, :].argmax(-1).tolist())
                                 )
+                                f.write(f"Prediction is {pred}" + "\n\n")
                             else:
                                 f.write(
                                     "Target is "
@@ -374,9 +374,7 @@ class FineTuneTrainer:
             test_loss /= len(dataloader)
             self.logger.log_info(f"Test loss was {test_loss :,.4f}")
 
-            plot_save_path = (
-                f"{self.path}/training_logs/{oos_str}{type(self.model).__name__}_predictions.png"
-            )
+            plot_save_path = f"{self.path}/training_logs/{oos_str}{type(self.model).__name__}_predictions.png"
 
             if output_type == "text":
                 predictions, targets, count, error_log = self.convert_string_to_float(
@@ -388,8 +386,10 @@ class FineTuneTrainer:
                     )
                     self.logger.log_warning(error_log)
                 # log MSE error
-                self.logger.log_info(f"MSE Error on converted numerical outputs "
-                                     f"is {nn.MSELoss()(torch.tensor(predictions), torch.tensor(targets)) :,.4f}")
+                self.logger.log_info(
+                    f"MSE Error on converted numerical outputs "
+                    f"is {nn.MSELoss()(torch.tensor(predictions), torch.tensor(targets)) :,.4f}"
+                )
 
             plot_predictions(
                 predictions=predictions,
@@ -400,8 +400,9 @@ class FineTuneTrainer:
 
             return test_loss
 
-    def convert_string_to_float(self, predictions: List[torch.Tensor], targets: List[torch.Tensor]) -> Tuple[
-        List[float], List[float], int, str]:
+    def convert_string_to_float(
+        self, predictions: List[torch.Tensor], targets: List[torch.Tensor]
+    ) -> Tuple[List[float], List[float], int, str]:
         """Convert the predictions and targets from strings to floats
         Args:
             predictions (List[torch.Tensor]): List of predictions
@@ -414,7 +415,7 @@ class FineTuneTrainer:
         pred_out = []
         target_out = []
         count = 0
-        error_log = ''
+        error_log = ""
 
         for i in range(len(predictions)):
             try:
@@ -427,7 +428,9 @@ class FineTuneTrainer:
                 if count <= 20:
                     # Only want to log the first 20 errors otherwise the log file gets too big
                     error_log += f"Could not convert Prediction: {pred} to float.\n"
-                    error_log += f"Target was {float(''.join(self.decode_data(targets[i])))}\n\n"
+                    error_log += (
+                        f"Target was {float(''.join(self.decode_data(targets[i])))}\n\n"
+                    )
                 continue
         return pred_out, target_out, count, error_log
 
@@ -479,15 +482,22 @@ class FineTuneTrainer:
         attention_masks = []
 
         for text in texts:
-            encode = self.tokenizer.encode_plus(text, add_special_tokens=True,
-                                                max_length=self.max_seq_len, truncation=True, padding='max_length',
-                                                return_tensors='pt')
-            input_ids.append(encode['input_ids'][0])
-            attention_masks.append(encode['attention_mask'][0])
+            encode = self.tokenizer.encode_plus(
+                text,
+                add_special_tokens=True,
+                max_length=self.max_seq_len,
+                truncation=True,
+                padding="max_length",
+                return_tensors="pt",
+            )
+            input_ids.append(encode["input_ids"][0])
+            attention_masks.append(encode["attention_mask"][0])
 
         return torch.stack(input_ids), torch.stack(attention_masks)
 
-    def decode_data(self, input_ids: torch.Tensor, skip_special_tokens: bool = True) -> str:
+    def decode_data(
+        self, input_ids: torch.Tensor, skip_special_tokens: bool = True
+    ) -> str:
         """Decode the input ids using the tokenizer
         Args:
             input_ids (torch.Tensor): Input ids to decode
@@ -499,7 +509,9 @@ class FineTuneTrainer:
         return self.tokenizer.decode(input_ids, skip_special_tokens=skip_special_tokens)
 
 
-def encode_data(tokenizer: PreTrainedTokenizer, texts: List[str], max_length: int) -> (torch.Tensor, torch.Tensor):
+def encode_data(
+    tokenizer: PreTrainedTokenizer, texts: List[str], max_length: int
+) -> (torch.Tensor, torch.Tensor):
     """
     Encodes the data using a pretrained tokenizer
     Args:
@@ -515,17 +527,22 @@ def encode_data(tokenizer: PreTrainedTokenizer, texts: List[str], max_length: in
     attention_masks = []
 
     for text in texts:
-        encode = tokenizer.encode_plus(text, add_special_tokens=True,
-                                       max_length=max_length, truncation=True, padding='max_length',
-                                       return_tensors='pt')
-        input_ids.append(encode['input_ids'][0])
-        attention_masks.append(encode['attention_mask'][0])
+        encode = tokenizer.encode_plus(
+            text,
+            add_special_tokens=True,
+            max_length=max_length,
+            truncation=True,
+            padding="max_length",
+            return_tensors="pt",
+        )
+        input_ids.append(encode["input_ids"][0])
+        attention_masks.append(encode["attention_mask"][0])
 
     return torch.stack(input_ids), torch.stack(attention_masks)
 
 
 def decode_data(tokenizer: PreTrainedTokenizer, input_ids: torch.Tensor) -> str:
-    """ Decodes the input ids using the tokenizer
+    """Decodes the input ids using the tokenizer
     Args:
         tokenizer: The pretrained tokenizer
         input_ids: The input ids to decode
@@ -553,11 +570,16 @@ def count_parameters(model: nn.Module) -> Dict[str, int]:
     return counts
 
 
-def make_finetune_dataloaders(train_data: pd.DataFrame, val_data: pd.DataFrame, test_data: pd.DataFrame,
-                              tokenizer: PreTrainedTokenizer, max_length: int,
-                              batch_size: int = 8, output_type: str = 'num') -> Tuple[
-    DataLoader, DataLoader, DataLoader]:
-    """ This makes the dataloaders for the fine-tuning task.
+def make_finetune_dataloaders(
+    train_data: pd.DataFrame,
+    val_data: pd.DataFrame,
+    test_data: pd.DataFrame,
+    tokenizer: PreTrainedTokenizer,
+    max_length: int,
+    batch_size: int = 8,
+    output_type: str = "num",
+) -> Tuple[DataLoader, DataLoader, DataLoader]:
+    """This makes the dataloaders for the fine-tuning task.
 
     Args:
         train_data (pd.DataFrame): The training data
@@ -571,16 +593,28 @@ def make_finetune_dataloaders(train_data: pd.DataFrame, val_data: pd.DataFrame, 
         Tuple[DataLoader, DataLoader, DataLoader]: The training, validation and test dataloaders
     """
     # get the questions column and convert to list
-    train_dataloader = make_finetune_dataloader(train_data, tokenizer, max_length, batch_size, output_type, sampler='random')
-    val_dataloader = make_finetune_dataloader(val_data, tokenizer, max_length, batch_size, output_type)
-    test_dataloader = make_finetune_dataloader(test_data, tokenizer, max_length, batch_size, output_type)
+    train_dataloader = make_finetune_dataloader(
+        train_data, tokenizer, max_length, batch_size, output_type, sampler="random"
+    )
+    val_dataloader = make_finetune_dataloader(
+        val_data, tokenizer, max_length, batch_size, output_type
+    )
+    test_dataloader = make_finetune_dataloader(
+        test_data, tokenizer, max_length, batch_size, output_type
+    )
 
     return train_dataloader, val_dataloader, test_dataloader
 
 
-def make_finetune_dataloader(data: pd.DataFrame, tokenizer: PreTrainedTokenizer, max_length: int,
-                             batch_size: int = 8, output_type: str = 'num', sampler: str = 'sequential') -> DataLoader:
-    """ This makes the dataloaders for the fine-tuning task. This version only makes the test dataloader and is ideally for the out-of-sample (oos) datasets
+def make_finetune_dataloader(
+    data: pd.DataFrame,
+    tokenizer: PreTrainedTokenizer,
+    max_length: int,
+    batch_size: int = 8,
+    output_type: str = "num",
+    sampler: str = "sequential",
+) -> DataLoader:
+    """This makes the dataloaders for the fine-tuning task. This version only makes the test dataloader and is ideally for the out-of-sample (oos) datasets
 
     Args:
         data (pd.DataFrame): The data
@@ -592,23 +626,37 @@ def make_finetune_dataloader(data: pd.DataFrame, tokenizer: PreTrainedTokenizer,
         Tuple[DataLoader, DataLoader, DataLoader]: The training, validation and test dataloaders
     """
     # get the questions column and convert to list
-    texts = data['question'].tolist()
-    labels = data['answer'].tolist()
+    texts = data["question"].tolist()
+    labels = data["answer"].tolist()
 
     input_ids, attention_masks = encode_data(tokenizer, texts, max_length)
 
-    if output_type == 'text':
-        labels = [torch.tensor(tokenizer.encode(label, add_special_tokens=True, max_length=max_length, truncation=True,
-                                                padding='max_length')) for label in labels]
+    if output_type == "text":
+        labels = [
+            torch.tensor(
+                tokenizer.encode(
+                    label,
+                    add_special_tokens=True,
+                    max_length=max_length,
+                    truncation=True,
+                    padding="max_length",
+                )
+            )
+            for label in labels
+        ]
         labels = torch.stack(labels)
     else:
         labels = torch.tensor(labels)
     dataset = TensorDataset(input_ids, attention_masks, labels)
 
-    if sampler == 'sequential':
-        dataloader = DataLoader(dataset, sampler=SequentialSampler(dataset), batch_size=batch_size)
+    if sampler == "sequential":
+        dataloader = DataLoader(
+            dataset, sampler=SequentialSampler(dataset), batch_size=batch_size
+        )
     else:
-        dataloader = DataLoader(dataset, sampler=RandomSampler(dataset), batch_size=batch_size)
+        dataloader = DataLoader(
+            dataset, sampler=RandomSampler(dataset), batch_size=batch_size
+        )
 
     return dataloader
 
@@ -629,7 +677,9 @@ def count_frozen_bert_layers(model: PreTrainedModel) -> int:
     return count
 
 
-def freeze_bert_layers(model: PreTrainedModel, layers_to_freeze: int) -> PreTrainedModel:
+def freeze_bert_layers(
+    model: PreTrainedModel, layers_to_freeze: int
+) -> PreTrainedModel:
     """Freezes the specified number of layers
     Args:
         model (PreTrainedModel): The model to freeze the layers of

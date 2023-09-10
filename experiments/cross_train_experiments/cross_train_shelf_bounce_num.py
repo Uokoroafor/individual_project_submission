@@ -27,12 +27,23 @@ eval_iters = training_hyperparams["eval_every"]
 max_iters = training_hyperparams["epochs"]
 lr = training_hyperparams["learning_rate"]
 
-folders = ["variable_angle", "variable_ballheight", "variable_ballheight_angle", "variable_shelfheight",
-           "variable_shelfheight_angle", "variable_shelfheight_ballheight", "variable_shelfheight_ballheight_angle"]
+folders = [
+    "variable_angle",
+    "variable_ballheight",
+    "variable_ballheight_angle",
+    "variable_shelfheight",
+    "variable_shelfheight_angle",
+    "variable_shelfheight_ballheight",
+    "variable_shelfheight_ballheight_angle",
+]
 
 # Want to train on a concatenated set of two variables and train on the combined data
-test_folders = ["variable_ballheight_angle", "variable_shelfheight_angle", "variable_shelfheight_ballheight",
-                "variable_shelfheight_ballheight_angle"]
+test_folders = [
+    "variable_ballheight_angle",
+    "variable_shelfheight_angle",
+    "variable_shelfheight_ballheight",
+    "variable_shelfheight_ballheight_angle",
+]
 # split each folder name by _, then train on the first two variables
 
 train_folders = []
@@ -69,14 +80,18 @@ for train_folder, test_folder in zip(train_folders, test_folders):
         # # print(f"Training for pooling: {pooling}")
         # data_portion = 1
 
-        use_bpe = False  # Set to True to use BPE, False to use a character encoder/decoder
+        use_bpe = (
+            False  # Set to True to use BPE, False to use a character encoder/decoder
+        )
 
         encoding_str = "bpe" if use_bpe else "char"
 
         data_folder_str = ", ".join(train_folder)
 
-        logging_intro = (f"Training on {function_name} with {output_type} output and {pooling} pooling on "
-                         f"({data_folder_str}) datasets.")
+        logging_intro = (
+            f"Training on {function_name} with {output_type} output and {pooling} pooling on "
+            f"({data_folder_str}) datasets."
+        )
 
         # Train the encoder on the test dataset which is a combination of the two variables
         data = read_in_data(test_folder + file_path, make_dict=False)
@@ -100,13 +115,21 @@ for train_folder, test_folder in zip(train_folders, test_folders):
         )
 
         encoding_utils = dict(
-            enc_dict=encoder_dict, dec_dict=decoder_dict, encode_fn=encode, decode_fn=decode
+            enc_dict=encoder_dict,
+            dec_dict=decoder_dict,
+            encode_fn=encode,
+            decode_fn=decode,
         )
 
         # Read in the data as pandas dataframes and combine them
-        train_data = [pd.read_csv(data_folder + train_data_path, dtype=str) for data_folder in data_folders]
-        val_data = [pd.read_csv(data_folder + val_data_path, dtype=str) for data_folder in data_folders]
-
+        train_data = [
+            pd.read_csv(data_folder + train_data_path, dtype=str)
+            for data_folder in data_folders
+        ]
+        val_data = [
+            pd.read_csv(data_folder + val_data_path, dtype=str)
+            for data_folder in data_folders
+        ]
 
         # concat the dataframes
         train_data = pd.concat(train_data, ignore_index=True)
@@ -114,7 +137,6 @@ for train_folder, test_folder in zip(train_folders, test_folders):
 
         test_data = pd.read_csv(test_folder + test_data_path, dtype=str)
         # We will not do OOS testing for this experiment
-
 
         train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
             tokeniser=gpt_tokeniser,
@@ -186,8 +208,10 @@ for train_folder, test_folder in zip(train_folders, test_folders):
         )
 
         batch_logger.log_info(f"Training log is saved at {trainer.path} for")
-        batch_logger.log_info(f"{function_name} on ({data_folder_str}) data with {output_type} "
-                              f"output, {pooling} pooling, {encoding_str} encoding and {len(train_data)} training  examples.")
+        batch_logger.log_info(
+            f"{function_name} on ({data_folder_str}) data with {output_type} "
+            f"output, {pooling} pooling, {encoding_str} encoding and {len(train_data)} training  examples."
+        )
         batch_logger.log_info(f"Test loss: {test_loss:.4f}")
 
     except Exception as e:

@@ -25,12 +25,23 @@ eval_iters = training_hyperparams["eval_every"]
 max_iters = training_hyperparams["epochs"]
 lr = training_hyperparams["learning_rate"]
 
-folders = ["variable_angle", "variable_ballheight", "variable_shelfheight", "variable_ballheight_angle",
-           "variable_shelfheight_angle", "variable_shelfheight_ballheight", "variable_shelfheight_ballheight_angle"]
+folders = [
+    "variable_angle",
+    "variable_ballheight",
+    "variable_shelfheight",
+    "variable_ballheight_angle",
+    "variable_shelfheight_angle",
+    "variable_shelfheight_ballheight",
+    "variable_shelfheight_ballheight_angle",
+]
 
 # Want to train on a concatenated set of two variables and train on the combined data
-test_folders = ["variable_ballheight_angle", "variable_shelfheight_angle", "variable_shelfheight_ballheight",
-                "variable_shelfheight_ballheight_angle"]
+test_folders = [
+    "variable_ballheight_angle",
+    "variable_shelfheight_angle",
+    "variable_shelfheight_ballheight",
+    "variable_shelfheight_ballheight_angle",
+]
 
 train_folders = []
 
@@ -77,19 +88,19 @@ for train_folder, test_folder in zip(train_folders, test_folders):
             # Read in the data
             data = pd.read_csv(data_folder + data_path)
 
-            train_indices = pd.read_csv(data_folder + train_indices_path).values.flatten()
+            train_indices = pd.read_csv(
+                data_folder + train_indices_path
+            ).values.flatten()
             val_indices = pd.read_csv(data_folder + val_indices_path).values.flatten()
             test_indices = pd.read_csv(data_folder + test_indices_path).values.flatten()
 
             # Take subset of training data if required
-            train_indices = train_indices[:int(data_amount)]
+            train_indices = train_indices[: int(data_amount)]
 
             # # Scale the validation data by the same amount as the training data
             # val_indices = val_indices[:int(data_amount * len(val_indices) / len(train_indices))]
             train_data.append(data.iloc[train_indices])
             val_data.append(data.iloc[val_indices])
-
-
 
         train_data = pd.concat(train_data)
         val_data = pd.concat(val_data)
@@ -111,16 +122,26 @@ for train_folder, test_folder in zip(train_folders, test_folders):
         #     print(f"WARNING: Only {len(train_data):,} training examples using all data")
         #     stop_training = True
 
-        train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
-        val_loader = torch.utils.data.DataLoader(val_data, batch_size=batch_size, shuffle=True)
-        test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size, shuffle=True)
+        train_loader = torch.utils.data.DataLoader(
+            train_data, batch_size=batch_size, shuffle=True
+        )
+        val_loader = torch.utils.data.DataLoader(
+            val_data, batch_size=batch_size, shuffle=True
+        )
+        test_loader = torch.utils.data.DataLoader(
+            test_data, batch_size=batch_size, shuffle=True
+        )
         # oos_test_loader = torch.utils.data.DataLoader(oos_test_data, batch_size=batch_size, shuffle=True)
 
         # Create the model, loss function and optimiser
         loss_fn = nn.MSELoss()
 
-        model = Net(input_size=num_input_features, hidden_sizes=hidden_layers, output_size=num_output_features,
-                    activation=nn.ReLU())
+        model = Net(
+            input_size=num_input_features,
+            hidden_sizes=hidden_layers,
+            output_size=num_output_features,
+            activation=nn.ReLU(),
+        )
         optimiser = torch.optim.Adam(model.parameters(), lr=lr)
         scheduler = None
 
@@ -130,7 +151,9 @@ for train_folder, test_folder in zip(train_folders, test_folders):
         model = model.to(device)
         loss_fn = loss_fn.to(device)
 
-        trainer = NNTrainer(model=model, loss_fn=loss_fn, optimiser=optimiser, scheduler=scheduler)
+        trainer = NNTrainer(
+            model=model, loss_fn=loss_fn, optimiser=optimiser, scheduler=scheduler
+        )
 
         model, _, _ = trainer.train(
             train_dataloader=train_loader,
@@ -146,8 +169,12 @@ for train_folder, test_folder in zip(train_folders, test_folders):
 
         test_error = trainer.evaluate(test_loader)
         batch_logger.log_info(f"Training log is saved at {trainer.path}")
-        batch_logger.log_info(f"{function_name} on {data_folder_str} data with {len(train_data):,} training examples")
-        print(f"Test error: {test_error: ,.4f} for {len(train_data):,} training examples")
+        batch_logger.log_info(
+            f"{function_name} on {data_folder_str} data with {len(train_data):,} training examples"
+        )
+        print(
+            f"Test error: {test_error: ,.4f} for {len(train_data):,} training examples"
+        )
 
         # oos_test_error = trainer.evaluate(oos_test_loader)
         # print(f"OOS Test error: {oos_test_error: ,.4f} for {len(train_data):,} training examples")

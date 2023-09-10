@@ -18,7 +18,9 @@ set_seed(6_345_789)
 # Wilson Pickett - 634-5789 https://www.youtube.com/watch?v=TSGuaVAufV0
 
 # Create the logger
-batch_logger = TrainingLogger("../../msb_scratch_training_logs_text2.txt", verbose=False)
+batch_logger = TrainingLogger(
+    "../../msb_scratch_training_logs_text2.txt", verbose=False
+)
 
 print("Using device: ", training_hyperparams["device"])
 device = training_hyperparams["device"]
@@ -28,7 +30,14 @@ eval_iters = training_hyperparams["eval_every"]
 max_iters = training_hyperparams["epochs"]
 lr = training_hyperparams["learning_rate"]
 
-folders = ["variable_angle", "variable_time", "variable_shelfheight", "variable_time_angle", "variable_angle_shelfheight", "variable_time_angle_shelfheight"]
+folders = [
+    "variable_angle",
+    "variable_time",
+    "variable_shelfheight",
+    "variable_time_angle",
+    "variable_angle_shelfheight",
+    "variable_time_angle_shelfheight",
+]
 
 
 for folder in folders:
@@ -47,13 +56,16 @@ for folder in folders:
     stop_training = False
 
     try:
-
-        use_bpe = False  # Set to True to use BPE, False to use a character encoder/decoder
+        use_bpe = (
+            False  # Set to True to use BPE, False to use a character encoder/decoder
+        )
 
         encoding_str = "bpe" if use_bpe else "char"
 
-        logging_intro = (f"Training on {function_name} with {output_type} output and {pooling} pooling on "
-                         f"{data_folder + file_path} data. Using {encoding_str} encoding.")
+        logging_intro = (
+            f"Training on {function_name} with {output_type} output and {pooling} pooling on "
+            f"{data_folder + file_path} data. Using {encoding_str} encoding."
+        )
 
         # Read in the data
         data = read_in_data(data_folder + file_path, make_dict=False)
@@ -77,7 +89,10 @@ for folder in folders:
         )
 
         encoding_utils = dict(
-            enc_dict=encoder_dict, dec_dict=decoder_dict, encode_fn=encode, decode_fn=decode
+            enc_dict=encoder_dict,
+            dec_dict=decoder_dict,
+            encode_fn=encode,
+            decode_fn=decode,
         )
 
         # Read in the data as pandas dataframes
@@ -100,7 +115,6 @@ for folder in folders:
         val_data = val_data.reset_index(drop=True)
         test_data = test_data.reset_index(drop=True)
         oos_test_data = oos_test_data.reset_index(drop=True)
-
 
         train_loader, val_loader, test_loader, max_seq_len = make_data_loaders(
             tokeniser=gpt_tokeniser,
@@ -182,11 +196,17 @@ for folder in folders:
         )
 
         oos_test_loss = trainer.log_numerical_outputs(
-            oos_test_loader, decode, "oos_test_log.txt", output_type=output_type,
-            oos_data=True)
+            oos_test_loader,
+            decode,
+            "oos_test_log.txt",
+            output_type=output_type,
+            oos_data=True,
+        )
         batch_logger.log_info(f"Training log is saved at {trainer.path} for")
-        batch_logger.log_info(f"{function_name} on {folder} data with {output_type} "
-                              f"output and {len(train_data)} training samples., {len(test_data)} test samples.")
+        batch_logger.log_info(
+            f"{function_name} on {folder} data with {output_type} "
+            f"output and {len(train_data)} training samples., {len(test_data)} test samples."
+        )
         batch_logger.log_info(f"Test loss: {test_loss:.4f}")
         batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")
 

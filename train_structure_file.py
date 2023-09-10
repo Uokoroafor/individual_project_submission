@@ -18,7 +18,9 @@ set_seed(6_345_789)
 # Wilson Pickett - 634-5789 https://www.youtube.com/watch?v=TSGuaVAufV0
 
 # Create the logger
-batch_logger = TrainingLogger("logs_num.txt", verbose=False) # Used to log the training results for multiple runs not required if just a single experiment is being run
+batch_logger = TrainingLogger(
+    "logs_num.txt", verbose=False
+)  # Used to log the training results for multiple runs not required if just a single experiment is being run
 
 device = training_hyperparams["device"]
 block_size = training_hyperparams["max_seq_len"]
@@ -36,15 +38,17 @@ test_data_path = f"test_data.csv"
 oos_test_data_path = f"oos_test_data.csv"
 output_type = "num"  # select one of  ["num" or "text"]
 
-pooling = "cls" # Select one of ["max", "mean", "cls"]
+pooling = "cls"  # Select one of ["max", "mean", "cls"]
 
 
 use_bpe = False  # Set to True to use BPE, False to use a character encoder/decoder
 
 encoding_str = "bpe" if use_bpe else "char"
 
-logging_intro = (f"Training on {function_name} with {output_type} output and {pooling} pooling on "
-                 f"{data_folder + file_path} data. Using {encoding_str} encoding.")
+logging_intro = (
+    f"Training on {function_name} with {output_type} output and {pooling} pooling on "
+    f"{data_folder + file_path} data. Using {encoding_str} encoding."
+)
 
 # Read in the data
 data = read_in_data(data_folder + file_path, make_dict=False)
@@ -123,7 +127,7 @@ model = EncodeOnlyTransformer(
 )
 
 optimiser = torch.optim.Adam(model.parameters(), lr=lr)
-scheduler = None # Scheduler set to none by default
+scheduler = None  # Scheduler set to none by default
 
 device = torch.device(training_hyperparams["device"])
 
@@ -160,7 +164,9 @@ oos_test_loss = trainer.log_numerical_outputs(
 )
 
 batch_logger.log_info(f"Training log is saved at {trainer.path} for")
-batch_logger.log_info(f"{function_name} on {data_folder} data with {output_type} "
-                      f"output, {pooling} pooling, using {encoding_str} encoding and {len(train_data)} training examples.")
+batch_logger.log_info(
+    f"{function_name} on {data_folder} data with {output_type} "
+    f"output, {pooling} pooling, using {encoding_str} encoding and {len(train_data)} training examples."
+)
 batch_logger.log_info(f"Test loss: {test_loss:.4f}")
 batch_logger.log_info(f"OOS test loss: {oos_test_loss:.4f}")

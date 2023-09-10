@@ -5,8 +5,13 @@ import torch
 
 
 class PhysicalDataset(torch.utils.data.Dataset):
-    def __init__(self, df: pd.DataFrame, output_col: Optional[int] = None, col_names: Optional[List[str]] = None):
-        """ This class is used to create a dataset from a pandas dataframe. The dataframe should have the following
+    def __init__(
+        self,
+        df: pd.DataFrame,
+        output_col: Optional[int] = None,
+        col_names: Optional[List[str]] = None,
+    ):
+        """This class is used to create a dataset from a pandas dataframe. The dataframe should have the following
         format:
         x1, x2, x3, ..., xn, y
         If the col_names argument is not specified, then the column names are assumed to be the same as the column.
@@ -28,7 +33,7 @@ class PhysicalDataset(torch.utils.data.Dataset):
         else:
             self.output_col = output_col
 
-        self.x = df[self.col_names[:self.output_col]].values
+        self.x = df[self.col_names[: self.output_col]].values
         self.y = df[self.col_names[self.output_col]].values
 
     def __len__(self):
@@ -40,7 +45,9 @@ class PhysicalDataset(torch.utils.data.Dataset):
         y = self.y[idx]
 
         # Converting to tensor
-        return torch.tensor(x, dtype=torch.float32), torch.tensor(y, dtype=torch.float32)
+        return torch.tensor(x, dtype=torch.float32), torch.tensor(
+            y, dtype=torch.float32
+        )
 
     def get_batch(self, indices: List[int]) -> Tuple[torch.Tensor, torch.Tensor]:
         """This method is used to fetch multiple indices from the dataset. This is useful for creating batches.
@@ -53,4 +60,6 @@ class PhysicalDataset(torch.utils.data.Dataset):
         """
         x = self.x[indices]
         y = self.y[indices]
-        return torch.tensor(x, dtype=torch.float32), torch.tensor(y, dtype=torch.float32)
+        return torch.tensor(x, dtype=torch.float32), torch.tensor(
+            y, dtype=torch.float32
+        )
