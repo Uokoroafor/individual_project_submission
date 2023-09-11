@@ -93,23 +93,6 @@ for file_path in file_paths:
         batch_size=max(batch_size // num_shot, 5),
     )
 
-    # errors.append(mse)
-
-    # plot_errors(errors, num_shots, model_name='text-davinci-003',saved_path=f'{trainer.path}/training_logs/errors_vs_shots.png')
-
-    # for num_shot in num_shots:
-    #     # Evaluate the model on test data
-    #
-    #     oos_mse, _, _ = trainer.evaluate(num_shots=num_shot, model_name="text-davinci-003", plotting=False,
-    #                                      save_preds=True,
-    #                                      verbose=True, test_data=oos_data, batch_size=max(batch_size // num_shot, 5))
-    #
-    #     oos_errors.append(oos_mse)
-    #
-    # plot_errors(oos_errors, num_shots, model_name='text-davinci-003',
-    #             saved_path=f'{trainer.path}/training_logs/oos_errors_vs_shots.png')
-
     batch_logger.log_info(f"Training log is saved at {trainer.path} for")
     batch_logger.log_info(f"{function_name} on {data_folder} data with {file_path}")
     batch_logger.log_info(f"Test loss: {mse:.4f}")
-    # batch_logger.log_info(f"OOS test loss: {oos_mse:.4f}")

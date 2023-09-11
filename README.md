@@ -60,7 +60,7 @@ pip install -r requirements.txt
 ```
 ## Features
 - [x] Models
-  - [x] Implementation of GPT from scratch [link](./models/gpt/models/gpt_transformer.py)
+  - [x] Implementation of GPT Architecture from scratch [link](./models/gpt/models/gpt_transformer.py)
   - [x] Implementation of an Encoder Only Transformer from Scratch which allows text, numerical or categorical output [link](./models/gpt/models/eo_transformer.py)
   - [x] A customisable Standard Neural Network [link](./models/nn_models/nn_model.py)
 - [x] Environments
@@ -69,8 +69,8 @@ pip install -r requirements.txt
   - [x] Render Constants [link](./environments/render_constants.py)
 - [x] Environment Generators
   - [x] Free Fall - Defined [link](./generated_environments/freefall/freefall.py)
-  - [x] Single Object Collision - Defined in [link](./generated_environments/shelf_bounce/shelf_bounce.py)
-  - [x] Double Object Collision - Defined in [link](./generated_environments/multi_shelf_bounce/multi_shelf_bounce.py)
+  - [x] Single Object Collision [link](./generated_environments/shelf_bounce/shelf_bounce.py)
+  - [x] Double Object Collision [link](./generated_environments/multi_shelf_bounce/multi_shelf_bounce.py)
 - [x] Utils
   - [x] Training Utils which handle training runs including Trainer classes [link](./utils/train_utils.py)
   - [x] File Utils which handle file operations [link](./utils/file_utils.py)
@@ -79,7 +79,7 @@ pip install -r requirements.txt
   - [x] Data Utils creates data handlers and dataloaders for training [link](./utils/data_utils.py)
   - [x] Physical Dataset which is made solely to train the Neural Network on numerical data [link](./utils/physical_dataset.py)
   - [x] Timing Utils which time training runs [link](./utils/time_utils.py)
-  - [x] In Context Learning Utils [link](./utils/in_context_learning_utils.py)
+  - [x] In-Context Learning Utils [link](./utils/in_context_learning_utils.py)
   - [x] Fine Tuning Utils [link](./utils/finetune_utils.py)
   - [x] Environment Generation Utils - Defined in [link](./utils/env_utils.py)
   - [x] Byte Pair Encoding (BPE)
